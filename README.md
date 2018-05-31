@@ -44,7 +44,8 @@ Use
 ---
 
 Create a new RPC controller
-```
+
+```php
 use Exception
 use GraphQL\GraphQL;
 use Zend\Mvc\Controller\AbstractActionController;

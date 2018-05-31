@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit colors="true" bootstrap="./test/Bootstrap.php">
+    <testsuites>
+        <testsuite name="graphql">
+            <directory>./test</directory>
+        </testsuite>
+    </testsuites>
+    <filter>
+        <whitelist>
+            <directory suffix=".php">./module</directory>
+            <directory suffix=".php">./config</directory>
+            <exclude>
+                <directory>./vendor</directory>
+                <directory>./module/Db/src/Db/Migrations</directory>
+                <file>./config/application.config.php</file>
+                <file>./config/development.config.php</file>
+                <file>./config/autoload/global-development.php</file>
+            </exclude>
+        </whitelist>
+    </filter>
+    <php>
+        <ini name="memory_limit" value="-1" />
+    </php>
+</phpunit>

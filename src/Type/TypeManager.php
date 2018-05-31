@@ -5,14 +5,14 @@ namespace ZF\Doctrine\GraphQL\Type;
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
 use ZF\Apigility\Doctrine\Server\Query\Provider\QueryProviderInterface;
-use GraphQL\Type\Definition\ObjectType;
+use GraphQL\Type\Definition\Type;
 
 class TypeManager extends AbstractPluginManager
 {
     /**
      * @var string
      */
-    protected $instanceOf = ObjectType::class;
+    protected $instanceOf = Type::class;
 
     /**
      * Validate the plugin is of the expected type (v3).
@@ -24,8 +24,6 @@ class TypeManager extends AbstractPluginManager
      */
     public function validate($instance)
     {
-        return;
-
         if (! $instance instanceof $this->instanceOf) {
             throw new Exception\InvalidServiceException(sprintf(
                 '%s can only create instances of %s; %s is invalid',

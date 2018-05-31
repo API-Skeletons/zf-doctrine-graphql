@@ -7,6 +7,7 @@ use DateTime;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
@@ -69,8 +70,11 @@ final class EntityTypeAbstractFactory implements
         }
 
         $objectManager = $container->get($objectManagerAlias);
-        $entity = new $requestedName(); // FIXME to not create directly
         $hydrator = $hydratorManager->get($hydratorAlias);
+
+        // Create an instance of the entity in order to get fields from the hydrator.
+        $instantiator = new Instantiator();
+        $entity = $instantiator->instantiate($requestedName);
         $entityFields = array_keys($hydrator->extract($entity));
         $references = [];
 
@@ -88,7 +92,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::ONE_TO_ONE:
                         case ClassMetadataInfo::MANY_TO_ONE:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
                                 return [
                                     'type' => $typeManager->get($targetEntity),
                                 ];
@@ -97,7 +101,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
                                 return [
                                     'type' => Type::listOf($typeManager->get($targetEntity)),
                                 ];
@@ -162,7 +166,7 @@ final class EntityTypeAbstractFactory implements
         return new EntityType([
             'name' => $name,
             'description' => 'testing description',
-            'fields' => function() use ($fields, $references) {
+            'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();
                 }

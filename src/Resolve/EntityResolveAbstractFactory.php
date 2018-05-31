@@ -68,7 +68,7 @@ final class EntityResolveAbstractFactory implements
 
         $objectManager = $container->get($objectManagerAlias);
 
-        return function($obj, $args, $context) use ($objectManager, $requestedName) {
+        return function ($obj, $args, $context) use ($objectManager, $requestedName) {
 
             $id = $args['id'] ?? 0;
 

@@ -9,7 +9,10 @@
             "email": "tom.h.anderson@gmail.com"
         }
     ],
-    "require": {},
+    "require": {
+        "ecodev/graphql-doctrine": "^3.0",
+        "doctrine/instantiator": "^1.1"
+    },
     "autoload": {
         "psr-4": {
             "ZF\\Doctrine\\GraphQL\\": "src/"
@@ -19,5 +22,23 @@
         "zf": {
             "module": "ZF\\Doctrine\\GraphQL"
         }
+    },
+    "require-dev": {
+        "dprevite/lint": "dev-master",
+        "api-skeletons/coding-standard": "^1.0",
+        "phpunit/phpunit": "^7.1"
+    },
+    "scripts": {
+        "ci-check": [
+            "@lint",
+            "@phpcs",
+            "@test",
+            "@phpstan"
+        ],
+        "lint": "lint src/",
+        "phpcs": "phpcs",
+        "phpstan": "phpstan analyze -c phpstan.neon --level=7 src/",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml"
     }
 }

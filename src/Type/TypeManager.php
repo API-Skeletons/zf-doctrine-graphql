@@ -24,6 +24,8 @@ class TypeManager extends AbstractPluginManager
      */
     public function validate($instance)
     {
+        return;
+
         if (! $instance instanceof $this->instanceOf) {
             throw new Exception\InvalidServiceException(sprintf(
                 '%s can only create instances of %s; %s is invalid',

@@ -135,8 +135,8 @@ final class EntityTypeAbstractFactory implements
                     $graphQLType = Type::string();
                     break;
                 case 'datetime':
-#                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
-#                    break;
+                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
+                    break;
                 default:
                     // Do not process unknown for now
                     $graphQLType = null;

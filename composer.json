@@ -15,4 +15,9 @@
             "ZF\\Doctrine\\GraphQL\\": "src/"
         }
     },
+    "extra": {
+        "zf": {
+            "module": "ZF\\Doctrine\\GraphQL"
+        }
+    }
 }

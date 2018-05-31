@@ -34,7 +34,7 @@ final class EntityResolveAbstractFactory implements
     {
         $config = $container->get('config');
 
-        foreach ($config['graphql-doctrine-entity-manager'] as $ormAlias) {
+        foreach ($config['zf-doctrine-graphql-entity-manager'] as $ormAlias) {
             try {
                 $objectManager = $container->get($ormAlias);
                 $objectManager->getClassMetadata($requestedName);

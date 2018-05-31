@@ -6,6 +6,7 @@ use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\ModuleManager;
 use GraphQL\Type\Definition\ObjectType;
+use GraphQL\GraphQL;
 
 class Module implements
     BootstrapListenerInterface
@@ -21,17 +22,17 @@ class Module implements
         $serviceListener = $sm->get('ServiceListener');
 
         $serviceListener->addServiceManager(
-            Doctrine\Type\TypeManager::class,
-            'graphql-doctrine-type',
+            Type\TypeManager::class,
+            'zf-doctrine-graphql-type',
             ObjectType::class,
-            'getGraphQLDoctrineTypeConfig'
+            'getZFDoctrineGraphQLTypeConfig'
         );
 
         $serviceListener->addServiceManager(
-            Doctrine\Resolve\ResolveManager::class,
-            'graphql-doctrine-resolve',
+            Resolve\ResolveManager::class,
+            'zf-doctrine-graphql-resolve',
             'function',
-            'getGraphQLDoctrineTypeConfig'
+            'getZFDoctrineGraphQLResolveConfig'
         );
     }
 

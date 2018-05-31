@@ -11,7 +11,12 @@
     ],
     "require": {
         "ecodev/graphql-doctrine": "^3.0",
-        "doctrine/instantiator": "^1.1"
+        "doctrine/instantiator": "^1.1",
+        "doctrine/doctrine-module": "^2.1",
+        "zendframework/zend-servicemanager": "^3.3",
+        "zendframework/zend-hydrator": "^2.4",
+        "zendframework/zend-modulemanager": "^2.8",
+        "doctrine/common": "^2.8"
     },
     "autoload": {
         "psr-4": {

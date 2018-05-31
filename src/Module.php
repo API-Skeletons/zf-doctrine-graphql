@@ -3,13 +3,15 @@
 namespace ZF\Doctrine\GraphQL;
 
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
+use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\ModuleManager;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\GraphQL;
 
 class Module implements
-    BootstrapListenerInterface
+    BootstrapListenerInterface,
+    ConfigProviderInterface
 {
     public function getConfig()
     {

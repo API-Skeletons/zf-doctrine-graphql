@@ -15,6 +15,12 @@ return [
         ],
     ],
 
+    'hydrators' => array(
+        'abstract_factories' => array(
+            Hydrator\DoctrineHydratorFactory::class,
+        ),
+    ),
+
     'zf-doctrine-graphql-type' => [
         'invokables' => [
             DateTime::class => Type\DateTimeType::class,

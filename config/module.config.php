@@ -36,8 +36,27 @@ return [
         ],
     ],
 
-    'zf-doctrine-graphql-entity-manager' => [
-        'doctrine.entitymanager.orm_default',
-        'doctrine.entitymanager.orm_zf_doctrine_audit',
+    'controllers' => [
+        'factories' => [
+            Console\HydratorConfigurationSkeletonController::class
+                => Console\HydratorConfigurationSkeletonControllerFactory::class,
+        ],
+    ],
+
+    'console' => [
+        'router' => [
+            'routes' => [
+                'graphql-hydrator-skeleton' => [
+                    'type' => 'simple',
+                    'options' => [
+                        'route'    => 'graphql:hydrator:config-skeleton [--object-manager=]',
+                        'defaults' => [
+                            'controller' => Console\HydratorConfigurationSkeletonController::class,
+                            'action' => 'index'
+                        ],
+                    ],
+                ],
+            ],
+        ],
     ],
 ];

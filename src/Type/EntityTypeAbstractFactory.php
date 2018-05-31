@@ -34,19 +34,9 @@ final class EntityTypeAbstractFactory implements
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        foreach ($config['zf-doctrine-graphql-entity-manager'] as $ormAlias) {
-            try {
-                $objectManager = $container->get($ormAlias);
-                $objectManager->getClassMetadata($requestedName);
-
-                return true;
-            } catch (MappingException $e) {
-                continue;
-            }
-        }
-
-        return false;
+        return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType

@@ -2,18 +2,11 @@
 
 namespace ZF\Doctrine\GraphQL\Resolve;
 
-use ArrayObject;
 use Closure;
-use DateTime;
+use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\ORM\Mapping\MappingException;
-use GraphQL\Type\Definition\ObjectType;
-use GraphQL\Type\Definition\Type;
-use GraphQL\Doctrine\Utils;
-use ZF\Doctrine\GraphQL\Type\TypeManager;
 
 final class EntityResolveAbstractFactory implements
     AbstractFactoryInterface
@@ -35,38 +28,22 @@ final class EntityResolveAbstractFactory implements
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        foreach ($config['zf-doctrine-graphql-entity-manager'] as $ormAlias) {
-            try {
-                $objectManager = $container->get($ormAlias);
-                $objectManager->getClassMetadata($requestedName);
-
-                return true;
-            } catch (MappingException $e) {
-                continue;
-            }
-        }
-
-        return false;
+        return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
     {
         $config = $container->get('config');
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] ?? null;
 
-        foreach ($config['zf-rest'] as $controllerName => $restConfig) {
-            if ($restConfig['entity_class'] == $requestedName) {
-                $listener = $restConfig['listener'];
-                $objectManagerAlias = $config['zf-apigility']['doctrine-connected'][$listener]['object_manager'];
-                break;
-            }
+        if (! $hydratorConfig) {
+            throw new Exception("Hydrator configuration not found for entity ${requestedName}");
         }
 
-        if (! $objectManagerAlias) {
-            throw new Exception("Rest config not found for entity ${requestedName}");
-        }
-
-        $objectManager = $container->get($objectManagerAlias);
+        $objectManager = $container->get($hydratorConfig['object_manager']);
 
         return function ($obj, $args, $context) use ($objectManager, $requestedName) {
 

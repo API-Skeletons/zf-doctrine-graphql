@@ -16,7 +16,9 @@
         "zendframework/zend-servicemanager": "^3.3",
         "zendframework/zend-hydrator": "^2.4",
         "zendframework/zend-modulemanager": "^2.8",
-        "doctrine/common": "^2.8"
+        "doctrine/common": "^2.8",
+        "zendframework/zend-mvc-console": "^1.2",
+        "zendframework/zend-config": "^3.2"
     },
     "autoload": {
         "psr-4": {

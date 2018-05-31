@@ -36,8 +36,26 @@ Once installed, add `ZF\Doctrine\GraphQL` to your list of modules inside
 Configuration
 -------------
 
-You will need to create hydrators for every entity you wish to serve data for.
-You will need to list the alises for each object manager you wish to serve data for.
+Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
+A tool is included to create a skeleton hydrator configuration for you.
+
+```sh
+php public/index.php graphql:hydrator:config-skeleton [--object-manager=]
+```
+
+The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
+For each object manager you want to serve data with in your application create a configuration using this
+tool.  The tool outputs a configuration file.  Write the file to your project root location then move
+it to your `config/autoload` directory.
+
+```sh
+php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-hydrator-default.global.php
+mv zf-doctrine-graphql-hydrator-default.global.php config/autoload
+```
+
+(Writing directly into the `config/autoload` directory is not possible at run time.)
+
+Modify each configuration with your hydrator strategies and hydrator filters as needed.
 
 
 Use

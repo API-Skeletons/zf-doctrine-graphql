@@ -20,10 +20,10 @@ use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\Exception\ServiceNotCreatedException;
 use Zend\ServiceManager\Exception\ServiceNotFoundException;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Persistence\ObjectManagerAwareInterface;
-use DoctrineModule\Stdlib\Hydrator;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 
 /**
  * Class DoctrineHydratorFactory.
@@ -55,16 +55,16 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return $this->lookupCache[$requestedName];
         }
 
-        if (!$container->has('config')) {
+        if (! $container->has('config')) {
             return false;
         }
 
         // Validate object is set
         $config = $container->get('config');
         $namespace = self::FACTORY_NAMESPACE;
-        if (!isset($config[$namespace])
-            || !is_array($config[$namespace])
-            || !isset($config[$namespace][$requestedName])
+        if (! isset($config[$namespace])
+            || ! is_array($config[$namespace])
+            || ! isset($config[$namespace][$requestedName])
         ) {
             $this->lookupCache[$requestedName] = false;
 
@@ -73,7 +73,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
 
         // Validate object manager
         $config = $config[$namespace];
-        if (!isset($config[$requestedName]) || !isset($config[$requestedName]['object_manager'])) {
+        if (! isset($config[$requestedName]) || ! isset($config[$requestedName]['object_manager'])) {
             throw new ServiceNotFoundException(sprintf(
                 '%s requires that a valid "object_manager" is specified for hydrator %s; no service found',
                 __METHOD__,
@@ -82,7 +82,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         }
 
         // Validate object class
-        if (!isset($config[$requestedName]['entity_class'])) {
+        if (! isset($config[$requestedName]['entity_class'])) {
             throw new ServiceNotFoundException(sprintf(
                 '%s requires that a valid "entity_class" is specified for hydrator %s; no service found',
                 __METHOD__,
@@ -135,11 +135,11 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         $useEntityHydrator = (array_key_exists('use_generated_hydrator', $config) && $config['use_generated_hydrator']);
         $useCustomHydrator = (array_key_exists('hydrator', $config));
 
-        if ($useEntityHydrator) {
+        if ($useEntityHydrator && $config['use_generated_hydrator']) {
             $hydrateService = $this->loadEntityHydrator($container, $config, $objectManager);
         }
 
-        if ($useCustomHydrator) {
+        if ($useCustomHydrator && $config['hydrator']) {
             $extractService = $container->get($config['hydrator']);
             $hydrateService = $extractService;
         }

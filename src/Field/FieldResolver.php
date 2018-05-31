@@ -39,16 +39,10 @@ class FieldResolver
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        foreach ($this->config['zf-rest'] as $controllerName => $restConfig) {
-            if ($restConfig['entity_class'] == $entityClassName) {
-                $listener = $restConfig['listener'];
-                $hydratorAlias = $this->config['zf-apigility']['doctrine-connected'][$listener]['hydrator'];
-                break;
-            }
-        }
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
 
-        if (! isset($hydratorAlias)) {
-            throw new FieldResolverException('Hydrator alias not found for class ' . $entityClassName);
+        if (! $this->hydratorManager->has($hydratorAlias)) {
+            throw new FieldResolverException('Hydrator not found for class ' . $entityClassName);
         }
 
         $hydrator = $this->hydratorManager->get($hydratorAlias);

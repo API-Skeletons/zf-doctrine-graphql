@@ -18,7 +18,8 @@
         "zendframework/zend-modulemanager": "^2.8",
         "doctrine/common": "^2.8",
         "zendframework/zend-mvc-console": "^1.2",
-        "zendframework/zend-config": "^3.2"
+        "zendframework/zend-config": "^3.2",
+        "phpmyadmin/sql-parser": "^4.2"
     },
     "autoload": {
         "psr-4": {

@@ -8,10 +8,12 @@ return [
     'service_manager' => [
         'factories' => [
             Field\FieldResolver::class => Field\FieldResolverFactory::class,
-            Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
-            Resolve\Loader::class => Resolve\LoaderFactory::class,
             Type\Loader::class => Type\LoaderFactory::class,
             Type\TypeManager::class => Type\TypeManagerFactory::class,
+            Filter\Loader::class => Filter\LoaderFactory::class,
+            Filter\FilterManager::class => Filter\FilterManagerFactory::class,
+            Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
+            Resolve\Loader::class => Resolve\LoaderFactory::class,
         ],
     ],
 
@@ -27,6 +29,12 @@ return [
         ],
         'abstract_factories' => [
             Type\EntityTypeAbstractFactory::class,
+        ],
+    ],
+
+    'zf-doctrine-graphql-filter' => [
+        'abstract_factories' => [
+            Filter\FilterTypeAbstractFactory::class,
         ],
     ],
 

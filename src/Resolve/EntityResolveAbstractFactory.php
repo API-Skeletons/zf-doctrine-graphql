@@ -7,6 +7,9 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use PhpMyAdmin\SqlParser\Parser;
+use PhpMyAdmin\SqlParser\Lexer;
+use PhpMyAdmin\SqlParser\Token;
 
 final class EntityResolveAbstractFactory implements
     AbstractFactoryInterface
@@ -47,14 +50,32 @@ final class EntityResolveAbstractFactory implements
 
         return function ($obj, $args, $context) use ($objectManager, $requestedName) {
 
-            $id = $args['id'] ?? 0;
-
-            $find = $objectManager
-                ->getRepository($requestedName)
-                ->find($id)
+            $queryBuilder = $objectManager->createQueryBuilder();
+            $queryBuilder
+                ->select('row')
+                ->from($requestedName, 'row')
                 ;
+            $filter = $args['filter'] ?? [];
 
-            return $find;
+            foreach ($filter as $field => $value) {
+                switch ($field) {
+                    case '_neq':
+                        die('neq hit');
+                    default:
+                        $valueParameter = md5(rand());
+                        $queryBuilder->andWhere($queryBuilder->expr()->eq('row.' . $field, ":$valueParameter"));
+                        $queryBuilder->setParameter($valueParameter, $value);
+
+                        break;
+                }
+            }
+
+            $id = $args['id'] ?? 0;
+            if ($id) {
+                $queryBuilder->andWhere($queryBuilder->expr()->eq('row.id', $id)); // FIXME:  Account for non-id primary keys
+            }
+
+            return $queryBuilder->getQuery()->getResult();
         };
     }
 }

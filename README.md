@@ -203,3 +203,27 @@ Other values for `alias` are not supported at this time.
 
 
 todo:  Add `orx` and `andx` support and inner and left joins.
+
+
+Debugging Filters
+-----------------
+
+With so many filter options, 12 x #ofFields, it can get confusing what your query looks like
+so there is a `_debug` filter field which will output only the DQL version of your query.
+```js
+filter: { _debug:{} name:"Grateful Dead" }
+```
+will output similar to
+```sql
+SELECT row FROM Db\Entity\Artist row WHERE row.name = :a5b1619627f9c1
+```
+
+The `_debug` filter field defaults to `true` but you can turn it off and on quickly during development
+by setting the value directly.  This query includes the filter field but disables it:
+```
+filter: { _debug:{ value: false } name:"Grateful Dead" }
+```
+Swap false to true to enable the filter field.
+```
+filter: { _debug:{ value: true } name:"Grateful Dead" }
+```

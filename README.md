@@ -75,11 +75,13 @@ use Db\Entity;
 class GraphQLController extends AbstractActionController
 {
     private $typeLoader;
+    private $filterLoader;
     private $resolveLoader;
 
-    public function __construct(TypeLoader $typeLoader, ResolveLoader $resolveLoader)
+    public function __construct(TypeLoader $typeLoader, FilterLoader $filterLoader, ResolveLoader $resolveLoader)
     {
         $this->typeLoader = $typeLoader;
+        $this->filterLoader = $filterLoader;
         $this->resolveLoader = $resolveLoader;
     }
 
@@ -95,9 +97,10 @@ class GraphQLController extends AbstractActionController
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => $typeLoader(Entity\Artist::class),
+                        'type' => Type::listOf($typeLoader(Entity\Artist::class)),
                         'args' => [
                             'id' => Type::id(),
+                            'filter' => $filterLoader(Entity\Artist::class),
                         ],
                         'resolve' => $resolveLoader(Entity\Artist::class),
                     ],
@@ -125,3 +128,78 @@ class GraphQLController extends AbstractActionController
     }
 }
 ```
+
+Filters
+-------
+
+For each field which is not a reference to another entity a colletion of filters exist.
+Given an entity which contains a `name` field you may directly filter the name using
+```js
+filter: { name: "Grateful Dead" }
+```
+
+You may also use any of the following:
+```
+name_eq        -  Equals; same as name: value
+name_neq       -  Not Equals
+name_gt        -  Greater Than
+name_lt        -  Less Than
+name_gte       -  Greater Than or Equal To
+name_lte       -  Less Than or Equal To
+name_isnull    -  Return results where the name field is null
+name_isnotnull -  Return results where the name field is not null
+name_in        -  Filter for values in an array
+name_notin     -  Filter for values not in an array
+name_between   -  Fiilter between `from` and `to` values
+name_like      -  Use a fuzzy search
+```
+
+Every field which can be returned from an Entity has all of the above filters as field_filter.
+You may only use each field's filter once per filter action.
+
+
+eq, neq, gt, lt, gte, lte
+-------------------------
+These filters all require a single argument, `value` such as
+```js
+filter: { name_neq: { value: "Dave Matthews Band" } }
+```
+
+isnull, isnotnull
+-----------------
+These filters require no arguments and are expressed as
+```js
+filter: { name_isnull: {} }
+```
+
+in, notin
+---------
+These filters take an array of arguments
+```
+filter: { name_in: { value: ["Phish", "Legion of Mary"] } }
+```
+
+between
+-------
+This filter takes two parameters and is very useful for date ranges and number queries.
+```
+filter: { year_between: { from: 1966 to: 1995 } }
+```
+
+like
+----
+This filter is for strings only and allows fuzzy searching using a `%` wildcard (sql injection safe)
+```
+filter: { name_like: { value: "%Dead" } }
+```
+
+
+Optional arguments for every filter
+-----------------------------------
+
+`where` - This value defaults to 'and' and may be changed to 'or'.
+`alias` - The parent alias.  Defaults to `row` which is the alias for the root entity being queried.
+Other values for `alias` are not supported at this time.
+
+
+todo:  Add `orx` and `andx` support and inner and left joins.

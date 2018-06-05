@@ -134,15 +134,10 @@ final class FilterTypeAbstractFactory implements
                 $graphQLType = Type::id();
             }
 
-            if ($graphQLType && ! $classMetadata->isNullable($fieldMetadata['fieldName'])) {
-#                $graphQLType = Type::nonNull($graphQLType);
-            }
-
             if ($graphQLType) {
                 $fields[$fieldName] = [
                     'name' => $fieldName,
                     'type' => $graphQLType,
-#                    'defaultValue' => Config::ANY,
                     'description' => 'building...',
                 ];
 

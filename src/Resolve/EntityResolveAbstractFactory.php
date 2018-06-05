@@ -7,9 +7,7 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use PhpMyAdmin\SqlParser\Parser;
-use PhpMyAdmin\SqlParser\Lexer;
-use PhpMyAdmin\SqlParser\Token;
+use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 
 final class EntityResolveAbstractFactory implements
     AbstractFactoryInterface
@@ -41,6 +39,7 @@ final class EntityResolveAbstractFactory implements
         $config = $container->get('config');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] ?? null;
+        $filterManager = $container->get(ORMFilterManager::class);
 
         if (! $hydratorConfig) {
             throw new Exception("Hydrator configuration not found for entity ${requestedName}");
@@ -48,7 +47,7 @@ final class EntityResolveAbstractFactory implements
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
-        return function ($obj, $args, $context) use ($objectManager, $requestedName) {
+        return function ($obj, $args, $context) use ($objectManager, $requestedName, $filterManager) {
 
             $queryBuilder = $objectManager->createQueryBuilder();
             $queryBuilder
@@ -57,22 +56,42 @@ final class EntityResolveAbstractFactory implements
                 ;
             $filter = $args['filter'] ?? [];
 
+            $filterArray = [];
+            $debugQuery = false;
             foreach ($filter as $field => $value) {
-                switch ($field) {
-                    case '_neq':
-                        die('neq hit');
-                    default:
-                        $valueParameter = md5(rand());
-                        $queryBuilder->andWhere($queryBuilder->expr()->eq('row.' . $field, ":$valueParameter"));
-                        $queryBuilder->setParameter($valueParameter, $value);
+                if ($field == '_debug') {
+                    $debugQuery = $value['value'];
+                    continue;
+                }
 
-                        break;
+                if (strstr($field, '_')) {
+                    $field = strtok($field, '_');
+                    $filter = strtok('_');
+
+                    $value['type'] = $filter;
+                    $value['field'] = $field;
+                    $filterArray[] = $value;
+                } else {
+                    $filterArray[] = [
+                        'type' => 'eq',
+                        'field' => $field,
+                        'value' => $value,
+                    ];
                 }
             }
 
-            $id = $args['id'] ?? 0;
-            if ($id) {
-                $queryBuilder->andWhere($queryBuilder->expr()->eq('row.id', $id)); // FIXME:  Account for non-id primary keys
+            // Process fitlers through filter manager
+            if ($filterArray) {
+                $metadata = $objectManager->getClassMetadata($requestedName);
+                $filterManager->filter(
+                    $queryBuilder,
+                    $metadata,
+                    $filterArray
+                );
+            }
+
+            if ($debugQuery) {
+                print_r($queryBuilder->getQuery()->getDql());die();
             }
 
             return $queryBuilder->getQuery()->getResult();

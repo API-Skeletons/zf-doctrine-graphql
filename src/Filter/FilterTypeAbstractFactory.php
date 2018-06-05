@@ -15,7 +15,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Doctrine\Utils;
 
 use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Filter\Type\NeqFilterType;
+use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -131,7 +131,7 @@ final class FilterTypeAbstractFactory implements
             }
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
-#                $graphQLType = Type::id();
+                $graphQLType = Type::id();
             }
 
             if ($graphQLType && ! $classMetadata->isNullable($fieldMetadata['fieldName'])) {
@@ -145,28 +145,122 @@ final class FilterTypeAbstractFactory implements
 #                    'defaultValue' => Config::ANY,
                     'description' => 'building...',
                 ];
+
+                // Add filters
+                $fields[$fieldName . '_eq'] = [
+                    'name' => $fieldName . '_eq',
+                    'type' => new FilterTypeNS\EqFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType)
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_neq'] = [
+                    'name' => $fieldName . '_neq',
+                    'type' => new FilterTypeNS\NeqFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_lt'] = [
+                    'name' => $fieldName . '_lt',
+                    'type' => new FilterTypeNS\LtFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_lte'] = [
+                    'name' => $fieldName . '_lte',
+                    'type' => new FilterTypeNS\LteFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_gt'] = [
+                    'name' => $fieldName . '_gt',
+                    'type' => new FilterTypeNS\GtFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_gte'] = [
+                    'name' => $fieldName . '_gte',
+                    'type' => new FilterTypeNS\GteFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_isnull'] = [
+                    'name' => $fieldName . '_isnull',
+                    'type' => new FilterTypeNS\IsNullFilterType(),
+                ];
+                $fields[$fieldName . '_isnotnull'] = [
+                    'name' => $fieldName . '_isnotnull',
+                    'type' => new FilterTypeNS\IsNotNullFilterType(),
+                ];
+                $fields[$fieldName . '_in'] = [
+                    'name' => $fieldName . '_in',
+                    'type' => new FilterTypeNS\InFilterType(['fields' => [
+                        'values' => [
+                            'name' => 'values',
+                            'type' => Type::listOf(Type::nonNull($graphQLType)),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_notin'] = [
+                    'name' => $fieldName . '_notin',
+                    'type' => new FilterTypeNS\NotInFilterType(['fields' => [
+                        'values' => [
+                            'name' => 'values',
+                            'type' => Type::listOf(Type::nonNull($graphQLType)),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_between'] = [
+                    'name' => $fieldName . '_between',
+                    'type' => new FilterTypeNS\BetweenFilterType(['fields' => [
+                        'from' => [
+                            'name' => 'from',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                        'to' => [
+                            'name' => 'to',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_like'] = [
+                    'name' => $fieldName . '_like',
+                    'type' => new FilterTypeNS\LikeFilterType(),
+                ];
             }
         }
-/*
-        $fields['_neq'] = [
-            'name' => '_neq',
-            'type' => new NeqFilterType([
-                'name' => 'neq',
-            ]),
+
+        $fields['_debug'] = [
+            'name' => '_debug',
+            'type' => new FilterTypeNS\DebugQueryFilterType(),
         ];
-*/
+
         return new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . 'Filter',
-            'fields' => $fields,
-            /*
-            function () use ($fields, $references) {
+            'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();
                 }
 
                 return $fields;
             },
-            */
         ]);
     }
 }

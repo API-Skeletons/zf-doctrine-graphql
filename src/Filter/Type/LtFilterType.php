@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class NeqFilterType extends AbstractFilterType
+class LtFilterType extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {

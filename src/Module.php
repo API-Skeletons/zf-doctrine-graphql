@@ -8,7 +8,7 @@ use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\EventManager\EventInterface;
-use Zend\ModuleManager\ModuleManager;
+use Zend\ModuleManager\ModuleManagerInterface;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\GraphQL;
 
@@ -30,9 +30,9 @@ class Module implements
         ];
     }
 
-    public function init(ModuleManager $moduleManager)
+    public function init(ModuleManagerInterface $manager)
     {
-        $sm = $moduleManager->getEvent()->getParam('ServiceManager');
+        $sm = $manager->getEvent()->getParam('ServiceManager');
         $serviceListener = $sm->get('ServiceListener');
 
         $serviceListener->addServiceManager(
@@ -47,6 +47,13 @@ class Module implements
             'zf-doctrine-graphql-filter',
             InputObjectType::class,
             'getZFDoctrineGraphQLFilterConfig'
+        );
+
+        $serviceListener->addServiceManager(
+            Filter\Criteria\FilterManager::class,
+            'zf-doctrine-graphql-filter-criteria',
+            InputObjectType::class,
+            'getZFDoctrineGraphQLFilterCriteriaConfig'
         );
 
         $serviceListener->addServiceManager(

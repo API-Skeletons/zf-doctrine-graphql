@@ -7,12 +7,19 @@ use DateTime;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
+use GraphQL\Type\Definition\ResolveInfo;
 use GraphQL\Doctrine\Utils;
+use ZF\Doctrine\GraphQL\Filter\Criteria\FilterManager;
+use ZF\Doctrine\GraphQL\Field\FieldResolver;
+
+use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
+use Doctrine\Common\Util\ClassUtils;
 
 final class EntityTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -44,6 +51,9 @@ final class EntityTypeAbstractFactory implements
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
+        $fieldResolver = $container->get(FieldResolver::class);
+        $criteriaFilterManager = $container->get(FilterManager::class);
+        $criteriaBuilder = $container->get(CriteriaBuilder::class);
 
         foreach ($config['zf-rest'] as $controllerName => $restConfig) {
             if ($restConfig['entity_class'] == $requestedName) {
@@ -82,18 +92,62 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::ONE_TO_ONE:
                         case ClassMetadataInfo::MANY_TO_ONE:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function() use ($typeManager, $criteriaFilterManager, $targetEntity) {
                                 return [
                                     'type' => $typeManager->get($targetEntity),
+                                    'args' => [
+                                        'filter' => $criteriaFilterManager->get($targetEntity),
+                                    ],
+                                    'resolve' => function() {
+                                        die('resolve field many_to in entitytypeabstractfactory');
+                                    },
                                 ];
                             };
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function() use ($typeManager, $criteriaFilterManager, $fieldResolver, $targetEntity, $objectManager, $criteriaBuilder) {
                                 return [
                                     'type' => Type::listOf($typeManager->get($targetEntity)),
+                                    'args' => [
+                                        'filter' => $criteriaFilterManager->get($targetEntity),
+                                    ],
+                                    'resolve' => function($source, $args, $context, ResolveInfo $resolveInfo) use ($fieldResolver, $objectManager, $criteriaBuilder) {
+                                        $collection = $fieldResolver($source, $args, $context, $resolveInfo);
+
+                                        if (! $collection->count()) {
+                                            return null;
+                                        }
+
+                                        $filter = $args['filter'] ?? [];
+
+                                        $filterArray = [];
+                                        foreach ($filter as $field => $value) {
+                                            if (strstr($field, '_')) {
+                                                $field = strtok($field, '_');
+                                                $filter = strtok('_');
+
+                                                $value['type'] = $filter;
+                                                $value['field'] = $field;
+                                                $filterArray[] = $value;
+                                            } else {
+                                                $filterArray[] = [
+                                                    'type' => 'eq',
+                                                    'field' => $field,
+                                                    'value' => $value,
+                                                    'where' => 'and',
+                                                ];
+                                            }
+                                        }
+
+                                        $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
+                                        $metadata = $objectManager->getClassMetadata($entityClassName);
+
+                                        $criteria = $criteriaBuilder->create($metadata, $filterArray, []);
+
+                                        return $collection->matching($criteria);
+                                    },
                                 ];
                             };
                             break;

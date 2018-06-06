@@ -80,6 +80,7 @@ final class EntityResolveAbstractFactory implements
                 }
             }
 
+
             // Process fitlers through filter manager
             if ($filterArray) {
                 $metadata = $objectManager->getClassMetadata($requestedName);
@@ -91,7 +92,9 @@ final class EntityResolveAbstractFactory implements
             }
 
             if ($debugQuery) {
-                print_r($queryBuilder->getQuery()->getDql());die();
+                print_r($queryBuilder->getQuery()->getDql());
+                print_r($queryBuilder->getQuery()->getParameters());
+                die();
             }
 
             return $queryBuilder->getQuery()->getResult();

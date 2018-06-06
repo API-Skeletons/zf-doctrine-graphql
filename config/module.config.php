@@ -14,6 +14,9 @@ return [
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
             Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
             Resolve\Loader::class => Resolve\LoaderFactory::class,
+
+            Filter\Criteria\Loader::class => Filter\Criteria\LoaderFactory::class,
+            Filter\Criteria\FilterManager::class => Filter\Criteria\FilterManagerFactory::class,
         ],
     ],
 
@@ -35,6 +38,12 @@ return [
     'zf-doctrine-graphql-filter' => [
         'abstract_factories' => [
             Filter\FilterTypeAbstractFactory::class,
+        ],
+    ],
+
+    'zf-doctrine-graphql-filter-criteria' => [
+        'abstract_factories' => [
+            Filter\Criteria\FilterTypeAbstractFactory::class,
         ],
     ],
 

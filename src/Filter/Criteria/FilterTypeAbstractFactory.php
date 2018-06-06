@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter;
+namespace ZF\Doctrine\GraphQL\Filter\Criteria;
 
 use ArrayObject;
 use DateTime;
@@ -12,10 +12,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Doctrine\Utils;
 
 use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
+use ZF\Doctrine\GraphQL\Filter\Criteria\Type as FilterTypeNS;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -122,8 +121,7 @@ final class FilterTypeAbstractFactory implements
                     $graphQLType = Type::string();
                     break;
                 case 'datetime':
-#                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
-                    $graphQLType = Type::string();
+                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
                     break;
                 default:
                     // Do not process unknown for now
@@ -152,6 +150,7 @@ final class FilterTypeAbstractFactory implements
                         ],
                     ]]),
                 ];
+                /******
                 $fields[$fieldName . '_neq'] = [
                     'name' => $fieldName . '_neq',
                     'type' => new FilterTypeNS\NeqFilterType(['fields' => [
@@ -240,16 +239,17 @@ final class FilterTypeAbstractFactory implements
                     'name' => $fieldName . '_like',
                     'type' => new FilterTypeNS\LikeFilterType(),
                 ];
+                *****/
             }
         }
 
-        $fields['_debug'] = [
-            'name' => '_debug',
-            'type' => new FilterTypeNS\DebugQueryFilterType(),
-        ];
+#        $fields['_debug'] = [
+#            'name' => '_debug',
+#            'type' => new FilterTypeNS\DebugQueryFilterType(),
+#        ];
 
         return new FilterType([
-            'name' => str_replace('\\', '_', $requestedName) . 'Filter',
+            'name' => str_replace('\\', '_', $requestedName) . 'CriteriaFilter',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter\Type;
+namespace ZF\Doctrine\GraphQL\Filter\Criteria\Type;
 
 use GraphQL\Type\Definition\Type;
 
@@ -18,15 +18,10 @@ class EqFilterType extends AbstractFilterType
                 'type' => Type::string(),
                 'defaultValue' => 'and',
             ],
-            'alias' => [
-                'name' => 'alias',
-                'type' => Type::string(),
-                'defaultValue' => 'row',
-            ],
             'format' => [
                 'name' => 'format',
                 'type' => Type::string(),
-                'defaultValue' => 'Y-m-d\TH:i:sP',
+                'defaultValue' => 'c',
             ],
         ];
 

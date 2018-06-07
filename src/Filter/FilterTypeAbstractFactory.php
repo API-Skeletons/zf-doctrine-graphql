@@ -16,6 +16,7 @@ use GraphQL\Doctrine\Utils;
 
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
+use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -50,9 +51,10 @@ final class FilterTypeAbstractFactory implements
 
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+        $hydrator = $hydratorManager->get($hydratorAlias);
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
-        $hydrator = $hydratorManager->get($hydratorAlias);
+        $filterManager = $container->get(ORMFilterManager::class);
 
         // Create an instance of the entity in order to get fields from the hydrator.
         $instantiator = new Instantiator();
@@ -135,110 +137,146 @@ final class FilterTypeAbstractFactory implements
             }
 
             if ($graphQLType) {
-                $fields[$fieldName] = [
-                    'name' => $fieldName,
-                    'type' => $graphQLType,
-                    'description' => 'building...',
-                ];
+                if ($filterManager->has('eq')) {
+                    $fields[$fieldName] = [
+                        'name' => $fieldName,
+                        'type' => $graphQLType,
+                        'description' => 'building...',
+                    ];
 
-                // Add filters
-                $fields[$fieldName . '_eq'] = [
-                    'name' => $fieldName . '_eq',
-                    'type' => new FilterTypeNS\EqFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType)
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_neq'] = [
-                    'name' => $fieldName . '_neq',
-                    'type' => new FilterTypeNS\NeqFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_lt'] = [
-                    'name' => $fieldName . '_lt',
-                    'type' => new FilterTypeNS\LtFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_lte'] = [
-                    'name' => $fieldName . '_lte',
-                    'type' => new FilterTypeNS\LteFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_gt'] = [
-                    'name' => $fieldName . '_gt',
-                    'type' => new FilterTypeNS\GtFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_gte'] = [
-                    'name' => $fieldName . '_gte',
-                    'type' => new FilterTypeNS\GteFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_isnull'] = [
-                    'name' => $fieldName . '_isnull',
-                    'type' => new FilterTypeNS\IsNullFilterType(),
-                ];
-                $fields[$fieldName . '_isnotnull'] = [
-                    'name' => $fieldName . '_isnotnull',
-                    'type' => new FilterTypeNS\IsNotNullFilterType(),
-                ];
-                $fields[$fieldName . '_in'] = [
-                    'name' => $fieldName . '_in',
-                    'type' => new FilterTypeNS\InFilterType(['fields' => [
-                        'values' => [
-                            'name' => 'values',
-                            'type' => Type::listOf(Type::nonNull($graphQLType)),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_notin'] = [
-                    'name' => $fieldName . '_notin',
-                    'type' => new FilterTypeNS\NotInFilterType(['fields' => [
-                        'values' => [
-                            'name' => 'values',
-                            'type' => Type::listOf(Type::nonNull($graphQLType)),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_between'] = [
-                    'name' => $fieldName . '_between',
-                    'type' => new FilterTypeNS\BetweenFilterType(['fields' => [
-                        'from' => [
-                            'name' => 'from',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                        'to' => [
-                            'name' => 'to',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                $fields[$fieldName . '_like'] = [
-                    'name' => $fieldName . '_like',
-                    'type' => new FilterTypeNS\LikeFilterType(),
-                ];
+                    // Add filters
+                    $fields[$fieldName . '_eq'] = [
+                        'name' => $fieldName . '_eq',
+                        'type' => new FilterTypeNS\Equals(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType)
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('neq')) {
+                    $fields[$fieldName . '_neq'] = [
+                        'name' => $fieldName . '_neq',
+                        'type' => new FilterTypeNS\NotEquals(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('lt')) {
+                    $fields[$fieldName . '_lt'] = [
+                        'name' => $fieldName . '_lt',
+                        'type' => new FilterTypeNS\LessThan(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+
+                if ($filterManager->has('lte')) {
+                    $fields[$fieldName . '_lte'] = [
+                        'name' => $fieldName . '_lte',
+                        'type' => new FilterTypeNS\LessThanOrEquals(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('gt')) {
+                    $fields[$fieldName . '_gt'] = [
+                        'name' => $fieldName . '_gt',
+                        'type' => new FilterTypeNS\GreaterThan(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('gte')) {
+                    $fields[$fieldName . '_gte'] = [
+                        'name' => $fieldName . '_gte',
+                        'type' => new FilterTypeNS\GreaterThanOrEquals(['fields' => [
+                            'value' => [
+                                'name' => 'value',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('isnull')) {
+                    $fields[$fieldName . '_isnull'] = [
+                        'name' => $fieldName . '_isnull',
+                        'type' => new FilterTypeNS\IsNull(),
+                    ];
+                }
+
+                if ($filterManager->has('isnotnull')) {
+                    $fields[$fieldName . '_isnotnull'] = [
+                        'name' => $fieldName . '_isnotnull',
+                        'type' => new FilterTypeNS\IsNotNull(),
+                    ];
+                }
+
+                if ($filterManager->has('in')) {
+                    $fields[$fieldName . '_in'] = [
+                        'name' => $fieldName . '_in',
+                        'type' => new FilterTypeNS\In(['fields' => [
+                            'values' => [
+                                'name' => 'values',
+                                'type' => Type::listOf(Type::nonNull($graphQLType)),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('notin')) {
+                    $fields[$fieldName . '_notin'] = [
+                        'name' => $fieldName . '_notin',
+                        'type' => new FilterTypeNS\NotIn(['fields' => [
+                            'values' => [
+                                'name' => 'values',
+                                'type' => Type::listOf(Type::nonNull($graphQLType)),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('between')) {
+                    $fields[$fieldName . '_between'] = [
+                        'name' => $fieldName . '_between',
+                        'type' => new FilterTypeNS\Between(['fields' => [
+                            'from' => [
+                                'name' => 'from',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                            'to' => [
+                                'name' => 'to',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]]),
+                    ];
+                }
+
+                if ($filterManager->has('like')) {
+                    $fields[$fieldName . '_like'] = [
+                        'name' => $fieldName . '_like',
+                        'type' => new FilterTypeNS\Like(),
+                    ];
+                }
             }
         }
 

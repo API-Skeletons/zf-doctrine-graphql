@@ -4,12 +4,10 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class IsNotNullFilterType extends AbstractFilterType
+class Equals extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {
-        $config['fields'] = $config['fields'] ?? [];
-
         $defaultFieldConfig = [
             'field' => [
                 'name' => 'field',
@@ -19,6 +17,11 @@ class IsNotNullFilterType extends AbstractFilterType
                 'name' => 'where',
                 'type' => Type::string(),
                 'defaultValue' => 'and',
+            ],
+            'alias' => [
+                'name' => 'alias',
+                'type' => Type::string(),
+                'defaultValue' => 'row',
             ],
             'format' => [
                 'name' => 'format',

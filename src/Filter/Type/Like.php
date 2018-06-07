@@ -4,14 +4,20 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class InFilterType extends AbstractFilterType
+class Like extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {
+        $config['fields'] = $config['fields'] ?? [];
+
         $defaultFieldConfig = [
             'field' => [
                 'name' => 'field',
                 'type' => Type::string(),
+            ],
+            'value' => [
+                'name' => 'value',
+                'type' => Type::nonNull(Type::string()),
             ],
             'where' => [
                 'name' => 'where',

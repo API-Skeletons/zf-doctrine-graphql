@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class GteFilterType extends AbstractFilterType
+class LessThan extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {

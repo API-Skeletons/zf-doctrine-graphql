@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class EqFilterType extends AbstractFilterType
+class GreaterThan extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {
@@ -17,11 +17,6 @@ class EqFilterType extends AbstractFilterType
                 'name' => 'where',
                 'type' => Type::string(),
                 'defaultValue' => 'and',
-            ],
-            'alias' => [
-                'name' => 'alias',
-                'type' => Type::string(),
-                'defaultValue' => 'row',
             ],
             'format' => [
                 'name' => 'format',

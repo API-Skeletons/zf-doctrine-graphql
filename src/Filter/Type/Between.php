@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class BetweenFilterType extends AbstractFilterType
+class Between extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {

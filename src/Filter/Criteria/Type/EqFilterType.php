@@ -21,7 +21,7 @@ class EqFilterType extends AbstractFilterType
             'format' => [
                 'name' => 'format',
                 'type' => Type::string(),
-                'defaultValue' => 'c',
+                'defaultValue' => 'Y-m-d\TH:i:sP',
             ],
         ];
 

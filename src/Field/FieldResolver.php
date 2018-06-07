@@ -33,6 +33,10 @@ class FieldResolver
 
     public function __invoke($source, $args, $context, ResolveInfo $info)
     {
+        if (is_array($source)) {
+            return $source[$info->fieldName];
+        }
+
         $entityClassName = ClassUtils::getRealClass(get_class($source));
         $splObjectHash = spl_object_hash($source);
         if (isset($this->extractValues[$splObjectHash][$info->fieldName])) {

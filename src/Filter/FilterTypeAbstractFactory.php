@@ -122,7 +122,6 @@ final class FilterTypeAbstractFactory implements
                     $graphQLType = Type::string();
                     break;
                 case 'datetime':
-#                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
                     $graphQLType = Type::string();
                     break;
                 default:

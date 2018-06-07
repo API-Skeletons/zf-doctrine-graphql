@@ -18,10 +18,10 @@ class InFilterType extends AbstractFilterType
                 'type' => Type::string(),
                 'defaultValue' => 'and',
             ],
-            'alias' => [
-                'name' => 'alias',
+            'format' => [
+                'name' => 'format',
                 'type' => Type::string(),
-                'defaultValue' => 'row',
+                'defaultValue' => 'Y-m-d\TH:i:sP',
             ],
         ];
 

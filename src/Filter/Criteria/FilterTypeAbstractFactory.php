@@ -121,7 +121,7 @@ final class FilterTypeAbstractFactory implements
                     $graphQLType = Type::string();
                     break;
                 case 'datetime':
-                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
+                    $graphQLType = Type::string();
                     break;
                 default:
                     // Do not process unknown for now
@@ -147,6 +147,15 @@ final class FilterTypeAbstractFactory implements
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType)
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_gt'] = [
+                    'name' => $fieldName . '_gt',
+                    'type' => new FilterTypeNS\GtFilterType(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
                         ],
                     ]]),
                 ];

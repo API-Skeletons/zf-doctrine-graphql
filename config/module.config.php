@@ -6,17 +6,21 @@ use DateTime;
 
 return [
     'service_manager' => [
+        'invokables' => [
+            Hydrator\Strategy\ToBoolean::class => Hydrator\Strategy\ToBoolean::class,
+            Hydrator\Strategy\ToFloat::class => Hydrator\Strategy\ToFloat::class,
+            Hydrator\Strategy\ToInteger::class => Hydrator\Strategy\ToInteger::class,
+        ],
         'factories' => [
             Field\FieldResolver::class => Field\FieldResolverFactory::class,
-            Type\Loader::class => Type\LoaderFactory::class,
-            Type\TypeManager::class => Type\TypeManagerFactory::class,
             Filter\Loader::class => Filter\LoaderFactory::class,
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
-            Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
-            Resolve\Loader::class => Resolve\LoaderFactory::class,
-
             Filter\Criteria\Loader::class => Filter\Criteria\LoaderFactory::class,
             Filter\Criteria\FilterManager::class => Filter\Criteria\FilterManagerFactory::class,
+            Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
+            Resolve\Loader::class => Resolve\LoaderFactory::class,
+            Type\Loader::class => Type\LoaderFactory::class,
+            Type\TypeManager::class => Type\TypeManagerFactory::class,
         ],
     ],
 

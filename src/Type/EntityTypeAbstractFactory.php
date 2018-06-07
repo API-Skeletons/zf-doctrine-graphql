@@ -19,6 +19,7 @@ use ZF\Doctrine\GraphQL\Filter\Criteria\FilterManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
 
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Util\ClassUtils;
 
 final class EntityTypeAbstractFactory implements
@@ -107,15 +108,36 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use ($typeManager, $criteriaFilterManager, $fieldResolver, $targetEntity, $objectManager, $criteriaBuilder) {
+                            $references[$fieldName] = function() use (
+                                $typeManager,
+                                $criteriaFilterManager,
+                                $fieldResolver,
+                                $targetEntity,
+                                $objectManager,
+                                $criteriaBuilder,
+                                $config,
+                                $hydratorManager
+                            ) {
                                 return [
                                     'type' => Type::listOf($typeManager->get($targetEntity)),
                                     'args' => [
                                         'filter' => $criteriaFilterManager->get($targetEntity),
                                     ],
-                                    'resolve' => function($source, $args, $context, ResolveInfo $resolveInfo) use ($fieldResolver, $objectManager, $criteriaBuilder) {
+                                    'resolve' => function(
+                                        $source,
+                                        $args,
+                                        $context,
+                                        ResolveInfo $resolveInfo)
+                                    use (
+                                        $fieldResolver,
+                                        $objectManager,
+                                        $criteriaBuilder,
+                                        $config,
+                                        $hydratorManager
+                                    ) {
                                         $collection = $fieldResolver($source, $args, $context, $resolveInfo);
 
+                                        // Do not process empty collections
                                         if (! $collection->count()) {
                                             return null;
                                         }
@@ -137,14 +159,23 @@ final class EntityTypeAbstractFactory implements
                                                     'field' => $field,
                                                     'value' => $value,
                                                     'where' => 'and',
+                                                    'format' => 'Y-m-d\TH:i:sP',
                                                 ];
                                             }
                                         }
 
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $metadata = $objectManager->getClassMetadata($entityClassName);
-
                                         $criteria = $criteriaBuilder->create($metadata, $filterArray, []);
+
+                                        //Rebuild collection using hydrators
+                                        $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
+                                        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+                                        $hydrator = $hydratorManager->get($hydratorAlias);
+
+                                        foreach ($collection as $key => $value) {
+                                            $collection[$key] = $hydrator->extract($value);
+                                        }
 
                                         return $collection->matching($criteria);
                                     },

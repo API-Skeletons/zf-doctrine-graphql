@@ -76,10 +76,11 @@ final class EntityResolveAbstractFactory implements
                         'type' => 'eq',
                         'field' => $field,
                         'value' => $value,
+                        'where' => 'and',
+                        'format' => 'Y-m-d\TH:i:sP',
                     ];
                 }
             }
-
 
             // Process fitlers through filter manager
             if ($filterArray) {

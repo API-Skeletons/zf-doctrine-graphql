@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Criteria\Type;
 
 use GraphQL\Type\Definition\Type;
 
-class GtFilterType extends AbstractFilterType
+class EndsWith extends AbstractFilterType
 {
     public function __construct(array $config = [])
     {

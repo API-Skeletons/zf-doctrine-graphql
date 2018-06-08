@@ -66,39 +66,8 @@ final class FilterTypeAbstractFactory implements
             try {
                 $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
             } catch (MappingException $e) {
-                try {
-                    /*
-                    $associationMetadata = $classMetadata->getAssociationMapping($fieldName);
-
-                    switch ($associationMetadata['type']) {
-                        case ClassMetadataInfo::ONE_TO_ONE:
-                        case ClassMetadataInfo::MANY_TO_ONE:
-                            $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
-                                return [
-                                    'type' => $typeManager->get($targetEntity),
-                                ];
-                            };
-                            break;
-                        case ClassMetadataInfo::ONE_TO_MANY:
-                        case ClassMetadataInfo::MANY_TO_MANY:
-                            $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
-                                return [
-                                    'type' => Type::listOf($typeManager->get($targetEntity)),
-                                ];
-                            };
-                            break;
-                        case ClassMetadataInfo::TO_ONE:
-                            break;
-                        case ClassMetadataInfo::TO_MANY:
-                            break;
-                    }
-                    */
-                    continue;
-                } catch (MappingException $e) {
-                    continue;
-                }
+                // For all related data you cannot query on them from the current resource
+                continue;
             }
 
             switch ($fieldMetadata['type']) {
@@ -143,26 +112,16 @@ final class FilterTypeAbstractFactory implements
                 // Add filters
                 $fields[$fieldName . '_eq'] = [
                     'name' => $fieldName . '_eq',
-                    'type' => new FilterTypeNS\EqFilterType(['fields' => [
+                    'type' => new FilterTypeNS\Equals(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType)
                         ],
                     ]]),
                 ];
-                $fields[$fieldName . '_gt'] = [
-                    'name' => $fieldName . '_gt',
-                    'type' => new FilterTypeNS\GtFilterType(['fields' => [
-                        'value' => [
-                            'name' => 'value',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                    ]]),
-                ];
-                /******
                 $fields[$fieldName . '_neq'] = [
                     'name' => $fieldName . '_neq',
-                    'type' => new FilterTypeNS\NeqFilterType(['fields' => [
+                    'type' => new FilterTypeNS\NotEquals(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
@@ -171,7 +130,7 @@ final class FilterTypeAbstractFactory implements
                 ];
                 $fields[$fieldName . '_lt'] = [
                     'name' => $fieldName . '_lt',
-                    'type' => new FilterTypeNS\LtFilterType(['fields' => [
+                    'type' => new FilterTypeNS\LessThan(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
@@ -180,7 +139,7 @@ final class FilterTypeAbstractFactory implements
                 ];
                 $fields[$fieldName . '_lte'] = [
                     'name' => $fieldName . '_lte',
-                    'type' => new FilterTypeNS\LteFilterType(['fields' => [
+                    'type' => new FilterTypeNS\LessThanOrEquals(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
@@ -189,7 +148,7 @@ final class FilterTypeAbstractFactory implements
                 ];
                 $fields[$fieldName . '_gt'] = [
                     'name' => $fieldName . '_gt',
-                    'type' => new FilterTypeNS\GtFilterType(['fields' => [
+                    'type' => new FilterTypeNS\GreaterThan(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
@@ -198,24 +157,16 @@ final class FilterTypeAbstractFactory implements
                 ];
                 $fields[$fieldName . '_gte'] = [
                     'name' => $fieldName . '_gte',
-                    'type' => new FilterTypeNS\GteFilterType(['fields' => [
+                    'type' => new FilterTypeNS\GreaterThanOrEquals(['fields' => [
                         'value' => [
                             'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
                         ],
                     ]]),
                 ];
-                $fields[$fieldName . '_isnull'] = [
-                    'name' => $fieldName . '_isnull',
-                    'type' => new FilterTypeNS\IsNullFilterType(),
-                ];
-                $fields[$fieldName . '_isnotnull'] = [
-                    'name' => $fieldName . '_isnotnull',
-                    'type' => new FilterTypeNS\IsNotNullFilterType(),
-                ];
                 $fields[$fieldName . '_in'] = [
                     'name' => $fieldName . '_in',
-                    'type' => new FilterTypeNS\InFilterType(['fields' => [
+                    'type' => new FilterTypeNS\In(['fields' => [
                         'values' => [
                             'name' => 'values',
                             'type' => Type::listOf(Type::nonNull($graphQLType)),
@@ -224,31 +175,49 @@ final class FilterTypeAbstractFactory implements
                 ];
                 $fields[$fieldName . '_notin'] = [
                     'name' => $fieldName . '_notin',
-                    'type' => new FilterTypeNS\NotInFilterType(['fields' => [
+                    'type' => new FilterTypeNS\NotIn(['fields' => [
                         'values' => [
                             'name' => 'values',
                             'type' => Type::listOf(Type::nonNull($graphQLType)),
                         ],
                     ]]),
                 ];
-                $fields[$fieldName . '_between'] = [
-                    'name' => $fieldName . '_between',
-                    'type' => new FilterTypeNS\BetweenFilterType(['fields' => [
-                        'from' => [
-                            'name' => 'from',
-                            'type' => Type::nonNull($graphQLType),
-                        ],
-                        'to' => [
-                            'name' => 'to',
+                $fields[$fieldName . '_startwith'] = [
+                    'name' => $fieldName . '_startswith',
+                    'type' => new FilterTypeNS\StartsWith(['fields' => [
+                        'value' => [
+                            'name' => 'value',
                             'type' => Type::nonNull($graphQLType),
                         ],
                     ]]),
                 ];
-                $fields[$fieldName . '_like'] = [
-                    'name' => $fieldName . '_like',
-                    'type' => new FilterTypeNS\LikeFilterType(),
+                $fields[$fieldName . '_endswith'] = [
+                    'name' => $fieldName . '_endswith',
+                    'type' => new FilterTypeNS\EndsWith(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
                 ];
-                *****/
+                $fields[$fieldName . '_contains'] = [
+                    'name' => $fieldName . '_contains',
+                    'type' => new FilterTypeNS\EndsWith(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
+                $fields[$fieldName . '_memberof'] = [
+                    'name' => $fieldName . '_memberof',
+                    'type' => new FilterTypeNS\EndsWith(['fields' => [
+                        'value' => [
+                            'name' => 'value',
+                            'type' => Type::nonNull($graphQLType),
+                        ],
+                    ]]),
+                ];
             }
         }
 

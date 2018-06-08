@@ -69,39 +69,8 @@ final class FilterTypeAbstractFactory implements
             try {
                 $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
             } catch (MappingException $e) {
-                try {
-                    /*
-                    $associationMetadata = $classMetadata->getAssociationMapping($fieldName);
-
-                    switch ($associationMetadata['type']) {
-                        case ClassMetadataInfo::ONE_TO_ONE:
-                        case ClassMetadataInfo::MANY_TO_ONE:
-                            $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
-                                return [
-                                    'type' => $typeManager->get($targetEntity),
-                                ];
-                            };
-                            break;
-                        case ClassMetadataInfo::ONE_TO_MANY:
-                        case ClassMetadataInfo::MANY_TO_MANY:
-                            $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
-                                return [
-                                    'type' => Type::listOf($typeManager->get($targetEntity)),
-                                ];
-                            };
-                            break;
-                        case ClassMetadataInfo::TO_ONE:
-                            break;
-                        case ClassMetadataInfo::TO_MANY:
-                            break;
-                    }
-                    */
-                    continue;
-                } catch (MappingException $e) {
-                    continue;
-                }
+                // For all related data you cannot query on them from the top level resource
+                continue;
             }
 
             switch ($fieldMetadata['type']) {

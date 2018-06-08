@@ -22,10 +22,6 @@ final class EntityResolveAbstractFactory implements
         return $this($services, $requestedName);
     }
 
-    /**
-     * Loop through all configured ORM managers and if the passed $requestedName
-     * as entity name is managed by the ORM return true;
-     */
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $config = $container->get('config');
@@ -54,8 +50,9 @@ final class EntityResolveAbstractFactory implements
                 ->select('row')
                 ->from($requestedName, 'row')
                 ;
-            $filter = $args['filter'] ?? [];
 
+            // Resolve top level filters
+            $filter = $args['filter'] ?? [];
             $filterArray = [];
             $debugQuery = false;
             foreach ($filter as $field => $value) {

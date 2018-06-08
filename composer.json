@@ -10,7 +10,6 @@
         }
     ],
     "require": {
-        "ecodev/graphql-doctrine": "^3.0",
         "doctrine/instantiator": "^1.1",
         "doctrine/doctrine-module": "^1.2 || ^2.1",
         "zendframework/zend-servicemanager": "^3.3",
@@ -19,7 +18,9 @@
         "doctrine/common": "^2.8",
         "zendframework/zend-mvc-console": "^1.2",
         "zendframework/zend-config": "^3.2",
-        "phpmyadmin/sql-parser": "^4.2"
+        "api-skeletons/zf-doctrine-criteria": "^0.0.1",
+        "zfcampus/zf-doctrine-querybuilder": "^1.6",
+        "webonyx/graphql-php": "^0.12.0"
     },
     "autoload": {
         "psr-4": {

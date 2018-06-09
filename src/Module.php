@@ -26,7 +26,7 @@ class Module implements
     public function getConsoleUsage(Console $console)
     {
         return [
-            'graphql:hydrator:config-skeleton [--object-manager=]' => 'Create hydrator configuration skeleton',
+            'graphql:config-skeleton [--object-manager=]' => 'Create GraphQL configuration skeleton',
         ];
     }
 
@@ -34,6 +34,13 @@ class Module implements
     {
         $sm = $manager->getEvent()->getParam('ServiceManager');
         $serviceListener = $sm->get('ServiceListener');
+
+        $serviceListener->addServiceManager(
+            QueryProvider\QueryProviderManager::class,
+            'zf-doctrine-graphql-query-provider',
+            QueryProvider\QueryProviderInterface::class,
+            'getZFDoctrineGraphQLQueryProviderConfig'
+        );
 
         $serviceListener->addServiceManager(
             Type\TypeManager::class,

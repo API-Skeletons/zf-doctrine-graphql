@@ -9,6 +9,7 @@ use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use ZF\Doctrine\GraphQL\QueryProvider\QueryProviderManager;
 
 final class EntityResolveAbstractFactory implements
     AbstractFactoryInterface
@@ -25,10 +26,19 @@ final class EntityResolveAbstractFactory implements
 
     public function canCreate(ContainerInterface $container, $requestedName)
     {
-        $config = $container->get('config');
+        $hydratorManager = $container->get('HydratorManager');
+        $queryProviderManager = $container->get(QueryProviderManager::class);
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
+        if (! $queryProviderManager->has($requestedName)) {
+            throw new Exception('QueryProvider not found for ' . $requestedName);
+        }
+
+        if (! $hydratorManager->has($hydratorAlias)) {
+            throw new Exception('Hydrator configuration not found for ' . $requestedName);
+        }
+
+        return $queryProviderManager->has($requestedName) && $hydratorManager->has($hydratorAlias);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
@@ -38,6 +48,7 @@ final class EntityResolveAbstractFactory implements
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] ?? null;
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
+        $queryProviderManager = $container->get(QueryProviderManager::class);
 
         if (! $hydratorConfig) {
             throw new Exception("Hydrator configuration not found for entity ${requestedName}");
@@ -45,22 +56,30 @@ final class EntityResolveAbstractFactory implements
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
-        return function ($obj, $args, $context) use ($objectManager, $requestedName, $filterManager, $orderByManager) {
-
-            $queryBuilder = $objectManager->createQueryBuilder();
-            $queryBuilder
-                ->select('row')
-                ->from($requestedName, 'row')
-                ;
+        return function ($obj, $args, $context) use ($config, $objectManager, $requestedName, $filterManager, $orderByManager, $queryProviderManager) {
+            // Build query builder from Query Provider
+            $queryBuilder = $queryProviderManager->get($requestedName)->createQuery($objectManager);
 
             // Resolve top level filters
             $filter = $args['filter'] ?? [];
             $filterArray = [];
             $orderByArray = [];
             $debugQuery = false;
+            $skip = 0;
+            $limit = $config['zf-doctrine-graphql']['limit'];
             foreach ($filter as $field => $value) {
                 if ($field == '_debug') {
-                    $debugQuery = $value['value'];
+                    $debugQuery = $value;
+                    continue;
+                }
+
+                if ($field == '_skip') {
+                    $skip = $value;
+                    continue;
+                }
+
+                if ($field == '_limit') {
+                    $limit = $value;
                     continue;
                 }
 
@@ -105,6 +124,15 @@ final class EntityResolveAbstractFactory implements
                     $metadata,
                     $orderByArray
                 );
+            }
+            if ($skip) {
+                $queryBuilder->setFirstResult($skip);
+            }
+            if ($limit) {
+                if ($config['zf-doctrine-graphql']['limit'] < $limit) {
+                    $limit = $config['zf-doctrine-graphql']['limit'];
+                }
+                $queryBuilder->setMaxResults($limit);
             }
 
             if ($debugQuery) {

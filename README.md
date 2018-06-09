@@ -49,8 +49,8 @@ tool.  The tool outputs a configuration file.  Write the file to your project ro
 it to your `config/autoload` directory.
 
 ```sh
-php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-hydrator-default.global.php
-mv zf-doctrine-graphql-hydrator-default.global.php config/autoload
+php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-default.global.php
+mv zf-doctrine-graphql-default.global.php config/autoload
 ```
 
 (Writing directly into the `config/autoload` directory is not recommended at run time.)
@@ -65,6 +65,29 @@ There are some hydrator stragegies included with this module.  In GraphQL types 
 introspects your ORM metadata to correctly type against GraphQL types.  However your entities probably don't hydrate
 themselves with correct PHP datatypes such as an integer will be represented in your entity as a string.  To correct
 this use the included Hydrator Strategies to type cast each field.
+
+
+Supported Data Types
+--------------------
+
+This module would like to support all datatypes representable in a GraphQL response.  At this time these data types are
+supported:
+
+```
+tinyint
+smallint
+integer
+int
+bigint
+boolean
+decimal
+float
+string
+text
+datetime
+```
+
+If you have need to support a datatype not listed here please create an issue on the github project.
 
 
 Provided Tools
@@ -122,7 +145,6 @@ class GraphQLController extends AbstractActionController
                     'artist' => [
                         'type' => Type::listOf($typeLoader(Entity\Artist::class)),
                         'args' => [
-                            'id' => Type::id(),
                             'filter' => $filterLoader(Entity\Artist::class),
                         ],
                         'resolve' => $resolveLoader(Entity\Artist::class),

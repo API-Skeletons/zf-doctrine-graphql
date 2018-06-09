@@ -2,25 +2,19 @@
 
 namespace ZF\Doctrine\GraphQL\Type;
 
-use ArrayObject;
 use DateTime;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Doctrine\Common\Collections\Criteria;
+use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
-use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
-use GraphQL\Doctrine\Utils;
 use ZF\Doctrine\GraphQL\Filter\Criteria\FilterManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
-
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Util\ClassUtils;
 
 final class EntityTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -92,21 +86,17 @@ final class EntityTypeAbstractFactory implements
                     switch ($associationMetadata['type']) {
                         case ClassMetadataInfo::ONE_TO_ONE:
                         case ClassMetadataInfo::MANY_TO_ONE:
+                        case ClassMetadataInfo::TO_ONE:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use ($typeManager, $criteriaFilterManager, $targetEntity) {
+                            $references[$fieldName] = function() use ($typeManager, $targetEntity) {
                                 return [
                                     'type' => $typeManager->get($targetEntity),
-                                    'args' => [
-                                        'filter' => $criteriaFilterManager->get($targetEntity),
-                                    ],
-                                    'resolve' => function() {
-                                        die('resolve field many_to in entitytypeabstractfactory');
-                                    },
                                 ];
                             };
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
+                        case ClassMetadataInfo::TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
                             $references[$fieldName] = function() use (
                                 $typeManager,
@@ -115,7 +105,6 @@ final class EntityTypeAbstractFactory implements
                                 $targetEntity,
                                 $objectManager,
                                 $criteriaBuilder,
-                                $config,
                                 $hydratorManager
                             ) {
                                 return [
@@ -132,7 +121,6 @@ final class EntityTypeAbstractFactory implements
                                         $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
-                                        $config,
                                         $hydratorManager
                                     ) {
                                         $collection = $fieldResolver($source, $args, $context, $resolveInfo);
@@ -178,7 +166,8 @@ final class EntityTypeAbstractFactory implements
 
                                         //Rebuild collection using hydrators
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
-                                        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+                                        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
+                                            . str_replace('\\', '_', $entityClassName);
                                         $hydrator = $hydratorManager->get($hydratorAlias);
 
                                         foreach ($collection as $key => $value) {
@@ -189,10 +178,6 @@ final class EntityTypeAbstractFactory implements
                                     },
                                 ];
                             };
-                            break;
-                        case ClassMetadataInfo::TO_ONE:
-                            break;
-                        case ClassMetadataInfo::TO_MANY:
                             break;
                     }
 

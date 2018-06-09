@@ -17,6 +17,7 @@ return [
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
             Filter\Criteria\Loader::class => Filter\Criteria\LoaderFactory::class,
             Filter\Criteria\FilterManager::class => Filter\Criteria\FilterManagerFactory::class,
+            QueryProvider\QueryProviderManager::class => QueryProvider\QueryProviderManagerFactory::class,
             Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
             Resolve\Loader::class => Resolve\LoaderFactory::class,
             Type\Loader::class => Type\LoaderFactory::class,
@@ -59,20 +60,20 @@ return [
 
     'controllers' => [
         'factories' => [
-            Console\HydratorConfigurationSkeletonController::class
-                => Console\HydratorConfigurationSkeletonControllerFactory::class,
+            Console\ConfigurationSkeletonController::class
+                => Console\ConfigurationSkeletonControllerFactory::class,
         ],
     ],
 
     'console' => [
         'router' => [
             'routes' => [
-                'graphql-hydrator-skeleton' => [
+                'graphql-skeleton' => [
                     'type' => 'simple',
                     'options' => [
-                        'route'    => 'graphql:hydrator:config-skeleton [--object-manager=]',
+                        'route'    => 'graphql:config-skeleton [--object-manager=]',
                         'defaults' => [
-                            'controller' => Console\HydratorConfigurationSkeletonController::class,
+                            'controller' => Console\ConfigurationSkeletonController::class,
                             'action' => 'index'
                         ],
                     ],

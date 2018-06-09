@@ -12,7 +12,7 @@ use DoctrineModule\Persistence\ProvidesObjectManager;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
 
-final class HydratorConfigurationSkeletonController extends AbstractConsoleController implements
+final class ConfigurationSkeletonController extends AbstractConsoleController implements
     ObjectManagerAwareInterface
 {
     use ProvidesObjectManager;
@@ -35,7 +35,14 @@ final class HydratorConfigurationSkeletonController extends AbstractConsoleContr
 
         $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
 
-        $config = ['zf-doctrine-graphql-hydrator' => []];
+        $config = [
+            'zf-doctrine-graphql' => [
+                'limit' => 2000,
+            ],
+            'zf-doctrine-graphql-query-provider' => [],
+            'zf-doctrine-graphql-hydrator' => []
+        ];
+
         foreach ($metadata as $classMetadata) {
             $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $classMetadata->getName());
 
@@ -53,6 +60,8 @@ final class HydratorConfigurationSkeletonController extends AbstractConsoleContr
 
         $configObject = new Config($config);
         $writer = new PhpArray();
+        $writer->setUseBracketArraySyntax(true);
+        $writer->setUseClassNameScalars(true);
 
         echo $writer->toString($configObject);
     }

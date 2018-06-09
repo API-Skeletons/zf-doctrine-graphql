@@ -1,17 +1,16 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Type;
+namespace ZF\Doctrine\GraphQL\QueryProvider;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
-use GraphQL\Type\Definition\Type;
 
-class TypeManager extends AbstractPluginManager
+final class QueryProviderManager extends AbstractPluginManager
 {
     /**
      * @var string
      */
-    protected $instanceOf = Type::class;
+    protected $instanceOf = QueryProviderInterface::class;
 
     /**
      * Validate the plugin is of the expected type (v3).

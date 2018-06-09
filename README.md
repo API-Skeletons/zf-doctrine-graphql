@@ -403,7 +403,7 @@ Contains
 Starts With
 -----------
 
-`field_startswith: { value: "value" }
+`field_startswith: { value: "value" }`
 
 
 Ends With

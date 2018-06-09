@@ -39,12 +39,12 @@ an auto-generating configuration tool.
 
 There are three sections to the generated configuration:
 
-* zf-doctrine-graphql: An array of configuration options.  The options are
-* * limit: The maximum number of results to return for each entity or collection.
+* `zf-doctrine-graphql`: An array of configuration options.  The options are
+  * limit: The maximum number of results to return for each entity or collection.
 
-* zf-doctrine-graphql-query-provider: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
+* `zf-doctrine-graphql-query-provider`: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
 
-* zf-doctrine-graphql-hydrator: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
+* `zf-doctrine-graphql-hydrator`: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
 
 To generate configuration:
 

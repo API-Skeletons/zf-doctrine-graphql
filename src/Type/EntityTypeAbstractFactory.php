@@ -145,14 +145,22 @@ final class EntityTypeAbstractFactory implements
                                         $filter = $args['filter'] ?? [];
 
                                         $filterArray = [];
+                                        $orderByArray = [];
                                         foreach ($filter as $field => $value) {
                                             if (strstr($field, '_')) {
                                                 $field = strtok($field, '_');
                                                 $filter = strtok('_');
-
-                                                $value['type'] = $filter;
-                                                $value['field'] = $field;
-                                                $filterArray[] = $value;
+                                                if ($filter == 'orderby') {
+                                                    $orderByArray[] = [
+                                                        'type' => 'field',
+                                                        'field' => $field,
+                                                        'direction' => $value,
+                                                    ];
+                                                } else {
+                                                    $value['type'] = $filter;
+                                                    $value['field'] = $field;
+                                                    $filterArray[] = $value;
+                                                }
                                             } else {
                                                 $filterArray[] = [
                                                     'type' => 'eq',
@@ -166,7 +174,7 @@ final class EntityTypeAbstractFactory implements
 
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $metadata = $objectManager->getClassMetadata($entityClassName);
-                                        $criteria = $criteriaBuilder->create($metadata, $filterArray, []);
+                                        $criteria = $criteriaBuilder->create($metadata, $filterArray, $orderByArray);
 
                                         //Rebuild collection using hydrators
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));

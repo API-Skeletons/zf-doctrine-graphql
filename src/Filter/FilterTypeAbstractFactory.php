@@ -17,6 +17,7 @@ use GraphQL\Doctrine\Utils;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
+use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface
@@ -55,6 +56,7 @@ final class FilterTypeAbstractFactory implements
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
         $filterManager = $container->get(ORMFilterManager::class);
+        $orderByManager = $container->get(ORMOrderByManager::class);
 
         // Create an instance of the entity in order to get fields from the hydrator.
         $instantiator = new Instantiator();
@@ -106,6 +108,14 @@ final class FilterTypeAbstractFactory implements
             }
 
             if ($graphQLType) {
+                if ($orderByManager->has('field')) {
+                    $fields[$fieldName . '_orderby'] = [
+                        'name' => $fieldName . '_orderby',
+                        'type' => Type::string(),
+                        'description' => 'building...',
+                    ];
+                }
+
                 if ($filterManager->has('eq')) {
                     $fields[$fieldName] = [
                         'name' => $fieldName,

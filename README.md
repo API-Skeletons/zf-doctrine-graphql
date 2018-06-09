@@ -53,9 +53,32 @@ php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-hydr
 mv zf-doctrine-graphql-hydrator-default.global.php config/autoload
 ```
 
-(Writing directly into the `config/autoload` directory is not possible at run time.)
+(Writing directly into the `config/autoload` directory is not recommended at run time.)
 
 Modify each configuration with your hydrator strategies and hydrator filters as needed.
+
+
+Type Casting Entity Values
+--------------------------
+
+There are some hydrator stragegies included with this module.  In GraphQL types are very important and this module
+introspects your ORM metadata to correctly type against GraphQL types.  However your entities probably don't hydrate
+themselves with correct PHP datatypes such as an integer will be represented in your entity as a string.  To correct
+this use the included Hydrator Strategies to type cast each field.
+
+
+Provided Tools
+--------------
+
+There are three tools this library provides to help you build your GraphQL Schema.
+
+* TypeLoader - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
+* FilterLoader - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
+* Resolve Loader - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
+
+Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
+
+There is not a tool for mutations.  Those are left to the developer to build.
 
 
 Use
@@ -129,10 +152,10 @@ class GraphQLController extends AbstractActionController
 }
 ```
 
-Filters
--------
+Filtering Top Level Resources
+-----------------------------
 
-For each field which is not a reference to another entity a colletion of filters exist.
+For each field, which is not a reference to another entity, a colletion of filters exist.
 Given an entity which contains a `name` field you may directly filter the name using
 ```js
 filter: { name: "Grateful Dead" }
@@ -154,7 +177,7 @@ name_between   -  Fiilter between `from` and `to` values
 name_like      -  Use a fuzzy search
 ```
 
-Every field which can be returned from an Entity has all of the above filters as field_filter.
+Every field which can be returned from a Top Level Entity has all of the above filters as field_filter.
 You may only use each field's filter once per filter action.
 
 
@@ -174,9 +197,9 @@ filter: { name_isnull: {} }
 
 in, notin
 ---------
-These filters take an array of arguments
+These filters take an array of values
 ```
-filter: { name_in: { value: ["Phish", "Legion of Mary"] } }
+filter: { name_in: { values: ["Phish", "Legion of Mary"] } }
 ```
 
 between
@@ -198,9 +221,6 @@ Optional arguments for every filter
 -----------------------------------
 
 `where` - This value defaults to 'and' and may be changed to 'or'.
-`alias` - The parent alias.  Defaults to `row` which is the alias for the root entity being queried.
-Other values for `alias` are not supported at this time.
-
 
 todo:  Add `orx` and `andx` support and inner and left joins.
 
@@ -223,7 +243,113 @@ by setting the value directly.  This query includes the filter field but disable
 ```
 filter: { _debug:{ value: false } name:"Grateful Dead" }
 ```
-Swap false to true to enable the filter field.
+Swap false to true to enable the debugging.
 ```
 filter: { _debug:{ value: true } name:"Grateful Dead" }
 ```
+
+
+Filtering Collections
+---------------------
+
+Within ORM an entity may have relationships to other entities.  For `One to One` and `Many To One`
+relationships there is only one related entity and you cannot filter on this entity.  However for
+`One to Many` and `Many to Many` you can filter the collection.
+
+In this example we fetch all artists like 'Dead %' then filter their performances to year 2017 and
+order them by performanceDate.
+```
+{
+    artist( filter: { name_like:{ value: \"Dead &%\" } } ) {
+        id
+        name
+        performance ( filter: { year: 2017 performanceDate_orderby:\"desc\" } ) {
+            performanceDate year venue city state
+        }
+    }
+}
+```
+
+The artist filter is a Top Level Resource.  The performance is a collection related to the artist and can
+be filtered using these filters from [api-skeletons/zf-doctrine-criteria](https://github.com/api-skeletons/zf-doctrine-criteria) (see the [README.md](https://github.com/API-Skeletons/zf-doctrine-criteria/blob/master/README.md) for specifics):
+
+
+Equals
+------
+
+`field: "value"` or `field_eq: { value: "value" }`
+
+
+Not Equals
+----------
+
+`field_neq: { value: "value" }`
+
+
+Less Than
+---------
+
+`field_lt: { value: "value" }`
+
+
+Less Than or Equals
+-------------------
+
+`field_lte: { value: "value" }`
+
+
+Greater Than
+------------
+
+`field_gt: { value: "value" }`
+
+
+Greater Than or Equals
+----------------------
+
+`field_gte: { value: "value" }`
+
+
+Contains
+--------
+
+> This is used for text fields to look for a sequence anywhere within the string
+> Similar to Starts With and Ends With
+
+`field_contains: { value: "value" }`
+
+
+Starts With
+-----------
+
+`field_startswith: { value: "value" }
+
+
+Ends With
+---------
+
+`field_endswith: { value: "value" }`
+
+
+In
+-----
+
+> Note the parameter is plural `values`
+
+`field_in: { values: [1, 2, 3] }`
+
+
+Not In
+------
+
+> Note the parameter is plural `values`
+
+`field_notin: { values: [1, 2, 3] }`
+
+
+Order By
+--------
+
+Used for sorting a collection.  Valid values are 'asc' and 'desc'
+
+`field_orderby: "asc"`

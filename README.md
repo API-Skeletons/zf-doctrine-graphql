@@ -36,8 +36,19 @@ Once installed, add `ZF\Doctrine\GraphQL` to your list of modules inside
 Configuration
 -------------
 
-Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
-A tool is included to create a skeleton hydrator configuration for you.
+Because creating hydrator configurations for every entity in your object manager(s) this module provides
+an auto-generating configuration tool.
+
+There are three sections to the generated configuration:
+
+* zf-doctrine-graphql: An array of configuration options.  The options are
+* * limit: The maximum number of results to return for each entity or collection.
+
+* zf-doctrine-graphql-query-provider: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
+
+* zf-doctrine-graphql-hydrator: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
+
+To generate configuration:
 
 ```sh
 php public/index.php graphql:hydrator:config-skeleton [--object-manager=]
@@ -55,7 +66,7 @@ mv zf-doctrine-graphql-default.global.php config/autoload
 
 (Writing directly into the `config/autoload` directory is not recommended at run time.)
 
-Modify each configuration with your hydrator strategies and hydrator filters as needed.
+Modify each hydrator configuration with your hydrator strategies and hydrator filters as needed.
 
 
 Type Casting Entity Values
@@ -102,6 +113,55 @@ There are three tools this library provides to help you build your GraphQL Schem
 Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
 
 There is not a tool for mutations.  Those are left to the developer to build.
+
+
+Query Providers
+---------------
+
+Each top level entity to query requires a Query Provider.  The configuration section `zf-doctrine-graphql-query-provider` is a service manager configuration for your Query Providers.
+
+Example Configuration for one top level Artist entity:
+```php
+    'zf-doctrine-graphql-query-provider' => [
+        'aliases' => [
+            \Db\Entity\Artist::class => \GraphQLApi\QueryProvider\Artist::class,
+        ],
+        'invokables' => [
+            \GraphQLApi\QueryProvider\Artist::class => \GraphQLApi\QueryProvider\Artist::class,
+        ],
+    ],
+```
+
+Example Query Provider:
+```php
+namespace GraphQLApi\QueryProvider;
+
+use Doctrine\Common\Persistence\ObjectManager;
+use Doctrine\ORM\QueryBuilder;
+use ZF\Doctrine\GraphQL\QueryProvider\QueryProviderInterface;
+use Db\Entity;
+
+final class Artist implements
+    QueryProviderInterface
+{
+    /**
+     * @param ResourceEvent $event
+     * @return QueryBuilder
+     */
+    public function createQuery(ObjectManager $objectManager) : QueryBuilder
+    {
+        $queryBuilder = $objectManager->createQueryBuilder();
+        $queryBuilder
+            ->select('row')
+            ->from(Entity\Artist::class, 'row')
+            ;
+
+        return $queryBuilder;
+    }
+}
+```
+
+The 'row' alias for the default entity is required to be 'row'.
 
 
 Use

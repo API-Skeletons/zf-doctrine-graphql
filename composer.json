@@ -18,7 +18,7 @@
         "doctrine/common": "^2.8",
         "zendframework/zend-mvc-console": "^1.2",
         "zendframework/zend-config": "^3.2",
-        "api-skeletons/zf-doctrine-criteria": "^0.0.1",
+        "api-skeletons/zf-doctrine-criteria": "^1.0",
         "zfcampus/zf-doctrine-querybuilder": "^1.6",
         "webonyx/graphql-php": "^0.12.0"
     },

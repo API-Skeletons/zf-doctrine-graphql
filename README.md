@@ -11,8 +11,6 @@ allowing full control over each field using hydrator filters and strategies.
 
 Multiple object managers are supported.
 
-** In development ** This is not recommended for anything other than experimental use.
-
 
 Installation
 ------------

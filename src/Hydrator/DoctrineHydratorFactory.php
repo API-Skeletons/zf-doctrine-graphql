@@ -37,7 +37,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      *
      * @var array
      */
-    protected $lookupCache = array();
+    protected $lookupCache = [];
 
     /**
      * Determine if we can create a service with name.
@@ -145,7 +145,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         }
 
         # Use DoctrineModuleHydrator by default
-        if (!isset($extractService, $hydrateService)) {
+        if (! isset($extractService, $hydrateService)) {
             $doctrineModuleHydrator = $this->loadDoctrineModuleHydrator($container, $config, $objectManager);
             $extractService = ($extractService ?: $doctrineModuleHydrator);
             $hydrateService = ($hydrateService ?: $doctrineModuleHydrator);
@@ -199,7 +199,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function loadObjectManager(ContainerInterface $container, $config)
     {
-        if (!$container->has($config['object_manager'])) {
+        if (! $container->has($config['object_manager'])) {
             throw new ServiceNotCreatedException('The object_manager could not be found.');
         }
 
@@ -261,17 +261,17 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     public function configureHydratorNamingStrategy($hydrator, ContainerInterface $container, $config, $objectManager)
     {
-        if (!($hydrator instanceof NamingStrategyEnabledInterface) || !isset($config['naming_strategy'])) {
+        if (! ($hydrator instanceof NamingStrategyEnabledInterface) || ! isset($config['naming_strategy'])) {
             return;
         }
 
         $namingStrategyKey = $config['naming_strategy'];
-        if (!$container->has($namingStrategyKey)) {
+        if (! $container->has($namingStrategyKey)) {
             throw new ServiceNotCreatedException(sprintf('Invalid naming strategy %s.', $namingStrategyKey));
         }
 
         $namingStrategy = $container->get($namingStrategyKey);
-        if (!$namingStrategy instanceof NamingStrategyInterface) {
+        if (! $namingStrategy instanceof NamingStrategyInterface) {
             throw new ServiceNotCreatedException(
                 sprintf('Invalid naming strategy class %s', get_class($namingStrategy))
             );
@@ -295,20 +295,20 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function configureHydratorStrategies($hydrator, ContainerInterface $container, $config, $objectManager)
     {
-        if (!$hydrator instanceof StrategyEnabledInterface
-            || !isset($config['strategies'])
-            || !is_array($config['strategies'])
+        if (! $hydrator instanceof StrategyEnabledInterface
+            || ! isset($config['strategies'])
+            || ! is_array($config['strategies'])
         ) {
             return;
         }
 
         foreach ($config['strategies'] as $field => $strategyKey) {
-            if (!$container->has($strategyKey)) {
+            if (! $container->has($strategyKey)) {
                 throw new ServiceNotCreatedException(sprintf('Invalid strategy %s for field %s', $strategyKey, $field));
             }
 
             $strategy = $container->get($strategyKey);
-            if (!$strategy instanceof StrategyInterface) {
+            if (! $strategy instanceof StrategyInterface) {
                 throw new ServiceNotCreatedException(
                     sprintf('Invalid strategy class %s for field %s', get_class($strategy), $field)
                 );
@@ -335,31 +335,31 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function configureHydratorFilters($hydrator, ContainerInterface $container, $config, $objectManager)
     {
-        if (!$hydrator instanceof FilterEnabledInterface
-            || !isset($config['filters'])
-            || !is_array($config['filters'])
+        if (! $hydrator instanceof FilterEnabledInterface
+            || ! isset($config['filters'])
+            || ! is_array($config['filters'])
         ) {
             return;
         }
 
         foreach ($config['filters'] as $name => $filterConfig) {
-            $conditionMap = array(
+            $conditionMap = [
                 'and' => FilterComposite::CONDITION_AND,
                 'or' => FilterComposite::CONDITION_OR,
-            );
+            ];
             $condition = isset($filterConfig['condition']) ?
                             $conditionMap[$filterConfig['condition']] :
                             FilterComposite::CONDITION_OR;
 
             $filterService = $filterConfig['filter'];
-            if (!$container->has($filterService)) {
+            if (! $container->has($filterService)) {
                 throw new ServiceNotCreatedException(
                     sprintf('Invalid filter %s for field %s: service does not exist', $filterService, $name)
                 );
             }
 
             $filterService = $container->get($filterService);
-            if (!$filterService instanceof FilterInterface) {
+            if (! $filterService instanceof FilterInterface) {
                 throw new ServiceNotCreatedException(
                     sprintf('Filter service %s must implement FilterInterface', get_class($filterService))
                 );

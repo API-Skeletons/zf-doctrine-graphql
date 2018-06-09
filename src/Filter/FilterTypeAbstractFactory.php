@@ -131,7 +131,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType)
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -143,7 +144,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -155,7 +157,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -168,7 +171,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -180,7 +184,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -192,7 +197,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -218,7 +224,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'values',
                                 'type' => Type::listOf(Type::nonNull($graphQLType)),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -230,7 +237,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'values',
                                 'type' => Type::listOf(Type::nonNull($graphQLType)),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -246,7 +254,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'to',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 

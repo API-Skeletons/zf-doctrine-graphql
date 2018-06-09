@@ -28,9 +28,9 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
     {
          $objectManagerAlias = $this->params()->fromRoute('object-manager') ?? 'doctrine.entitymanager.orm_default';
 
-         if (! $this->container->has($objectManagerAlias)) {
-             throw new Exception('Invalid object manager alias');
-         }
+        if (! $this->container->has($objectManagerAlias)) {
+            throw new Exception('Invalid object manager alias');
+        }
          $objectManager = $this->container->get($objectManagerAlias);
 
         $metadata = $objectManager->getMetadataFactory()->getAllMetadata();

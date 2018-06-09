@@ -88,7 +88,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::MANY_TO_ONE:
                         case ClassMetadataInfo::TO_ONE:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
                                 return [
                                     'type' => $typeManager->get($targetEntity),
                                 ];
@@ -98,7 +98,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::MANY_TO_MANY:
                         case ClassMetadataInfo::TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function() use (
+                            $references[$fieldName] = function () use (
                                 $config,
                                 $typeManager,
                                 $criteriaFilterManager,
@@ -113,12 +113,12 @@ final class EntityTypeAbstractFactory implements
                                     'args' => [
                                         'filter' => $criteriaFilterManager->get($targetEntity),
                                     ],
-                                    'resolve' => function(
+                                    'resolve' => function (
                                         $source,
                                         $args,
                                         $context,
-                                        ResolveInfo $resolveInfo)
-                                    use (
+                                        ResolveInfo $resolveInfo
+                                    ) use (
                                         $config,
                                         $fieldResolver,
                                         $objectManager,
@@ -138,7 +138,6 @@ final class EntityTypeAbstractFactory implements
                                         $skip = 0;
                                         $limit = $config['zf-doctrine-graphql']['limit'];
                                         foreach ($filter as $field => $value) {
-
                                             if ($field == '_skip') {
                                                 $skip = $value;
                                                 continue;
@@ -164,11 +163,6 @@ final class EntityTypeAbstractFactory implements
                                                     $value['field'] = $field;
                                                     $filterArray[] = $value;
                                                 }
-
-
-
-
-
                                             } else {
                                                 $filterArray[] = [
                                                     'type' => 'eq',

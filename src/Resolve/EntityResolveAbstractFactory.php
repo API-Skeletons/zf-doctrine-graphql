@@ -56,7 +56,18 @@ final class EntityResolveAbstractFactory implements
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
-        return function ($obj, $args, $context) use ($config, $objectManager, $requestedName, $filterManager, $orderByManager, $queryProviderManager) {
+        return function (
+            $obj,
+            $args,
+            $context
+        ) use (
+            $config,
+            $objectManager,
+            $requestedName,
+            $filterManager,
+            $orderByManager,
+            $queryProviderManager
+        ) {
             // Build query builder from Query Provider
             $queryBuilder = $queryProviderManager->get($requestedName)->createQuery($objectManager);
 

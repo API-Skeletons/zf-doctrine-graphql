@@ -16,7 +16,7 @@ use GraphQL\Utils;
 
 final class DateTimeType extends ScalarType
 {
-    public function parseLiteral($valueNode, ?array $variables = NULL)
+    public function parseLiteral($valueNode, ?array $variables = null)
     {
         // Note: throwing GraphQL\Error\Error vs \UnexpectedValueException to benefit from GraphQL
         // error location in query:

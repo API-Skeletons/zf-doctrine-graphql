@@ -130,7 +130,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType)
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -142,7 +143,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -154,7 +156,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
                 if ($filterManager->has('lte')) {
@@ -165,7 +168,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -177,7 +181,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -189,7 +194,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -201,7 +207,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'values',
                                 'type' => Type::listOf(Type::nonNull($graphQLType)),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -213,7 +220,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'values',
                                 'type' => Type::listOf(Type::nonNull($graphQLType)),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -225,7 +233,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -237,7 +246,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -249,7 +259,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
 
@@ -261,7 +272,8 @@ final class FilterTypeAbstractFactory implements
                                 'name' => 'value',
                                 'type' => Type::nonNull($graphQLType),
                             ],
-                        ]]),
+                        ]
+                        ]),
                     ];
                 }
             }

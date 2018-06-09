@@ -339,7 +339,7 @@ Within ORM an entity may have relationships to other entities.  For `One to One`
 relationships there is only one related entity and you cannot filter on this entity.  However for
 `One to Many` and `Many to Many` you can filter the collection.
 
-In this example we fetch all artists like 'Dead %' then filter their performances to year 2017 and
+In this example we fetch all artists like 'Dead &%' then filter their performances to year 2017 and
 order them by performanceDate.
 ```
 {

@@ -12,5 +12,4 @@ interface QueryProviderInterface
      * @return QueryBuilder
      */
     public function createQuery(ObjectManager $objectManager) : QueryBuilder;
-
 }

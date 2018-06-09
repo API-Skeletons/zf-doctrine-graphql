@@ -267,6 +267,15 @@ final class FilterTypeAbstractFactory implements
             }
         }
 
+        $fields['_skip'] = [
+            'name' => '_skip',
+            'type' => Type::int(),
+        ];
+        $fields['_limit'] = [
+            'name' => '_limit',
+            'type' => Type::int(),
+        ];
+
         return new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . 'CriteriaFilter',
             'fields' => function () use ($fields, $references) {

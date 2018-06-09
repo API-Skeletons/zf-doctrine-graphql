@@ -174,6 +174,7 @@ class GraphQLController extends AbstractActionController
 }
 ```
 
+
 Filtering Top Level Resources
 -----------------------------
 
@@ -247,28 +248,28 @@ Optional arguments for every filter
 todo:  Add `orx` and `andx` support and inner and left joins.
 
 
+Pagination
+----------
+
+The filter supports `_skip` and `_limit`.  There is a configuration
+variable to set the max limit size and anything under this limit is
+valid.  To select a page of data set the `_skip:10 _limit:10` and
+increment `_skip` by the `_limit` for each request.
+
+
 Debugging Filters
 -----------------
 
-With so many filter options, 12 x #ofFields, it can get confusing what your query looks like
+With so many filter options, 12 x #ofFields + 2, it can get confusing what your query looks like
 so there is a `_debug` filter field which will output only the DQL version of your query.
 ```js
-filter: { _debug:{} name:"Grateful Dead" }
+filter: { _debug:true name:"Grateful Dead" }
 ```
 will output similar to
 ```sql
 SELECT row FROM Db\Entity\Artist row WHERE row.name = :a5b1619627f9c1
 ```
 
-The `_debug` filter field defaults to `true` but you can turn it off and on quickly during development
-by setting the value directly.  This query includes the filter field but disables it:
-```
-filter: { _debug:{ value: false } name:"Grateful Dead" }
-```
-Swap false to true to enable the debugging.
-```
-filter: { _debug:{ value: true } name:"Grateful Dead" }
-```
 
 
 Filtering Collections

@@ -99,6 +99,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
                             $references[$fieldName] = function() use (
+                                $config,
                                 $typeManager,
                                 $criteriaFilterManager,
                                 $fieldResolver,
@@ -118,6 +119,7 @@ final class EntityTypeAbstractFactory implements
                                         $context,
                                         ResolveInfo $resolveInfo)
                                     use (
+                                        $config,
                                         $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
@@ -131,13 +133,26 @@ final class EntityTypeAbstractFactory implements
                                         }
 
                                         $filter = $args['filter'] ?? [];
-
                                         $filterArray = [];
                                         $orderByArray = [];
+                                        $skip = 0;
+                                        $limit = $config['zf-doctrine-graphql']['limit'];
                                         foreach ($filter as $field => $value) {
+
+                                            if ($field == '_skip') {
+                                                $skip = $value;
+                                                continue;
+                                            }
+
+                                            if ($field == '_limit') {
+                                                $limit = $value;
+                                                continue;
+                                            }
+
                                             if (strstr($field, '_')) {
                                                 $field = strtok($field, '_');
                                                 $filter = strtok('_');
+
                                                 if ($filter == 'orderby') {
                                                     $orderByArray[] = [
                                                         'type' => 'field',
@@ -149,6 +164,11 @@ final class EntityTypeAbstractFactory implements
                                                     $value['field'] = $field;
                                                     $filterArray[] = $value;
                                                 }
+
+
+
+
+
                                             } else {
                                                 $filterArray[] = [
                                                     'type' => 'eq',
@@ -163,6 +183,17 @@ final class EntityTypeAbstractFactory implements
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $metadata = $objectManager->getClassMetadata($entityClassName);
                                         $criteria = $criteriaBuilder->create($metadata, $filterArray, $orderByArray);
+
+                                        if ($skip) {
+                                            $criteria->setFirstResult($skip);
+                                        }
+
+                                        if ($limit) {
+                                            if ($config['zf-doctrine-graphql']['limit'] < $limit) {
+                                                $limit = $config['zf-doctrine-graphql']['limit'];
+                                            }
+                                            $criteria->setMaxResults($limit);
+                                        }
 
                                         //Rebuild collection using hydrators
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));

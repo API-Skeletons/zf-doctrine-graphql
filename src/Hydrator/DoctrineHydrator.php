@@ -23,10 +23,6 @@ class DoctrineHydrator implements HydratorInterface
      */
     protected $hydrateService;
 
-    /**
-     * @param $extractService
-     * @param $hydrateService
-     */
     public function __construct($extractService, $hydrateService)
     {
         $this->extractService = $extractService;

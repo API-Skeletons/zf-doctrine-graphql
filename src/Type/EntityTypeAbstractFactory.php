@@ -3,6 +3,7 @@
 namespace ZF\Doctrine\GraphQL\Type;
 
 use DateTime;
+use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -43,6 +44,11 @@ final class EntityTypeAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
     {
+        $name = null;
+        $objectManagerAlias = null;
+        $hydratorAlias = null;
+        $fieldMetadata = null;
+        $fields = [];
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);

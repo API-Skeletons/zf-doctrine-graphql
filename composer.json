@@ -36,7 +36,8 @@
     "require-dev": {
         "dprevite/lint": "dev-master",
         "api-skeletons/coding-standard": "^1.0",
-        "phpunit/phpunit": "^7.1"
+        "phpunit/phpunit": "^7.1",
+        "phpstan/phpstan-doctrine": "^0.9.1"
     },
     "scripts": {
         "ci-check": [

@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Filter\Criteria;
 
 class Loader
 {
-    protected $inputTypeManager;
+    protected $filterManager;
 
     public function __construct(FilterManager $filterManager)
     {

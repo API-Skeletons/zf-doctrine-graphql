@@ -2,6 +2,7 @@
 
 namespace ZF\Doctrine\GraphQL;
 
+use Exception;
 use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
@@ -9,6 +10,8 @@ use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
 use Zend\Console\Adapter\AdapterInterface as Console;
 use Zend\EventManager\EventInterface;
 use Zend\ModuleManager\ModuleManagerInterface;
+use Zend\ModuleManager\ModuleManager;
+use GraphQL\Type\Definition\ObjectType;
 use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\GraphQL;
 
@@ -32,6 +35,10 @@ class Module implements
 
     public function init(ModuleManagerInterface $manager)
     {
+        if (! $manager instanceof ModuleManager) {
+            throw new Exception('Invalid module manager');
+        }
+
         $sm = $manager->getEvent()->getParam('ServiceManager');
         $serviceListener = $sm->get('ServiceListener');
 

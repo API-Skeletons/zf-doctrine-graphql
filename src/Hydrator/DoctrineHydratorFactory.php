@@ -6,7 +6,9 @@
 
 namespace ZF\Doctrine\GraphQL\Hydrator;
 
+use Exception;
 use Interop\Container\ContainerInterface;
+use Zend\Hydrator\HydratorPluginManager;
 use Zend\Hydrator\AbstractHydrator;
 use Zend\Hydrator\Filter\FilterComposite;
 use Zend\Hydrator\Filter\FilterInterface;
@@ -110,6 +112,10 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $hydratorManager, $name, $requestedName)
     {
+        if (! $hydratorManager instanceof HydratorPluginManager) {
+            throw new Exception('Invalid hydrator manager');
+        }
+
         return $this->canCreate($hydratorManager->getServiceLocator(), $requestedName);
     }
 
@@ -170,17 +176,14 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     public function createServiceWithName(ServiceLocatorInterface $hydratorManager, $name, $requestedName)
     {
+        if (! $hydratorManager instanceof HydratorPluginManager) {
+            throw new Exception('Invalid hydrator manager');
+        }
+
         return $this($hydratorManager->getServiceLocator(), $requestedName);
     }
 
-    /**
-     * @param $objectManager
-     *
-     * @return string
-     *
-     * @throws ServiceNotCreatedException
-     */
-    protected function getObjectManagerType($objectManager)
+    protected function getObjectManagerType($objectManager) : string
     {
         if (class_exists(EntityManager::class) && $objectManager instanceof EntityManager) {
             return 'ORM';
@@ -206,13 +209,6 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         return $container->get($config['object_manager']);
     }
 
-    /**
-     * @param ContainerInterface $container
-     * @param array              $config
-     * @param ObjectManager      $objectManager
-     *
-     * @return null|HydratorInterface
-     */
     protected function loadEntityHydrator(ContainerInterface $container, $config, $objectManager)
     {
         $objectManagerType = $this->getObjectManagerType($objectManager);

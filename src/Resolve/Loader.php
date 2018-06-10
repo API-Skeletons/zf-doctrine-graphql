@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Resolve;
 
 class Loader
 {
-    protected $revolveManager;
+    protected $resolveManager;
 
     public function __construct(ResolveManager $resolveManager)
     {

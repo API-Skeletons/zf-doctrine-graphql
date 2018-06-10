@@ -30,7 +30,7 @@ final class DateTimeType extends ScalarType
     public function parseValue($value)
     {
         if (! is_string($value)) {
-            throw new \UnexpectedValueException('Cannot represent value as DateTime date: ' . Utils::printSafe($value));
+            throw new \UnexpectedValueException('Cannot represent value as DateTime date: ' . $value);
         }
 
         return new DateTime($value);

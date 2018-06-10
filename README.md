@@ -8,8 +8,8 @@ zf-doctrine-graphql
 This library resolves relationships in Doctrine to provide full GraphQL
 querying of specified resources.  Data is collected via hydrators thereby
 allowing full control over each field using hydrator filters and strategies.
-
-Multiple object managers are supported.
+Multiple object managers are supported.  This library enables queries only.
+Producing mutations is left up to the developer.
 
 
 Installation
@@ -34,12 +34,12 @@ Once installed, add `ZF\Doctrine\GraphQL` to your list of modules inside
 Configuration
 -------------
 
-Because creating hydrator configurations for every entity in your object manager(s) this module provides
-an auto-generating configuration tool.
+Because creating hydrator configurations for every entity in your object manager(s) is tedious
+this module provides an auto-generating configuration tool.
 
 There are three sections to the generated configuration:
 
-* `zf-doctrine-graphql`: An array of configuration options.  The options are
+* `zf-doctrine-graphql`: An array of configuration options.  The option(s) are
   * `limit`: The maximum number of results to return for each entity or collection.
 
 * `zf-doctrine-graphql-query-provider`: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
@@ -58,12 +58,13 @@ tool.  The tool outputs a configuration file.  Write the file to your project ro
 it to your `config/autoload` directory.
 
 ```sh
-php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-default.global.php
-mv zf-doctrine-graphql-default.global.php config/autoload
+php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-orm_default.global.php
+mv zf-doctrine-graphql-orm_default.global.php config/autoload
 ```
 
 (Writing directly into the `config/autoload` directory is not recommended at run time.)
 
+Default hydrator strategies and filters are provided for every association and field in your ORM.
 Modify each hydrator configuration with your hydrator strategies and hydrator filters as needed.
 
 
@@ -71,9 +72,7 @@ Type Casting Entity Values
 --------------------------
 
 There are some hydrator stragegies included with this module.  In GraphQL types are very important and this module
-introspects your ORM metadata to correctly type against GraphQL types.  However your entities probably don't hydrate
-themselves with correct PHP datatypes such as an integer will be represented in your entity as a string.  To correct
-this use the included Hydrator Strategies to type cast each field.
+introspects your ORM metadata to correctly type against GraphQL types.  By default integer, float, and boolean fields are automatically assigned to the correct hydrator strategy.
 
 
 Supported Data Types
@@ -258,6 +257,10 @@ class GraphQLController extends AbstractActionController
 ```
 
 
+Running Queries
+===============
+
+
 Filtering Top Level Resources
 -----------------------------
 
@@ -337,7 +340,8 @@ Pagination
 The filter supports `_skip` and `_limit`.  There is a configuration
 variable to set the max limit size and anything under this limit is
 valid.  To select a page of data set the `_skip:10 _limit:10` and
-increment `_skip` by the `_limit` for each request.
+increment `_skip` by the `_limit` for each request.  These pagination
+filters exist for filtering collections too.
 
 
 Debugging Filters
@@ -352,7 +356,6 @@ will output similar to
 ```sql
 SELECT row FROM Db\Entity\Artist row WHERE row.name = :a5b1619627f9c1
 ```
-
 
 
 Filtering Collections

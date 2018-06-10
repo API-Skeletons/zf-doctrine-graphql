@@ -103,8 +103,8 @@ final class FilterTypeAbstractFactory implements
 
             if ($graphQLType) {
                 if ($orderByManager->has('field')) {
-                    $fields[$fieldName . '_orderby'] = [
-                        'name' => $fieldName . '_orderby',
+                    $fields[$fieldName . '_sort'] = [
+                        'name' => $fieldName . '_sort',
                         'type' => Type::string(),
                         'description' => 'building...',
                     ];

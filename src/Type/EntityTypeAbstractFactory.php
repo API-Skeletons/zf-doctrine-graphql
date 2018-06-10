@@ -158,7 +158,7 @@ final class EntityTypeAbstractFactory implements
                                                 $field = strtok($field, '_');
                                                 $filter = strtok('_');
 
-                                                if ($filter == 'orderby') {
+                                                if ($filter == 'sort') {
                                                     $orderByArray[] = [
                                                         'type' => 'field',
                                                         'field' => $field,

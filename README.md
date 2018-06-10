@@ -328,12 +328,12 @@ This filter is for strings only and allows fuzzy searching using a `%` wildcard 
 filter: { name_like: { value: "%Dead" } }
 ```
 
-order by
---------
+Sort
+----
 
 Used for sorting.  Valid string values are 'asc' and 'desc'.
 ```
-filter: { field_orderby: "asc" }
+filter: { field_sort: "asc" }
 ```
 
 
@@ -383,7 +383,7 @@ order them by performanceDate.
     artist( filter: { name_like:{ value: \"Dead &%\" } } ) {
         id
         name
-        performance ( filter: { year: 2017 performanceDate_orderby:\"desc\" } ) {
+        performance ( filter: { year: 2017 performanceDate_sort:\"desc\" } ) {
             performanceDate year venue city state
         }
     }
@@ -467,9 +467,9 @@ Not In
 `field_notin: { values: [1, 2, 3] }`
 
 
-Order By
---------
+Sort
+----
 
 Used for sorting a collection.  Valid values are 'asc' and 'desc'
 
-`field_orderby: "asc"`
+`field_sort: "asc"`

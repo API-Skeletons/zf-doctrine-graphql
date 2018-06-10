@@ -241,7 +241,7 @@ class GraphQLController extends AbstractActionController
         $variableValues = isset($input['variables']) ? $input['variables'] : null;
 
         try {
-            $result = GraphQL::executeQuery($schema, $query);
+            $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context = null, $variableValues);
             $output = $result->toArray();
         } catch (Exception $e) {
             $output = [

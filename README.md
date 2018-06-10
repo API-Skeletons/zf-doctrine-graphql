@@ -263,9 +263,8 @@ class GraphQLController extends AbstractActionController
 Running Queries
 ===============
 
-
-Filtering Top Level Resources
------------------------------
+Filtering
+---------
 
 For each field, which is not a reference to another entity, a colletion of filters exist.
 Given an entity which contains a `name` field you may directly filter the name using
@@ -273,67 +272,44 @@ Given an entity which contains a `name` field you may directly filter the name u
 filter: { name: "Grateful Dead" }
 ```
 
+You may only use each field's filter once per filter action.
 You may also use any of the following:
 ```
-name_eq        -  Equals; same as name: value
-name_neq       -  Not Equals
-name_gt        -  Greater Than
-name_lt        -  Less Than
-name_gte       -  Greater Than or Equal To
-name_lte       -  Less Than or Equal To
-name_isnull    -  Return results where the name field is null
-name_isnotnull -  Return results where the name field is not null
-name_in        -  Filter for values in an array
-name_notin     -  Filter for values not in an array
-name_between   -  Fiilter between `from` and `to` values
-name_like      -  Use a fuzzy search
+fieldName_eq        -  Equals; same as name: value
+fieldName_neq       -  Not Equals
+fieldName_gt        -  Greater Than
+fieldName_lt        -  Less Than
+fieldName_gte       -  Greater Than or Equal To
+fieldName_lte       -  Less Than or Equal To
+fieldName_isnull    -  Return results where the name field is null
+fieldName_isnotnull -  Return results where the name field is not null
+fieldName_in        -  Filter for values in an array
+fieldName_notin     -  Filter for values not in an array
+fieldName_between   -  Fiilter between `from` and `to` values
+fieldName_contains  -  Similar to a Like query as `like '%value%'`
+fieldName_startswith - A like query from the beginning of the value `like 'value%'`
+fieldName_endswith   - A like query from the end of the value `like '%value'`
+fieldName_sort       - Sort the result by this field.  Value is 'asc' or 'desc'
 ```
 
-Every field which can be returned from a Top Level Entity has all of the above filters as field_filter.
-You may only use each field's filter once per filter action.
-
-
-eq, neq, gt, lt, gte, lte
--------------------------
-These filters all require a single argument, `value` such as
+The format for using these filters is:
 ```js
-filter: { name_neq: { value: "Dave Matthews Band" } }
+filter: { name_endswith: { value: "Dead" } }
 ```
 
-isnull, isnotnull
------------------
-These filters require no arguments and are expressed as
+For isnull and isnotnull there is no value parameter
 ```js
-filter: { name_isnull: {} }
+filter: { name_isnotnull: {} }
 ```
 
-in, notin
----------
-These filters take an array of values
+For in and notin an array of values is expected
 ```
 filter: { name_in: { values: ["Phish", "Legion of Mary"] } }
 ```
 
-between
--------
-This filter takes two parameters and is very useful for date ranges and number queries.
+For the between filter two parameters are necessary.  This is very useful for date ranges and number queries.
 ```
 filter: { year_between: { from: 1966 to: 1995 } }
-```
-
-like
-----
-This filter is for strings only and allows fuzzy searching using a `%` wildcard (sql injection safe)
-```
-filter: { name_like: { value: "%Dead" } }
-```
-
-Sort
-----
-
-Used for sorting.  Valid string values are 'asc' and 'desc'.
-```
-filter: { field_sort: "asc" }
 ```
 
 
@@ -342,7 +318,7 @@ Optional arguments for every filter
 
 `where` - This value defaults to 'and' and may be changed to 'or'.
 
-todo:  Add `orx` and `andx` support and inner and left joins.
+TODO:  Add `orx` and `andx` support
 
 
 Pagination
@@ -358,7 +334,7 @@ filters exist for filtering collections too.
 Debugging Filters
 -----------------
 
-With so many filter options, 12 x #ofFields + 2, it can get confusing what your query looks like
+With so many filter options it can get confusing what your query looks like
 so there is a `_debug` filter field which will output only the DQL version of your query.
 ```js
 filter: { _debug:true name:"Grateful Dead" }
@@ -367,109 +343,4 @@ will output similar to
 ```sql
 SELECT row FROM Db\Entity\Artist row WHERE row.name = :a5b1619627f9c1
 ```
-
-
-Filtering Collections
----------------------
-
-Within ORM an entity may have relationships to other entities.  For `One to One` and `Many To One`
-relationships there is only one related entity and you cannot filter on this entity.  However for
-`One to Many` and `Many to Many` you can filter the collection.
-
-In this example we fetch all artists like 'Dead &%' then filter their performances to year 2017 and
-order them by performanceDate.
-```
-{
-    artist( filter: { name_like:{ value: \"Dead &%\" } } ) {
-        id
-        name
-        performance ( filter: { year: 2017 performanceDate_sort:\"desc\" } ) {
-            performanceDate year venue city state
-        }
-    }
-}
-```
-
-The artist filter is a Top Level Resource.  The performance is a collection related to the artist and can
-be filtered using these filters from [api-skeletons/zf-doctrine-criteria](https://github.com/api-skeletons/zf-doctrine-criteria) (see the [README.md](https://github.com/API-Skeletons/zf-doctrine-criteria/blob/master/README.md) for specifics):
-
-
-Equals
-------
-
-`field: "value"` or `field_eq: { value: "value" }`
-
-
-Not Equals
-----------
-
-`field_neq: { value: "value" }`
-
-
-Less Than
----------
-
-`field_lt: { value: "value" }`
-
-
-Less Than or Equals
--------------------
-
-`field_lte: { value: "value" }`
-
-
-Greater Than
-------------
-
-`field_gt: { value: "value" }`
-
-
-Greater Than or Equals
-----------------------
-
-`field_gte: { value: "value" }`
-
-
-Contains
---------
-
-> This is used for text fields to look for a sequence anywhere within the string
-> Similar to Starts With and Ends With
-
-`field_contains: { value: "value" }`
-
-
-Starts With
------------
-
-`field_startswith: { value: "value" }`
-
-
-Ends With
----------
-
-`field_endswith: { value: "value" }`
-
-
-In
------
-
-> Note the parameter is plural `values`
-
-`field_in: { values: [1, 2, 3] }`
-
-
-Not In
-------
-
-> Note the parameter is plural `values`
-
-`field_notin: { values: [1, 2, 3] }`
-
-
-Sort
-----
-
-Used for sorting a collection.  Valid values are 'asc' and 'desc'
-
-`field_sort: "asc"`
+The debug filter only works for the top level resource and not collection filters.

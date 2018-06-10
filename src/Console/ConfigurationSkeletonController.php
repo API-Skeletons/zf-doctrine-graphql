@@ -90,7 +90,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
                     case 'text':
                     case 'datetime':
                     default:
-                        $strategies[$fieldName] = Strategy\None::class;
+                        $strategies[$fieldName] = Strategy\FieldNone::class;
                         break;
                 }
             }

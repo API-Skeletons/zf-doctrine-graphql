@@ -50,10 +50,6 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
             foreach ($classMetadata->getFieldNames() as $fieldName) {
                 $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
-                if ($classMetadata->isIdentifier($fieldName)) {
-                    continue;
-                }
-
                 // Handle special named fields
                 if ($fieldName == 'password' || $fieldName == 'secret') {
                     $filters['password'] = [

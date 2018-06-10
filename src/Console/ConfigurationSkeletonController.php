@@ -11,6 +11,8 @@ use DoctrineModule\Persistence\ObjectManagerAwareInterface;
 use DoctrineModule\Persistence\ProvidesObjectManager;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
+use ZF\Doctrine\GraphQL\Hydrator\Strategy;
+use ZF\Doctrine\GraphQL\Hydrator\Filter;
 
 final class ConfigurationSkeletonController extends AbstractConsoleController implements
     ObjectManagerAwareInterface
@@ -46,6 +48,58 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
         foreach ($metadata as $classMetadata) {
             $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $classMetadata->getName());
 
+            $strategies = [];
+            $filters = [];
+            foreach ($classMetadata->getAssociationNames() as $associationName) {
+                $strategies[$associationName] = Strategy\AssociationNone::class;
+            }
+
+            foreach ($classMetadata->getFieldNames() as $fieldName) {
+                $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
+
+                if ($classMetadata->isIdentifier($fieldName)) {
+                    continue;
+                }
+
+                // Handle special named fields
+                if ($fieldName == 'password') {
+                    $filters['password'] = [
+                        'condition' => 'and',
+                        'filter' => Filter\Password::class,
+                    ];
+                    continue;
+                }
+
+                // Handle all other fields
+                switch ($fieldMetadata['type']) {
+                    case 'tinyint':
+                    case 'smallint':
+                    case 'integer':
+                    case 'int':
+                    case 'bigint':
+                        $strategies[$fieldName] = Strategy\ToInteger::class;
+                        break;
+                    case 'boolean':
+                        $strategies[$fieldName] = Strategy\ToBoolean::class;
+                        break;
+                    case 'decimal':
+                    case 'float':
+                        $strategies[$fieldName] = Strategy\ToFloat::class;
+                        break;
+                    case 'string':
+                    case 'text':
+                    case 'datetime':
+                    default:
+                        $strategies[$fieldName] = Strategy\None::class;
+                        break;
+                }
+            }
+
+            $filters['default'] = [
+                'condition' => 'and',
+                'filter' => Filter\None::class,
+            ];
+
             $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] = [
                 'entity_class' => $classMetadata->getName(),
                 'object_manager' => $objectManagerAlias,
@@ -53,8 +107,8 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
                 'use_generated_hydrator' => true,
                 'naming_strategy' => null,
                 'hydrator' => null,
-                'strategies' => [],
-                'filters' => [],
+                'strategies' => $strategies,
+                'filters' => $filters,
             ];
         }
 

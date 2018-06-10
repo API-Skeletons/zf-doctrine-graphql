@@ -12,6 +12,7 @@ return [
             Hydrator\Strategy\ToBoolean::class => Hydrator\Strategy\ToBoolean::class,
             Hydrator\Strategy\ToFloat::class => Hydrator\Strategy\ToFloat::class,
             Hydrator\Strategy\ToInteger::class => Hydrator\Strategy\ToInteger::class,
+            Hydrator\Strategy\AssociationNone::class => Hydrator\Strategy\AssociationNone::class,
             Hydrator\Strategy\None::class => Hydrator\Strategy\None::class,
         ],
         'factories' => [

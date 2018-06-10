@@ -29,7 +29,8 @@
     },
     "extra": {
         "zf": {
-            "module": "ZF\\Doctrine\\GraphQL"
+            "component": "ZF\\Doctrine\\GraphQL",
+            "config-provider": "ZF\\Doctrine\\GraphQL\\ConfigProvider"
         }
     },
     "require-dev": {

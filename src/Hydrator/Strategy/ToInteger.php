@@ -16,11 +16,19 @@ class ToInteger extends AbstractCollectionStrategy implements
 {
     public function extract($value)
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         return intval($value);
     }
 
     public function hydrate($value)
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         return intval($value);
     }
 }

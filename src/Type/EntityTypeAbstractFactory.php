@@ -177,6 +177,20 @@ final class EntityTypeAbstractFactory implements
                                                         'value' => $value['to'],
                                                         'format' => $value['format'],
                                                     ];
+                                                } elseif ($filter == 'isnull') {
+                                                    $filterArray[] = [
+                                                        'type' => 'eq',
+                                                        'field' => $field,
+                                                        'value' => null,
+                                                        'format' => $value['format'],
+                                                    ];
+                                                } elseif ($filter == 'isnotnull') {
+                                                    $filterArray[] = [
+                                                        'type' => 'neq',
+                                                        'field' => $field,
+                                                        'value' => null,
+                                                        'format' => $value['format'],
+                                                    ];
                                                 } else {
                                                     $value['type'] = $filter;
                                                     $value['field'] = $field;

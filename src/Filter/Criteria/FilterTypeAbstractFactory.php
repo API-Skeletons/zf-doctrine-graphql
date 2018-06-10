@@ -194,6 +194,19 @@ final class FilterTypeAbstractFactory implements
                     ];
                 }
 
+                if ($filterManager->has('isnull')) {
+                    $fields[$fieldName . '_isnull'] = [
+                        'name' => $fieldName . '_isnull',
+                        'type' => new FilterTypeNS\IsNull(),
+                    ];
+                }
+
+                if ($filterManager->has('isnotnull')) {
+                    $fields[$fieldName . '_isnotnull'] = [
+                        'name' => $fieldName . '_isnotnull',
+                        'type' => new FilterTypeNS\IsNotNull(),
+                    ];
+                }
 
                 if ($filterManager->has('lte') && $filterManager->has('gte')) {
                     $fields[$fieldName . '_between'] = [
@@ -211,9 +224,6 @@ final class FilterTypeAbstractFactory implements
                         ]),
                     ];
                 }
-
-
-
 
                 if ($filterManager->has('in')) {
                     $fields[$fieldName . '_in'] = [

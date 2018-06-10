@@ -16,11 +16,19 @@ class ToFloat extends AbstractCollectionStrategy implements
 {
     public function extract($value)
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         return floatval($value);
     }
 
     public function hydrate($value)
     {
+        if (is_null($value)) {
+            return $value;
+        }
+
         return floatval($value);
     }
 }

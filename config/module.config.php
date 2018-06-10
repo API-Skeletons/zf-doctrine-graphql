@@ -3,6 +3,7 @@
 namespace ZF\Doctrine\GraphQL;
 
 use DateTime;
+use Zend\ServiceManager\Factory\InvokableFactory;
 
 return [
     'service_manager' => [
@@ -32,9 +33,13 @@ return [
     'zf-doctrine-criteria-filter' => [
         'aliases' => [
             'between' => Filter\Criteria\Type\Between::class,
+            'isnull' => Filter\Criteria\Type\IsNull::class,
+            'isnotnull' => Filter\Criteria\Type\IsNotNull::class,
         ],
         'factories' => [
             Filter\Criteria\Type\Between::class => InvokableFactory::class,
+            Filter\Criteria\Type\IsNull::class => InvokableFactory::class,
+            Filter\Criteria\Type\IsNotNull::class => InvokableFactory::class,
         ],
     ],
 

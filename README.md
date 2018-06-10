@@ -40,7 +40,7 @@ an auto-generating configuration tool.
 There are three sections to the generated configuration:
 
 * `zf-doctrine-graphql`: An array of configuration options.  The options are
-  * limit: The maximum number of results to return for each entity or collection.
+  * `limit`: The maximum number of results to return for each entity or collection.
 
 * `zf-doctrine-graphql-query-provider`: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
 
@@ -49,7 +49,7 @@ There are three sections to the generated configuration:
 To generate configuration:
 
 ```sh
-php public/index.php graphql:hydrator:config-skeleton [--object-manager=]
+php public/index.php graphql:config-skeleton [--object-manager=]
 ```
 
 The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
@@ -106,7 +106,7 @@ There are three tools this library provides to help you build your GraphQL Schem
 
 * TypeLoader - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
 * FilterLoader - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
-* Resolve Loader - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
+* ResolveLoader - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
 
 Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
 
@@ -166,6 +166,31 @@ Use
 ---
 
 Create a new RPC controller
+
+Controller Factory
+```php
+use Interop\Container\ContainerInterface;
+use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
+use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
+use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
+
+class GraphQLControllerFactory
+{
+    public function __invoke(
+        ContainerInterface $container,
+        $requestedName,
+        array $options = null
+    ) {
+        $typeLoader = $container->get(TypeLoader::class);
+        $filterLoader = $container->get(FilterLoader::class);
+        $resolveLoader = $container->get(ResolveLoader::class);
+
+        return new GraphQLController($typeLoader, $filterLoader, $resolveLoader);
+    }
+}
+```
+
+Controller Class
 
 ```php
 use Exception;

@@ -105,9 +105,9 @@ Provided Tools
 
 There are three tools this library provides to help you build your GraphQL Schema.
 
-* TypeLoader - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
-* FilterLoader - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
-* ResolveLoader - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
+* **TypeLoader** - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
+* **FilterLoader** - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
+* **ResolveLoader** - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
 
 Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
 
@@ -325,6 +325,14 @@ like
 This filter is for strings only and allows fuzzy searching using a `%` wildcard (sql injection safe)
 ```
 filter: { name_like: { value: "%Dead" } }
+```
+
+order by
+--------
+
+Used for sorting.  Valid string values are 'asc' and 'desc'.
+```
+filter: { field_orderby: "asc" }
 ```
 
 

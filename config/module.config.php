@@ -7,9 +7,12 @@ use DateTime;
 return [
     'service_manager' => [
         'invokables' => [
+            Hydrator\Filter\None::class => Hydrator\Filter\None::class,
+            Hydrator\Filter\Password::class => Hydrator\Filter\Password::class,
             Hydrator\Strategy\ToBoolean::class => Hydrator\Strategy\ToBoolean::class,
             Hydrator\Strategy\ToFloat::class => Hydrator\Strategy\ToFloat::class,
             Hydrator\Strategy\ToInteger::class => Hydrator\Strategy\ToInteger::class,
+            Hydrator\Strategy\None::class => Hydrator\Strategy\None::class,
         ],
         'factories' => [
             Field\FieldResolver::class => Field\FieldResolverFactory::class,

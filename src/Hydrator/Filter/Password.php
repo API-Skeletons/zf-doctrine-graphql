@@ -9,7 +9,8 @@ class Password implements FilterInterface
     public function filter($field)
     {
         $excludeFields = [
-            'password'
+            'password',
+            'secret',
         ];
 
         return (! in_array($field, $excludeFields));

@@ -55,7 +55,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                 }
 
                 // Handle special named fields
-                if ($fieldName == 'password') {
+                if ($fieldName == 'password' || $fieldName == 'secret') {
                     $filters['password'] = [
                         'condition' => 'and',
                         'filter' => Filter\Password::class,

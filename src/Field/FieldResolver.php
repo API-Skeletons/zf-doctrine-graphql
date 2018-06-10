@@ -5,10 +5,9 @@ declare(strict_types=1);
 namespace ZF\Doctrine\GraphQL\Field;
 
 use Exception as FieldResolverException;
+use Zend\Hydrator\HydratorPluginManager;
 use GraphQL\Type\Definition\ResolveInfo;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\Common\Util\ClassUtils;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 
 /**
  * A field resolver which uses the Doctrine hydrator. Can be used byReference or byValue.
@@ -25,7 +24,7 @@ class FieldResolver
      */
     private $extractValues = [];
 
-    public function __construct($hydratorManager, array $config)
+    public function __construct(HydratorPluginManager $hydratorManager, array $config)
     {
         $this->hydratorManager = $hydratorManager;
         $this->config = $config;

@@ -2,22 +2,16 @@
 
 namespace ZF\Doctrine\GraphQL\Filter;
 
-use ArrayObject;
-use DateTime;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Instantiator\Instantiator;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
-use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\Type\Definition\Type;
-use GraphQL\Doctrine\Utils;
-
-use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use ZF\Doctrine\GraphQL\Type\TypeManager;
+use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface

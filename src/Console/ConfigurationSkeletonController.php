@@ -5,20 +5,13 @@ namespace ZF\Doctrine\GraphQL\Console;
 use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\Mvc\Console\Controller\AbstractConsoleController;
-use Zend\Console\ColorInterface as Color;
-use Zend\Console\Prompt;
-use DoctrineModule\Persistence\ObjectManagerAwareInterface;
-use DoctrineModule\Persistence\ProvidesObjectManager;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
 use ZF\Doctrine\GraphQL\Hydrator\Strategy;
 use ZF\Doctrine\GraphQL\Hydrator\Filter;
 
-final class ConfigurationSkeletonController extends AbstractConsoleController implements
-    ObjectManagerAwareInterface
+final class ConfigurationSkeletonController extends AbstractConsoleController
 {
-    use ProvidesObjectManager;
-
     private $container;
 
     public function __construct(ContainerInterface $container)

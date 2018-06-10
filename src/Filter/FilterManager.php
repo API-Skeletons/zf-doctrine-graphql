@@ -4,7 +4,6 @@ namespace ZF\Doctrine\GraphQL\Filter;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
-use ZF\Apigility\Doctrine\Server\Query\Provider\QueryProviderInterface;
 use GraphQL\Type\Definition\Type;
 
 class FilterManager extends AbstractPluginManager

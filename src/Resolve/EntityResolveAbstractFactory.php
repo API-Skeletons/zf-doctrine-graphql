@@ -104,6 +104,27 @@ final class EntityResolveAbstractFactory implements
                             'field' => $field,
                             'direction' => $value,
                         ];
+                    } elseif ($filter == 'contains') {
+                        $filterArray[] = [
+                            'type' => 'like',
+                            'field' => $field,
+                            'value' => '%' . $value['value'] . '%',
+                            'format' => $value['format'],
+                        ];
+                    } elseif ($filter == 'startswith') {
+                        $filterArray[] = [
+                            'type' => 'like',
+                            'field' => $field,
+                            'value' => $value['value'] . '%',
+                            'format' => $value['format'],
+                        ];
+                    } elseif ($filter == 'endswith') {
+                        $filterArray[] = [
+                            'type' => 'like',
+                            'field' => $field,
+                            'value' => '%' . $value['value'],
+                            'format' => $value['format'],
+                        ];
                     } else {
                         $value['type'] = $filter;
                         $value['field'] = $field;

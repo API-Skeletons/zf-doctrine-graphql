@@ -255,8 +255,18 @@ final class FilterTypeAbstractFactory implements
                 }
 
                 if ($filterManager->has('like')) {
-                    $fields[$fieldName . '_like'] = [
-                        'name' => $fieldName . '_like',
+                    $fields[$fieldName . '_contains'] = [
+                        'name' => $fieldName . '_contains',
+                        'type' => new FilterTypeNS\Like(),
+                    ];
+
+                    $fields[$fieldName . '_startswith'] = [
+                        'name' => $fieldName . '_startswith',
+                        'type' => new FilterTypeNS\Like(),
+                    ];
+
+                    $fields[$fieldName . '_endswith'] = [
+                        'name' => $fieldName . '_endswith',
                         'type' => new FilterTypeNS\Like(),
                     ];
                 }

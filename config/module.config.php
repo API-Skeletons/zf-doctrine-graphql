@@ -29,6 +29,15 @@ return [
         ],
     ],
 
+    'zf-doctrine-criteria-filter' => [
+        'aliases' => [
+            'between' => Filter\Criteria\Type\Between::class,
+        ],
+        'factories' => [
+            Filter\Criteria\Type\Between::class => InvokableFactory::class,
+        ],
+    ],
+
     'hydrators' => array(
         'abstract_factories' => array(
             Hydrator\DoctrineHydratorFactory::class,

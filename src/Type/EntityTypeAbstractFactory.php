@@ -164,6 +164,19 @@ final class EntityTypeAbstractFactory implements
                                                         'field' => $field,
                                                         'direction' => $value,
                                                     ];
+                                                } elseif ($filter == 'between') {
+                                                    $filterArray[] = [
+                                                        'type' => 'gte',
+                                                        'field' => $field,
+                                                        'value' => $value['from'],
+                                                        'format' => $value['format'],
+                                                    ];
+                                                    $filterArray[] = [
+                                                        'type' => 'lte',
+                                                        'field' => $field,
+                                                        'value' => $value['to'],
+                                                        'format' => $value['format'],
+                                                    ];
                                                 } else {
                                                     $value['type'] = $filter;
                                                     $value['field'] = $field;

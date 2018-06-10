@@ -194,6 +194,27 @@ final class FilterTypeAbstractFactory implements
                     ];
                 }
 
+
+                if ($filterManager->has('lte') && $filterManager->has('gte')) {
+                    $fields[$fieldName . '_between'] = [
+                        'name' => $fieldName . '_between',
+                        'type' => new FilterTypeNS\Between(['fields' => [
+                            'from' => [
+                                'name' => 'from',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                            'to' => [
+                                'name' => 'to',
+                                'type' => Type::nonNull($graphQLType),
+                            ],
+                        ]
+                        ]),
+                    ];
+                }
+
+
+
+
                 if ($filterManager->has('in')) {
                     $fields[$fieldName . '_in'] = [
                         'name' => $fieldName . '_in',

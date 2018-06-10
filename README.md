@@ -199,6 +199,7 @@ use GraphQL\GraphQL;
 use Zend\Mvc\Controller\AbstractActionController;
 use ZF\ContentNegotiation\ViewModel as ContentNegotiationViewModel;
 use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
+use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
 use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
 use Db\Entity;
 

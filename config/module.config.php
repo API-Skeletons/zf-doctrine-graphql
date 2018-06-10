@@ -7,13 +7,13 @@ use DateTime;
 return [
     'service_manager' => [
         'invokables' => [
-            Hydrator\Filter\None::class => Hydrator\Filter\None::class,
+            Hydrator\Filter\FilterDefault::class => Hydrator\Filter\FilterDefault::class,
             Hydrator\Filter\Password::class => Hydrator\Filter\Password::class,
             Hydrator\Strategy\ToBoolean::class => Hydrator\Strategy\ToBoolean::class,
             Hydrator\Strategy\ToFloat::class => Hydrator\Strategy\ToFloat::class,
             Hydrator\Strategy\ToInteger::class => Hydrator\Strategy\ToInteger::class,
-            Hydrator\Strategy\AssociationNone::class => Hydrator\Strategy\AssociationNone::class,
-            Hydrator\Strategy\FieldNone::class => Hydrator\Strategy\FieldNone::class,
+            Hydrator\Strategy\AssociationDefault::class => Hydrator\Strategy\AssociationDefault::class,
+            Hydrator\Strategy\FieldDefault::class => Hydrator\Strategy\FieldDefault::class,
         ],
         'factories' => [
             Field\FieldResolver::class => Field\FieldResolverFactory::class,

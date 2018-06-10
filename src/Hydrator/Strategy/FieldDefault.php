@@ -9,7 +9,7 @@ use ZF\Hal\Collection;
 /**
  * Return the same value
  */
-class FieldNone extends AbstractCollectionStrategy implements
+class FieldDefault extends AbstractCollectionStrategy implements
     StrategyInterface
 {
     public function extract($value)

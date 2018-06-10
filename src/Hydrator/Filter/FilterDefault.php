@@ -4,7 +4,7 @@ namespace ZF\Doctrine\GraphQL\Hydrator\Filter;
 
 use Zend\Hydrator\Filter\FilterInterface;
 
-class None implements FilterInterface
+class FilterDefault implements FilterInterface
 {
     public function filter($field)
     {

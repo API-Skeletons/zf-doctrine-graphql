@@ -51,7 +51,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
             $strategies = [];
             $filters = [];
             foreach ($classMetadata->getAssociationNames() as $associationName) {
-                $strategies[$associationName] = Strategy\AssociationNone::class;
+                $strategies[$associationName] = Strategy\AssociationDefault::class;
             }
 
             foreach ($classMetadata->getFieldNames() as $fieldName) {
@@ -90,14 +90,14 @@ final class ConfigurationSkeletonController extends AbstractConsoleController im
                     case 'text':
                     case 'datetime':
                     default:
-                        $strategies[$fieldName] = Strategy\FieldNone::class;
+                        $strategies[$fieldName] = Strategy\FieldDefault::class;
                         break;
                 }
             }
 
             $filters['default'] = [
                 'condition' => 'and',
-                'filter' => Filter\None::class,
+                'filter' => Filter\FilterDefault::class,
             ];
 
             $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] = [

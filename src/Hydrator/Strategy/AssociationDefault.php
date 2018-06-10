@@ -10,7 +10,7 @@ use ZF\Hal\Collection;
  * Take no action on an association.  This class exists to
  * differentiate associations inside generated config.
  */
-class AssociationNone extends AbstractCollectionStrategy implements
+class AssociationDefault extends AbstractCollectionStrategy implements
     StrategyInterface
 {
     public function extract($value)

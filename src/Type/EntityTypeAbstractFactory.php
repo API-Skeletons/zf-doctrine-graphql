@@ -20,11 +20,13 @@ use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 final class EntityTypeAbstractFactory implements
     AbstractFactoryInterface
 {
+    // @codeCoverageIgnore
     public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this->canCreate($services, $requestedName);
     }
 
+    // @codeCoverageIgnore
     public function createServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this($services, $requestedName);

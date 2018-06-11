@@ -58,6 +58,10 @@ return [
                     'condition' => 'and',
                     'filter' => \ZF\Doctrine\GraphQL\Hydrator\Filter\FilterDefault::class,
                 ],
+                'password' => [
+                    'condition' => 'and',
+                    'filter' => \ZF\Doctrine\GraphQL\Hydrator\Filter\Password::class,
+                ],
             ],
         ],
         'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Address' => [

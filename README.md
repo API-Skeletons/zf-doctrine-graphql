@@ -283,14 +283,14 @@ fieldName_gt        -  Greater Than
 fieldName_lt        -  Less Than
 fieldName_gte       -  Greater Than or Equal To
 fieldName_lte       -  Less Than or Equal To
-fieldName_isnull    -  Return results where the name field is null
-fieldName_isnotnull -  Return results where the name field is not null
 fieldName_in        -  Filter for values in an array
 fieldName_notin     -  Filter for values not in an array
 fieldName_between   -  Fiilter between `from` and `to` values
 fieldName_contains  -  Similar to a Like query as `like '%value%'`
 fieldName_startswith - A like query from the beginning of the value `like 'value%'`
 fieldName_endswith   - A like query from the end of the value `like '%value'`
+fieldName_isnull    -  Return results where the field is null.  NOTE: acts as "isEmpty" for collection filters.  A value of false will be handled as though it were null.
+fieldName_isnotnull -  Return results where the field is not null.  NOTE: acts as "isEmpty" for collection filters.  A value of true will be handled as though it were notnull.
 fieldName_sort       - Sort the result by this field.  Value is 'asc' or 'desc'
 ```
 

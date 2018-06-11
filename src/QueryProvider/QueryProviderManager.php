@@ -19,6 +19,7 @@ final class QueryProviderManager extends AbstractPluginManager
      *
      * @param mixed $instance
      * @throws Exception\InvalidServiceException
+     * @codeCoverageIgnore
      */
     public function validate($instance)
     {
@@ -40,6 +41,7 @@ final class QueryProviderManager extends AbstractPluginManager
      * @param mixed $plugin
      * @return void
      * @throws Exception\InvalidArgumentException
+     * @codeCoverageIgnore
      */
     public function validatePlugin($plugin)
     {

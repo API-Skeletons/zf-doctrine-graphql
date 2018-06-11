@@ -4,7 +4,8 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="name" nullable="true"/>
+    <field name="name" type="string" nullable="true"/>
+    <field name="password" type="string" nullable="true"/>
     <one-to-one field="address" target-entity="DbTest\Entity\Address" mapped-by="user"/>
     <many-to-many field="artist" target-entity="DbTest\Entity\Artist" mapped-by="user"/>
   </entity>

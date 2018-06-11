@@ -20,7 +20,8 @@
     </association>
     <entity name="\DbTest\Entity\User" local-name="User" namespace="\DbTest\Entity" uuid="338d46bf-259f-4875-8f3c-607edcbc6fc6">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="529e3c47-258d-4ee3-8931-da399666ff09"/>
-      <field name="name" uuid="2128547f-f3b1-4780-83e7-236d15155474"/>
+      <field name="name" type="string" uuid="2128547f-f3b1-4780-83e7-236d15155474"/>
+      <field name="password" type="string" uuid="630ae4d7-5ad0-4657-8c56-64903a949fd5"/>
     </entity>
     <entity name="\DbTest\Entity\UserToArtist" local-name="UserToArtist" namespace="\DbTest\Entity" uuid="60ffaf1d-1d8b-42b6-891d-859d6f725f14">
       <field name="user_id" type="integer" required="true" primary="true" uuid="a7a5b814-c8c4-46cb-8907-1011ac24f533"/>

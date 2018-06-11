@@ -37,12 +37,160 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         }
 
         // Add fixtures
-        $user = new Entity\User();
-        $user->name = 'test1';
-        $user->createdAt = new DateTime('2010-01-01');
-        $objectManager->persist($user);
-        $objectManager->flush();
+        $artist1 = new Entity\Artist();
+        $artist1->name = 'artist1';
+        $artist1->createdAt = new DateTime('2010-02-01');
+        $objectManager->persist($artist1);
 
+        $performance1 = new Entity\Performance();
+        $performance1->artist = $artist1;
+        $performance1->performanceDate = '2011-01-01';
+        $performance1->venue = 'venue1';
+        $performance1->attendance = 1000;
+        $performance1->isTradable = true;
+        $performance1->ticketPrice = 10.01;
+        $objectManager->persist($performance1);
+        $artist1->performance->add($performance1);
+
+        $performance2 = new Entity\Performance();
+        $performance2->artist = $artist1;
+        $performance2->performanceDate = '2011-01-02';
+        $performance2->venue = 'venue2';
+        $performance2->attendance = 2000;
+        $performance2->isTradable = null;
+        $performance2->ticketPrice = 20.01;
+        $objectManager->persist($performance2);
+        $artist1->performance->add($performance2);
+
+        $performance3 = new Entity\Performance();
+        $performance3->artist = $artist1;
+        $performance3->performanceDate = '2011-01-03';
+        $performance3->venue = 'venue3';
+        $performance3->attendance = 3000;
+        $performance3->isTradable = false;
+        $performance3->ticketPrice = 30.01;
+        $objectManager->persist($performance3);
+        $artist1->performance->add($performance3);
+
+        $performance4 = new Entity\Performance();
+        $performance4->artist = $artist1;
+        $performance4->performanceDate = '2011-01-04';
+        $performance4->venue = 'venue4';
+        $performance4->attendance = 4000;
+        $performance4->isTradable = false;
+        $performance4->ticketPrice = 40.01;
+        $objectManager->persist($performance4);
+        $artist1->performance->add($performance4);
+
+        $performance5 = new Entity\Performance();
+        $performance5->artist = $artist1;
+        $performance5->performanceDate = '2011-01-05';
+        $performance5->venue = 'venue5';
+        $performance5->attendance = 5000;
+        $performance5->isTradable = true;
+        $performance5->ticketPrice = 50.01;
+        $objectManager->persist($performance5);
+        $artist1->performance->add($performance5);
+
+        $artist2 = new Entity\Artist();
+        $artist2->name = 'artist2';
+        $artist2->createdAt = new DateTime('2010-02-02');
+        $objectManager->persist($artist2);
+
+        $artist3 = new Entity\Artist();
+        $artist3->name = 'artist3';
+        $artist3->createdAt = new DateTime('2010-02-03');
+        $objectManager->persist($artist3);
+
+        $artist4 = new Entity\Artist();
+        $artist4->name = 'artist4';
+        $artist4->createdAt = new DateTime('2010-02-04');
+        $objectManager->persist($artist4);
+
+        $artist5 = new Entity\Artist();
+        $artist5->name = 'artist5';
+        $artist5->createdAt = new DateTime('2010-02-05');
+        $objectManager->persist($artist5);
+
+
+        $user1 = new Entity\User();
+        $user1->name = 'test1';
+        $user1->password = 'secret';
+        $user1->createdAt = new DateTime('2010-01-01');
+
+        $address = new Entity\Address();
+        $address->user= $user1;
+        $address->address = 'address1';
+        $user1->address = $address;
+
+        $objectManager->persist($address);
+        $objectManager->persist($user1);
+
+        $user = new Entity\User();
+        $user->name = 'test2';
+        $user->password = 'secret';
+        $user->createdAt = new DateTime('2010-01-02');
+
+        $address = new Entity\Address();
+        $address->user= $user;
+        $address->address = 'address2';
+        $user->address = $address;
+
+        $objectManager->persist($address);
+        $objectManager->persist($user);
+
+        $user = new Entity\User();
+        $user->name = 'test3';
+        $user->password = 'secret';
+        $user->createdAt = new DateTime('2010-01-03');
+
+        $address = new Entity\Address();
+        $address->user= $user;
+        $address->address = 'address3';
+        $user->address = $address;
+
+        $objectManager->persist($address);
+        $objectManager->persist($user);
+
+        $user = new Entity\User();
+        $user->name = 'test4';
+        $user->password = 'secret';
+        $user->createdAt = new DateTime('2010-01-04');
+
+        $address = new Entity\Address();
+        $address->user= $user;
+        $address->address = 'address4';
+        $user->address = $address;
+
+        $objectManager->persist($address);
+        $objectManager->persist($user);
+
+        $user = new Entity\User();
+        $user->name = 'test5';
+        $user->password = 'secret';
+        $user->createdAt = new DateTime('2010-01-05');
+
+        $address = new Entity\Address();
+        $address->user= $user;
+        $address->address = 'address5';
+        $user->address = $address;
+
+        $objectManager->persist($address);
+        $objectManager->persist($user);
+
+        $user1->artist->add($artist1);
+        $artist1->user->add($user1);
+        $user1->artist->add($artist2);
+        $artist2->user->add($user1);
+        $user1->artist->add($artist3);
+        $artist3->user->add($user1);
+        $user1->artist->add($artist4);
+        $artist4->user->add($user1);
+        $user1->artist->add($artist5);
+        $artist5->user->add($user1);
+
+        $objectManager->flush();
+        $objectManager->clear();
     }
 
     protected function getObjectManager()

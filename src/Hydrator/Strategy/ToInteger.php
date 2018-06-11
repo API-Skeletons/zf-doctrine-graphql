@@ -23,6 +23,9 @@ class ToInteger extends AbstractCollectionStrategy implements
         return intval($value);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function hydrate($value)
     {
         if (is_null($value)) {

@@ -23,6 +23,9 @@ class ToFloat extends AbstractCollectionStrategy implements
         return floatval($value);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function hydrate($value)
     {
         if (is_null($value)) {

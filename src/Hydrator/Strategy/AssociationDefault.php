@@ -18,6 +18,9 @@ class AssociationDefault extends AbstractCollectionStrategy implements
         return $value;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function hydrate($value)
     {
         return $value;

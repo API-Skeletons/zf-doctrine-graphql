@@ -23,6 +23,9 @@ class ToBoolean extends AbstractCollectionStrategy implements
         return (bool)$value;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function hydrate($value)
     {
         if (is_null($value)) {

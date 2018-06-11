@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\Graphql\Test;
+namespace ZFTest\Doctrine\GraphQL;
 
 use Zend\Loader\AutoloaderFactory;
 use RuntimeException;

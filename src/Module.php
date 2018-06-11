@@ -26,6 +26,9 @@ class Module implements
         return include __DIR__ . '/../config/module.config.php';
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function getConsoleUsage(Console $console)
     {
         return [
@@ -35,9 +38,11 @@ class Module implements
 
     public function init(ModuleManagerInterface $manager)
     {
+        // @codeCoverageIgnoreStart
         if (! $manager instanceof ModuleManager) {
             throw new Exception('Invalid module manager');
         }
+        // @codeCoverageIgnoreEnd
 
         $sm = $manager->getEvent()->getParam('ServiceManager');
         $serviceListener = $sm->get('ServiceListener');

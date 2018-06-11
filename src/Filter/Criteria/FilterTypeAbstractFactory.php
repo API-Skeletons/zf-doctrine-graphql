@@ -16,11 +16,17 @@ use ZF\Doctrine\GraphQL\Filter\Criteria\Type as FilterTypeNS;
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this->canCreate($services, $requestedName);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function createServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this($services, $requestedName);
@@ -92,9 +98,11 @@ final class FilterTypeAbstractFactory implements
                     $graphQLType = Type::string();
                     break;
                 default:
-                    // Do not process unknown for now
+                    // @codeCoverageIgnoreStart
+                    // Do not process unknown.  If you have an unknown type please report it.
                     $graphQLType = null;
                     break;
+                    // @codeCoverageIgnoreEnd
             }
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {

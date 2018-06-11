@@ -45,15 +45,10 @@ final class EntityResolveAbstractFactory implements
     {
         $config = $container->get('config');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias] ?? null;
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
         $queryProviderManager = $container->get(QueryProviderManager::class);
-
-        if (! $hydratorConfig) {
-            throw new Exception("Hydrator configuration not found for entity ${requestedName}");
-        }
-
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
         return function (
@@ -68,8 +63,13 @@ final class EntityResolveAbstractFactory implements
             $orderByManager,
             $queryProviderManager
         ) {
+
             // Build query builder from Query Provider
-            $queryBuilder = $queryProviderManager->get($requestedName)->createQuery($objectManager);
+            if (! $queryProviderManager->has($requestedName)) {
+                throw new Exception('Missing query provider for ' . $requestedName);
+            }
+            $queryProvider = $queryProviderManager->get($requestedName);
+            $queryBuilder = $queryProvider->createQuery($objectManager);
 
             // Resolve top level filters
             $filter = $args['filter'] ?? [];

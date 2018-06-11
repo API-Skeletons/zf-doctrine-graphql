@@ -43,11 +43,6 @@ class FieldResolver
         }
 
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
-
-        if (! $this->hydratorManager->has($hydratorAlias)) {
-            throw new FieldResolverException('Hydrator not found for class ' . $entityClassName);
-        }
-
         $hydrator = $this->hydratorManager->get($hydratorAlias);
         $this->extractValues[$splObjectHash] = $hydrator->extract($source);
 

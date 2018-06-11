@@ -117,7 +117,9 @@ There is not a tool for mutations.  Those are left to the developer to build.
 Query Providers
 ---------------
 
-Each top level entity to query requires a Query Provider.  The configuration section `zf-doctrine-graphql-query-provider` is a service manager configuration for your Query Providers.
+Each top level entity to query requires a Query Provider.  The configuration section `zf-doctrine-graphql-query-provider` is a service manager configuration for your Query Providers.  This is where to implement security for
+your data.  It is expected that related data to a top level entity is allowable for the user.  If there is data
+which a user should not be able to get to adjust your hydrator filters to disallow querying that relation.
 
 Example Configuration for one top level Artist entity:
 ```php

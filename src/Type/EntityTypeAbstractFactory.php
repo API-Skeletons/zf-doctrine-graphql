@@ -44,7 +44,7 @@ final class EntityTypeAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
     {
-        $name = null;
+        $name = str_replace('\\', '_', $requestedName);
         $objectManagerAlias = null;
         $hydratorAlias = null;
         $fieldMetadata = null;
@@ -56,22 +56,10 @@ final class EntityTypeAbstractFactory implements
         $criteriaFilterManager = $container->get(FilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
 
-        foreach ($config['zf-rest'] as $controllerName => $restConfig) {
-            if ($restConfig['entity_class'] == $requestedName) {
-                $name = $restConfig['service_name'];
-                $listener = $restConfig['listener'];
-                $hydratorAlias = $config['zf-apigility']['doctrine-connected'][$listener]['hydrator'];
-                $objectManagerAlias = $config['zf-apigility']['doctrine-connected'][$listener]['object_manager'];
-                break;
-            }
-        }
-
-        if (! $name) {
-            throw new Exception("Rest config not found for entity ${requestedName}");
-        }
-
-        $objectManager = $container->get($objectManagerAlias);
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
         $hydrator = $hydratorManager->get($hydratorAlias);
+        $objectManager = $container->get($hydratorConfig['object_manager']);
 
         // Create an instance of the entity in order to get fields from the hydrator.
         $instantiator = new Instantiator();

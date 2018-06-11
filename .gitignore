@@ -3,3 +3,4 @@ phpcs.xml
 phpunit.xml
 composer.lock
 vendor/
+coverage/

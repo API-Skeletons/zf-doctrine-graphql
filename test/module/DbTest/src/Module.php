@@ -15,6 +15,8 @@ class Module implements
     {
         return ['Zend\Loader\StandardAutoloader' => ['namespaces' => [
             __NAMESPACE__ => __DIR__,
-        ]]];
+        ]
+        ]
+        ];
     }
 }

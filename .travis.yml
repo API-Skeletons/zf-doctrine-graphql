@@ -37,8 +37,9 @@ install:
 script:
   - mkdir -p build/logs
   - ./vendor/bin/phpcs
+  - if [[ EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml ; fi
+  - if [[ EXECUTE_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
-
 
 after_script:
   - php vendor/bin/coveralls

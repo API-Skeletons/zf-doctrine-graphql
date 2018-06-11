@@ -5,7 +5,6 @@
     <arg name="report" value="summary"/>
     <arg value="sp"/>
     <file>src</file>
-    <file>test</file>
     <exclude-pattern type="relative">Bootstrap.php</exclude-pattern>
     <exclude-pattern type="relative">*/data/*</exclude-pattern>
     <rule ref="PSR1"/>

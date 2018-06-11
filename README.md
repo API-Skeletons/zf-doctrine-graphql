@@ -289,8 +289,12 @@ fieldName_between   -  Fiilter between `from` and `to` values
 fieldName_contains  -  Similar to a Like query as `like '%value%'`
 fieldName_startswith - A like query from the beginning of the value `like 'value%'`
 fieldName_endswith   - A like query from the end of the value `like '%value'`
-fieldName_isnull    -  Return results where the field is null.  NOTE: acts as "isEmpty" for collection filters.  A value of false will be handled as though it were null.
-fieldName_isnotnull -  Return results where the field is not null.  NOTE: acts as "isEmpty" for collection filters.  A value of true will be handled as though it were notnull.
+fieldName_isnull    -  Return results where the field is null.
+     NOTE: acts as "isEmpty" for collection filters.  A value of false will be
+           handled as though it were null.
+fieldName_isnotnull -  Return results where the field is not null.
+     NOTE: acts as "isEmpty" for collection filters.  A value of true will be
+           handled as though it were notnull.
 fieldName_sort       - Sort the result by this field.  Value is 'asc' or 'desc'
 ```
 

@@ -7,12 +7,12 @@ zf-doctrine-graphql
 [![Total Downloads](https://poser.pugx.org/api-skeletons/zf-doctrine-graphql/downloads)](https://packagist.org/packages/api-skeletons/zf-doctrine-graphql)
 
 This library resolves relationships in Doctrine to provide full GraphQL
-querying of specified resources.  Entity metadata is introspected and is
-therefore Doctrine data driver agnostic.
+querying of specified resources and all related entities.
+Entity metadata is introspected and is therefore Doctrine data driver agnostic.
 Data is collected via hydrators thereby
 allowing full control over each field using hydrator filters and strategies.
 Multiple object managers are supported.  This library enables queries only.
-Producing mutations is left up to the developer.
+Producing mutations is left to the developer.
 
 
 Installation

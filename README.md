@@ -153,6 +153,7 @@ $events->attach(
 Use
 ---
 
+```php
 use GraphQL\GraphQL;
 use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
 use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;

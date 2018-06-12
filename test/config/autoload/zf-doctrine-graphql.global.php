@@ -16,7 +16,7 @@ return [
                 'name' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                 'createdAt' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                 'performance' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
-                'user' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
+                'user' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation::class,
             ],
             'filters' => [
                 'default' => [

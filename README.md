@@ -206,6 +206,19 @@ types.  By default integer, float, and boolean fields are automatically assigned
 correct hydrator strategy.
 
 
+Many to Many Owning Side Relationships
+--------------------------------------
+
+`{ artist { user { role { user { name } } } } }`
+
+This query would return all user names who share the same role permissions as the user who created the artist.
+To prevent this the `graphql:config-skeleton` command nullifies the owning side of many to many relations by
+default causing an error when the query tries to go from role > user but not when it goes from user > role
+becuase role is the owning side of the many to many relationship.  See
+[NullifyOwningAssociation](https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Hydrator/Strategy/NullifyOwningAssociation.php)
+for more information.
+
+
 Supported Data Types
 --------------------
 

@@ -13,6 +13,7 @@ return [
             Hydrator\Strategy\ToBoolean::class => Hydrator\Strategy\ToBoolean::class,
             Hydrator\Strategy\ToFloat::class => Hydrator\Strategy\ToFloat::class,
             Hydrator\Strategy\ToInteger::class => Hydrator\Strategy\ToInteger::class,
+            Hydrator\Strategy\NullifyOwningAssociation::class => Hydrator\Strategy\NullifyOwningAssociation::class,
             Hydrator\Strategy\AssociationDefault::class => Hydrator\Strategy\AssociationDefault::class,
             Hydrator\Strategy\FieldDefault::class => Hydrator\Strategy\FieldDefault::class,
         ],

@@ -59,7 +59,7 @@ class UserTest extends AbstractTest
         );
     }
 
-    public function testUserArtistManyToMany()
+    public function testUserArtistManyToManyWorksBecauseArtistIsOwner()
     {
         $schema = $this->getSchema();
 

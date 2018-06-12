@@ -32,7 +32,7 @@ class ArtistTest extends AbstractTest
         $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
     }
 
-    public function testArtistUserManyToMany()
+    public function testArtistUserManyToManyIsBlockedBecauseArtistIsOwner()
     {
         $schema = $this->getSchema();
 
@@ -41,6 +41,6 @@ class ArtistTest extends AbstractTest
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        $this->assertEquals(1, sizeof($output['data']['artist'][0]['user']));
+        $this->assertEquals([0 => 'artist', 1 => 0, 2 => 'user'], $output['errors'][0]['path']);
     }
 }

@@ -33,123 +33,8 @@ Once installed, add `ZF\Doctrine\GraphQL` to your list of modules inside
 > that plugin will install zf-doctrine-graphql as a module for you.
 
 
-Configuration
--------------
-
-Because creating hydrator configurations for every entity in your object manager(s) is tedious
-this module provides an auto-generating configuration tool.
-
-There are three sections to the generated configuration:
-
-* `zf-doctrine-graphql`: An array of configuration options.  The option(s) are
-  * `limit`: The maximum number of results to return for each entity or collection.
-
-* `zf-doctrine-graphql-hydrator`: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
-
-To generate configuration:
-
-```sh
-php public/index.php graphql:config-skeleton [--object-manager=]
-```
-
-The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
-For each object manager you want to serve data with in your application create a configuration using this
-tool.  The tool outputs a configuration file.  Write the file to your project root location then move
-it to your `config/autoload` directory.
-
-```sh
-php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-orm_default.global.php
-mv zf-doctrine-graphql-orm_default.global.php config/autoload
-```
-
-(Writing directly into the `config/autoload` directory is not recommended at run time.)
-
-Default hydrator strategies and filters are provided for every association and field in your ORM.
-Modify each hydrator configuration with your hydrator strategies and hydrator filters as needed.
-
-
-Type Casting Entity Values
---------------------------
-
-There are some hydrator stragegies included with this module.  In GraphQL types are very important and this module
-introspects your ORM metadata to correctly type against GraphQL types.  By default integer, float, and boolean fields are automatically assigned to the correct hydrator strategy.
-
-
-Supported Data Types
---------------------
-
-This module would like to support all datatypes representable in a GraphQL response.  At this time these data types are
-supported:
-
-```
-tinyint
-smallint
-integer
-int
-bigint
-boolean
-decimal
-float
-string
-text
-datetime
-```
-
-If you have need to support a datatype not listed here please create an issue on the github project.
-
-
-Provided Tools
---------------
-
-There are three tools this library provides to help you build your GraphQL Schema.
-
-* **TypeLoader** - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
-* **FilterLoader** - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
-* **ResolveLoader** - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
-
-Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
-
-There is not a tool for mutations.  Those are left to the developer to build.
-
-
-Filtering Query Builders
-------------------------
-
-Each top level entity to query uses a QueryBuilder object.  This QueryBuilder object should be modified to filter
-the data for the logged in user.  This is the security layer.
-QueryBuilders are built then triggered through an event.  Listen to this event and modify the passed QueryBuilder to
-apply your security.  The queryBuilder already has the entityClassName assigned to fetch with the alias 'row'.
-
-Three parameters are passed in the FILTER_QUERY_BUILDER event: objectManager, entityClassName, queryBuilder.
-
-```php
-use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
-
-$events = $container->get('SharedEventManager');
-
-$events->attach(
-    EntityResolveAbstractFactory::class,
-    EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
-    function(Event $event)
-    {
-        switch ($event->getParam('entityClassName')) {
-            case 'Db\Entity\Performance':
-                // Modify the queryBuilder for your needs
-                $event->getParam('queryBuilder')
-                    ->andWhere('row.id = 1')
-                    ;
-                break;
-            default:
-                break;
-        }
-    },
-    100
-);
-```
-
-
 Use
----
+===
 
 ```php
 use Exception;
@@ -263,3 +148,120 @@ variable to set the max limit size and anything under this limit is
 valid.  To select a page of data set the `_skip:10 _limit:10` and
 increment `_skip` by the `_limit` for each request.  These pagination
 filters exist for filtering collections too.
+
+
+Configuration
+=============
+
+Because creating hydrator configurations for every entity in your object manager(s) is tedious
+this module provides an auto-generating configuration tool.
+
+There are two sections to the generated configuration:
+
+* `zf-doctrine-graphql`: An array of configuration options.  The option(s) are
+  * `limit`: The maximum number of results to return for each entity or collection.
+
+* `zf-doctrine-graphql-hydrator`: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
+
+To generate configuration:
+
+```sh
+php public/index.php graphql:config-skeleton [--object-manager=]
+```
+
+The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
+For each object manager you want to serve data with in your application create a configuration using this
+tool.  The tool outputs a configuration file.  Write the file to your project root location then move
+it to your `config/autoload` directory.
+
+```sh
+php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-orm_default.global.php
+mv zf-doctrine-graphql-orm_default.global.php config/autoload
+```
+
+(Writing directly into the `config/autoload` directory is not recommended at run time.)
+
+Default hydrator strategies and filters are sed for every association and field in your ORM.
+Modify each hydrator configuration with your hydrator strategies and hydrator filters as needed.
+
+
+Type Casting Entity Values
+--------------------------
+
+There are some hydrator stragegies included with this module.  In GraphQL types are very
+important and this module introspects your ORM metadata to correctly type against GraphQL
+types.  By default integer, float, and boolean fields are automatically assigned to the
+correct hydrator strategy.
+
+
+Supported Data Types
+--------------------
+
+This module would like to support all datatypes representable in a GraphQL response.  At this time these data types are
+supported:
+
+```
+tinyint
+smallint
+integer
+int
+bigint
+boolean
+decimal
+float
+string
+text
+datetime
+```
+
+If you have need to support a datatype not listed here please create an issue on the github project.
+
+
+Provided Tools
+--------------
+
+There are three tools this library provides to help you build your GraphQL Schema.
+
+* **TypeLoader** - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
+* **FilterLoader** - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
+* **ResolveLoader** - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
+
+Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.
+
+There is not a tool for mutations.  Those are left to the developer to build.
+
+
+Filtering Query Builders
+------------------------
+
+Each top level entity to query uses a QueryBuilder object.  This QueryBuilder object should be modified to filter
+the data for the logged in user.  This is the security layer.
+QueryBuilders are built then triggered through an event.  Listen to this event and modify the passed QueryBuilder to
+apply your security.  The queryBuilder already has the entityClassName assigned to fetch with the alias 'row'.
+
+Three parameters are passed in the FILTER_QUERY_BUILDER event: objectManager, entityClassName, queryBuilder.
+
+```php
+use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
+
+$events = $container->get('SharedEventManager');
+
+$events->attach(
+    EntityResolveAbstractFactory::class,
+    EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
+    function(Event $event)
+    {
+        switch ($event->getParam('entityClassName')) {
+            case 'Db\Entity\Performance':
+                // Modify the queryBuilder for your needs
+                $event->getParam('queryBuilder')
+                    ->andWhere('row.id = 1')
+                    ;
+                break;
+            default:
+                break;
+        }
+    },
+    100
+);
+```

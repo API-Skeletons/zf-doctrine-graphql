@@ -8,6 +8,7 @@ use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Common\Util\ClassUtils;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
@@ -134,6 +135,7 @@ final class EntityTypeAbstractFactory implements
                                         $distinctField = null;
                                         $skip = 0;
                                         $limit = $config['zf-doctrine-graphql']['limit'];
+
                                         foreach ($filter as $field => $value) {
                                             if ($field == '_skip') {
                                                 $skip = $value;
@@ -246,11 +248,12 @@ final class EntityTypeAbstractFactory implements
                                             . str_replace('\\', '_', $entityClassName);
                                         $hydrator = $hydratorManager->get($hydratorAlias);
 
+                                        $data = new ArrayCollection();
                                         foreach ($collection as $key => $value) {
-                                            $collection[$key] = $hydrator->extract($value);
+                                            $data->add($hydrator->extract($value));
                                         }
 
-                                        $matching = $collection->matching($criteria);
+                                        $matching = $data->matching($criteria);
 
                                         if ($distinctField) {
                                             $distinctValueArray = [];

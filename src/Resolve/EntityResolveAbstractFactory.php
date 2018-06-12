@@ -211,8 +211,8 @@ final class EntityResolveAbstractFactory implements
             // Process fitlers through filter manager
             $metadata = $objectManager->getClassMetadata($requestedName);
             if ($filterArray) {
-                foreach ($filterArray as $filter) {
-                    $filterArray['format'] = 'Y-m-d\TH:i:sP',
+                foreach ($filterArray as $key => $filter) {
+                    $filterArray[$key]['format'] = 'Y-m-d\TH:i:sP';
                 }
 
                 $filterManager->filter(

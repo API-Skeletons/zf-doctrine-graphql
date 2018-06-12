@@ -18,7 +18,6 @@ matrix:
         - DEPS=lowest
     - php: 7.1
       env:
-        - EXECUTE_COVERAGE="true"
         - DEPS=latest
     - php: 7.2
     - php: nightly
@@ -36,8 +35,7 @@ install:
   - composer show --installed
 
 script:
-  - if [[ EXECUTE_COVERAGE == "true" ]]; then ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml ; fi
-  - if [[ EXECUTE_COVERAGE != "true" ]]; then ./vendor/bin/phpunit ; fi
+  - ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
   - ./vendor/bin/phpcs
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
 

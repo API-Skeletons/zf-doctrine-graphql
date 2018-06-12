@@ -247,6 +247,12 @@ final class FilterTypeAbstractFactory implements
                     ];
                 }
             }
+
+            $fields[$fieldName . '_distinct'] = [
+                'name' => $fieldName . '_distinct',
+                'type' => Type::boolean(),
+                'description' => 'building...',
+            ];
         }
 
         $fields['_skip'] = [

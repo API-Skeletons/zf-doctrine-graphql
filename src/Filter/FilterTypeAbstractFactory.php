@@ -188,18 +188,6 @@ final class FilterTypeAbstractFactory implements
                         'type' => Type::listOf(Type::nonNull($graphQLType)),
                         'description' => 'building...',
                     ];
-/*
-                    $fields[$fieldName . '_in'] = [
-                        'name' => $fieldName . '_in',
-                        'type' => new FilterTypeNS\In(['fields' => [
-                            'values' => [
-                                'name' => 'values',
-                                'type' => Type::listOf(Type::nonNull($graphQLType)),
-                            ],
-                        ]
-                        ]),
-                    ];
-*/
                 }
 
                 if ($filterManager->has('notin')) {
@@ -244,6 +232,10 @@ final class FilterTypeAbstractFactory implements
                     ];
                 }
             }
+            $fields[$fieldName . '_distinct'] = [
+                'name' => $fieldName . '_distinct',
+                'type' => Type::boolean(),
+            ];
         }
 
         $fields['_skip'] = [

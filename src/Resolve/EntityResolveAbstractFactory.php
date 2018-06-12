@@ -69,7 +69,9 @@ final class EntityResolveAbstractFactory implements
         $this->createEventManager($container->get('SharedEventManager'));
 
         $config = $container->get('config');
+        $hydratorManager = $container->get('HydratorManager');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
+        $hydrator = $hydratorManager->get($hydratorAlias);
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
@@ -81,6 +83,7 @@ final class EntityResolveAbstractFactory implements
             $context
         ) use (
             $config,
+            $hydrator,
             $objectManager,
             $requestedName,
             $filterManager,
@@ -106,6 +109,7 @@ final class EntityResolveAbstractFactory implements
             $filter = $args['filter'] ?? [];
             $filterArray = [];
             $orderByArray = [];
+            $distinctField = null;
             $skip = 0;
             $limit = $config['zf-doctrine-graphql']['limit'];
             foreach ($filter as $field => $value) {
@@ -197,6 +201,11 @@ final class EntityResolveAbstractFactory implements
                                 ];
                             }
                             break;
+                        case 'distinct':
+                            if (! $distinctField && $value) {
+                                $distinctField = $field;
+                            }
+                            break;
                         default:
                             $filterArray[] = [
                                 'type' => $filter,
@@ -235,7 +244,25 @@ final class EntityResolveAbstractFactory implements
                 $queryBuilder->setMaxResults($limit);
             }
 
-            return $queryBuilder->getQuery()->getResult();
+            $results = $queryBuilder->getQuery()->getResult();
+
+            $matching = [];
+            foreach ($results as $key => $value) {
+                $matching[$key] = $hydrator->extract($value);
+            }
+
+            if ($distinctField) {
+                $distinctValueArray = [];
+                foreach ($matching as $key => $value) {
+                    if (! in_array($value[$distinctField], $distinctValueArray)) {
+                        $distinctValueArray[] = $value[$distinctField];
+                    } else {
+                        unset($matching[$key]);
+                    }
+                }
+            }
+
+            return $matching;
         };
     }
 }

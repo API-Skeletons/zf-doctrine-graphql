@@ -135,6 +135,7 @@ final class EntityTypeAbstractFactory implements
                                         $filter = $args['filter'] ?? [];
                                         $filterArray = [];
                                         $orderByArray = [];
+                                        $distinctField = null;
                                         $skip = 0;
                                         $limit = $config['zf-doctrine-graphql']['limit'];
                                         foreach ($filter as $field => $value) {
@@ -207,6 +208,11 @@ final class EntityTypeAbstractFactory implements
                                                             ];
                                                         }
                                                         break;
+                                                    case 'distinct':
+                                                        if (! $distinctField && $value) {
+                                                            $distinctField = $field;
+                                                        }
+                                                        break;
                                                     default:
                                                         $filterArray[] = [
                                                             'type' => $filter,
@@ -248,7 +254,20 @@ final class EntityTypeAbstractFactory implements
                                             $collection[$key] = $hydrator->extract($value);
                                         }
 
-                                        return $collection->matching($criteria);
+                                        $matching = $collection->matching($criteria);
+
+                                        if ($distinctField) {
+                                            $distinctValueArray = [];
+                                            foreach ($matching as $key => $value) {
+                                                if (! in_array($value[$distinctField], $distinctValueArray)) {
+                                                    $distinctValueArray[] = $value[$distinctField];
+                                                } else {
+                                                    unset($matching[$key]);
+                                                }
+                                            }
+                                        }
+
+                                        return $matching;
                                     },
                                 ];
                             };

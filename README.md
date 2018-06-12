@@ -127,6 +127,8 @@ fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field
                           NOTE: acts as "isEmpty" for collection filters.  A value of false will
                           be handled as though it were null.
 fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
+fieldName_distinct   -  Return a unique list of fieldName.  The fieldName must be selected.  Only
+                          one distinct fieldName allowed per query.
 ```
 
 The format for using these filters is:
@@ -147,6 +149,11 @@ filter: { name_in: ["Phish", "Legion of Mary"] }
 For the between filter two parameters are necessary.  This is very useful for date ranges and number queries.
 ```
 filter: { year_between: { from: 1966 to: 1995 } }
+```
+
+To select a distinct list of years
+```
+{ artist ( filter: { id:2 } ) { performance( filter: { year_distinct: true year_sort: "asc" } ) { year } } }
 ```
 
 All filters are AND filters.

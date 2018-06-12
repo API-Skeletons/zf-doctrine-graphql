@@ -60,10 +60,10 @@ class Module implements
         );
 
         $serviceListener->addServiceManager(
-            Filter\Criteria\FilterManager::class,
-            'zf-doctrine-graphql-filter-criteria',
+            Criteria\FilterManager::class,
+            'zf-doctrine-graphql-criteria',
             InputObjectType::class,
-            'getZFDoctrineGraphQLFilterCriteriaConfig'
+            'getZFDoctrineGraphQLCriteriaConfig'
         );
 
         $serviceListener->addServiceManager(

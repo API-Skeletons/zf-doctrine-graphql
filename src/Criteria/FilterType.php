@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter\Criteria;
+namespace ZF\Doctrine\GraphQL\Criteria;
 
 use GraphQL\Type\Definition\InputObjectType;
 

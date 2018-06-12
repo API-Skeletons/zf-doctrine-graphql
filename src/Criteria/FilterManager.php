@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter\Criteria;
+namespace ZF\Doctrine\GraphQL\Criteria;
 
 use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;

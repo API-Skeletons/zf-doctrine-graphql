@@ -14,7 +14,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
-use ZF\Doctrine\GraphQL\Filter\Criteria\FilterManager;
+use ZF\Doctrine\GraphQL\Criteria\FilterManager;
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 
 final class EntityTypeAbstractFactory implements

@@ -1,6 +1,6 @@
 <?php
 
-namespace ZF\Doctrine\GraphQL\Filter\Criteria;
+namespace ZF\Doctrine\GraphQL\Criteria;
 
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
@@ -11,7 +11,7 @@ use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\Criteria\Filter\Service\FilterManager;
 use ZF\Doctrine\Criteria\OrderBy\Service\OrderByManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Filter\Criteria\Type as FilterTypeNS;
+use ZF\Doctrine\GraphQL\Criteria\Type as FilterTypeNS;
 
 final class FilterTypeAbstractFactory implements
     AbstractFactoryInterface

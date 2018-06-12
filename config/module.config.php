@@ -20,8 +20,8 @@ return [
         'factories' => [
             Filter\Loader::class => Filter\LoaderFactory::class,
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
-            Filter\Criteria\Loader::class => Filter\Criteria\LoaderFactory::class,
-            Filter\Criteria\FilterManager::class => Filter\Criteria\FilterManagerFactory::class,
+            Criteria\Loader::class => Criteria\LoaderFactory::class,
+            Criteria\FilterManager::class => Criteria\FilterManagerFactory::class,
             Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
             Resolve\Loader::class => Resolve\LoaderFactory::class,
             Type\Loader::class => Type\LoaderFactory::class,
@@ -63,9 +63,9 @@ return [
         ],
     ],
 
-    'zf-doctrine-graphql-filter-criteria' => [
+    'zf-doctrine-graphql-criteria' => [
         'abstract_factories' => [
-            Filter\Criteria\FilterTypeAbstractFactory::class,
+            Criteria\FilterTypeAbstractFactory::class,
         ],
     ],
 

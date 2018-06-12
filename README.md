@@ -64,6 +64,13 @@ $schema = new Schema([
                 ],
                 'resolve' => $resolveLoader(Entity\Artist::class),
             ],
+            'performance' => [
+                'type' => Type::listOf($typeLoader(Entity\Performance::class)),
+                'args' => [
+                    'filter' => $filterLoader(Entity\Performance::class),
+                ],
+                'resolve' => $resolveLoader(Entity\Performance::class),
+            ],
         ],
     ]),
 ]);

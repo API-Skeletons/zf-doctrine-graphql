@@ -29,18 +29,17 @@ before_install:
   - composer self-update
 
 install:
+  - mkdir -p build/logs
   - if [[ $DEPS == 'latest' ]]; then travis_retry composer update $COMPOSER_ARGS ; fi
   - if [[ $DEPS == 'lowest' ]]; then travis_retry composer update --prefer-lowest --prefer-stable $COMPOSER_ARGS ; fi
   - travis_retry composer install $COMPOSER_ARGS
   - composer show --installed
 
 script:
-  - mkdir -p build/logs
-  - chmod 777 build/logs
   - if [[ EXECUTE_COVERAGE == "true" ]]; then ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml ; fi
   - if [[ EXECUTE_COVERAGE != "true" ]]; then ./vendor/bin/phpunit ; fi
   - ./vendor/bin/phpcs
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
 
-after_script:
-  - php vendor/bin/php-coveralls
+after_success:
+  - travis_retry php vendor/bin/php-coveralls

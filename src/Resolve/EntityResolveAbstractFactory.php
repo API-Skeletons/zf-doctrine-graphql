@@ -79,6 +79,8 @@ final class EntityResolveAbstractFactory implements
             $skip = 0;
             $limit = $config['zf-doctrine-graphql']['limit'];
             foreach ($filter as $field => $value) {
+
+                // Command fields
                 if ($field == '_debug') {
                     $debugQuery = $value;
                     continue;
@@ -90,54 +92,95 @@ final class EntityResolveAbstractFactory implements
                 }
 
                 if ($field == '_limit') {
-                    $limit = $value;
+                    if ($value <= $config['zf-doctrine-graphql']['limit']) {
+                        $limit = $value;
+                    }
                     continue;
                 }
 
-                if (strstr($field, '_')) {
-                    $field = strtok($field, '_');
-                    $filter = strtok('_');
-
-                    if ($filter == 'sort') {
-                        $orderByArray[] = [
-                            'type' => 'field',
-                            'field' => $field,
-                            'direction' => $value,
-                        ];
-                    } elseif ($filter == 'contains') {
-                        $filterArray[] = [
-                            'type' => 'like',
-                            'field' => $field,
-                            'value' => '%' . $value['value'] . '%',
-                            'format' => $value['format'],
-                        ];
-                    } elseif ($filter == 'startswith') {
-                        $filterArray[] = [
-                            'type' => 'like',
-                            'field' => $field,
-                            'value' => $value['value'] . '%',
-                            'format' => $value['format'],
-                        ];
-                    } elseif ($filter == 'endswith') {
-                        $filterArray[] = [
-                            'type' => 'like',
-                            'field' => $field,
-                            'value' => '%' . $value['value'],
-                            'format' => $value['format'],
-                        ];
-                    } else {
-                        $value['type'] = $filter;
-                        $value['field'] = $field;
-                        $filterArray[] = $value;
-                    }
-                } else {
-                    $filterArray[] = [
+                // Handle most fields as $field_$type: $value
+                if (! strstr($field, '_')) {
+                    // Handle field:value
+                     $filterArray[] = [
                         'type' => 'eq',
                         'field' => $field,
                         'value' => $value,
-                        'where' => 'and',
-                        'format' => 'Y-m-d\TH:i:sP',
                     ];
+                } else {
+                    $field = strtok($field, '_');
+                    $filter = strtok('_');
+
+                    switch ($filter) {
+                        case 'sort':
+                            $orderByArray[] = [
+                                'type' => 'field',
+                                'field' => $field,
+                                'direction' => $value,
+                            ];
+                            break;
+                        case 'contains':
+                            $filterArray[] = [
+                                'type' => 'like',
+                                'field' => $field,
+                                'value' => '%' . $value . '%',
+                            ];
+                            break;
+                        case 'startswith':
+                            $filterArray[] = [
+                                'type' => 'like',
+                                'field' => $field,
+                                'value' => $value . '%',
+                            ];
+                            break;
+                        case 'endswith':
+                            $filterArray[] = [
+                                'type' => 'like',
+                                'field' => $field,
+                                'value' => '%' . $value,
+                            ];
+                            break;
+                        case 'between':
+                            $value['type'] = $filter;
+                            $value['field'] = $field;
+                            $filterArray[] = $value;
+                            break;
+                        case 'in':
+                            $filterArray[] = [
+                                'type' => 'in',
+                                'field' => $field,
+                                'values' => $value,
+                            ];
+                            break;
+                        case 'notin':
+                            $filterArray[] = [
+                                'type' => 'notin',
+                                'field' => $field,
+                                'values' => $value,
+                            ];
+                            break;
+                        case 'isnull':
+                            if ($value === true) {
+                                $filterArray[] = [
+                                    'type' => 'isnull',
+                                    'field' => $field,
+                                    'values' => null,
+                                ];
+                            } else {
+                                $filterArray[] = [
+                                    'type' => 'isnotnull',
+                                    'field' => $field,
+                                    'values' => null,
+                                ];
+                            }
+                            break;
+                        default:
+                            $filterArray[] = [
+                                'type' => $filter,
+                                'field' => $field,
+                                'value' => $value,
+                            ];
+                            break;
+                    }
                 }
             }
 
@@ -161,9 +204,6 @@ final class EntityResolveAbstractFactory implements
                 $queryBuilder->setFirstResult($skip);
             }
             if ($limit) {
-                if ($config['zf-doctrine-graphql']['limit'] < $limit) {
-                    $limit = $config['zf-doctrine-graphql']['limit'];
-                }
                 $queryBuilder->setMaxResults($limit);
             }
 

@@ -12,7 +12,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) { performance ( filter: { id_eq: { value: 1 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) { performance ( filter: { id_eq: 1 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -24,7 +24,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_neq: { value: 1 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_neq: 1 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -36,7 +36,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_gt: { value: 1 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_gt: 1 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -48,7 +48,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_gte: { value: 2 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_gte: 2 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -60,7 +60,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_lt: { value: 2 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_lt: 2 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -72,7 +72,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_lte: { value: 2 } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_lte: 2 } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -84,7 +84,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { isTradable_isnull: {} } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { isTradable_isnull:true } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -96,7 +96,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { isTradable_isnotnull: {} } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { isTradable_isnull:false } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -108,7 +108,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_in: { values: [3, 4] } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_in: [3, 4] } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -120,7 +120,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_notin: { values: [3, 4] } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { id_notin: [3, 4] } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -144,7 +144,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_contains: { value: \"enue\" } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_contains: \"enue\" } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -156,7 +156,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_startswith: { value: \"v\" } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_startswith: \"v\" } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
@@ -168,7 +168,7 @@ class CriteriaFiltersTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_endswith: { value: \"5\" } } ) { id performanceDate } } }";
+        $query = "{ artist ( filter: { id:1 } ) {  performance ( filter: { venue_endswith: \"5\" } ) { id performanceDate } } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();

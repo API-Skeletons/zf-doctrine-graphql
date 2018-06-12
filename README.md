@@ -277,40 +277,38 @@ filter: { name: "Grateful Dead" }
 You may only use each field's filter once per filter action.
 You may also use any of the following:
 ```
-fieldName_eq        -  Equals; same as name: value
-fieldName_neq       -  Not Equals
-fieldName_gt        -  Greater Than
-fieldName_lt        -  Less Than
-fieldName_gte       -  Greater Than or Equal To
-fieldName_lte       -  Less Than or Equal To
-fieldName_in        -  Filter for values in an array
-fieldName_notin     -  Filter for values not in an array
-fieldName_between   -  Fiilter between `from` and `to` values
-fieldName_contains  -  Similar to a Like query as `like '%value%'`
-fieldName_startswith - A like query from the beginning of the value `like 'value%'`
-fieldName_endswith   - A like query from the end of the value `like '%value'`
-fieldName_isnull    -  Return results where the field is null.
+fieldName_eq         -  Equals; same as name: value
+fieldName_neq        -  Not Equals
+fieldName_gt         -  Greater Than
+fieldName_lt         -  Less Than
+fieldName_gte        -  Greater Than or Equal To
+fieldName_lte        -  Less Than or Equal To
+fieldName_in         -  Filter for values in an array
+fieldName_notin      -  Filter for values not in an array
+fieldName_between    -  Fiilter between `from` and `to` values
+fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
+fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
+fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
+fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field is null.
+                        If FALSE returns results where the field is not null.
      NOTE: acts as "isEmpty" for collection filters.  A value of false will be
            handled as though it were null.
-fieldName_isnotnull -  Return results where the field is not null.
-     NOTE: acts as "isEmpty" for collection filters.  A value of true will be
-           handled as though it were notnull.
 fieldName_sort       - Sort the result by this field.  Value is 'asc' or 'desc'
 ```
 
 The format for using these filters is:
 ```js
-filter: { name_endswith: { value: "Dead" } }
+filter: { name_endswith: "Dead" }
 ```
 
-For isnull and isnotnull there is no value parameter
+For isnull the paramter is a boolean
 ```js
-filter: { name_isnotnull: {} }
+filter: { name_isnull: false  }
 ```
 
 For in and notin an array of values is expected
 ```
-filter: { name_in: { values: ["Phish", "Legion of Mary"] } }
+filter: { name_in: ["Phish", "Legion of Mary"] }
 ```
 
 For the between filter two parameters are necessary.  This is very useful for date ranges and number queries.
@@ -318,12 +316,7 @@ For the between filter two parameters are necessary.  This is very useful for da
 filter: { year_between: { from: 1966 to: 1995 } }
 ```
 
-
-Optional arguments for every filter
------------------------------------
-
-`where` - This value defaults to 'and' and may be changed to 'or'.
-
+All filters are AND filters.
 TODO:  Add `orx` and `andx` support
 
 

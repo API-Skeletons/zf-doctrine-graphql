@@ -128,91 +128,56 @@ final class FilterTypeAbstractFactory implements
 
                     $fields[$fieldName . '_eq'] = [
                         'name' => $fieldName . '_eq',
-                        'type' => new FilterTypeNS\Equals(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType)
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
 
                 if ($filterManager->has('neq')) {
                     $fields[$fieldName . '_neq'] = [
                         'name' => $fieldName . '_neq',
-                        'type' => new FilterTypeNS\NotEquals(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
 
                 if ($filterManager->has('lt')) {
                     $fields[$fieldName . '_lt'] = [
                         'name' => $fieldName . '_lt',
-                        'type' => new FilterTypeNS\LessThan(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
+
                 if ($filterManager->has('lte')) {
                     $fields[$fieldName . '_lte'] = [
                         'name' => $fieldName . '_lte',
-                        'type' => new FilterTypeNS\LessThanOrEquals(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
 
                 if ($filterManager->has('gt')) {
                     $fields[$fieldName . '_gt'] = [
                         'name' => $fieldName . '_gt',
-                        'type' => new FilterTypeNS\GreaterThan(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
 
                 if ($filterManager->has('gte')) {
                     $fields[$fieldName . '_gte'] = [
                         'name' => $fieldName . '_gte',
-                        'type' => new FilterTypeNS\GreaterThanOrEquals(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
 
-                if ($filterManager->has('isnull')) {
+                if ($filterManager->has('isnull') && $filterManager->has('isnotnull')) {
                     $fields[$fieldName . '_isnull'] = [
                         'name' => $fieldName . '_isnull',
-                        'type' => new FilterTypeNS\IsNull(),
-                    ];
-                }
-
-                if ($filterManager->has('isnotnull')) {
-                    $fields[$fieldName . '_isnotnull'] = [
-                        'name' => $fieldName . '_isnotnull',
-                        'type' => new FilterTypeNS\IsNotNull(),
+                        'type' => Type::boolean(),
+                        'description' => 'building...',
                     ];
                 }
 
@@ -236,78 +201,50 @@ final class FilterTypeAbstractFactory implements
                 if ($filterManager->has('in')) {
                     $fields[$fieldName . '_in'] = [
                         'name' => $fieldName . '_in',
-                        'type' => new FilterTypeNS\In(['fields' => [
-                            'values' => [
-                                'name' => 'values',
-                                'type' => Type::listOf(Type::nonNull($graphQLType)),
-                            ],
-                        ]
-                        ]),
+                        'type' => Type::listOf($graphQLType),
+                        'description' => 'building...',
                     ];
                 }
 
                 if ($filterManager->has('notin')) {
                     $fields[$fieldName . '_notin'] = [
                         'name' => $fieldName . '_notin',
-                        'type' => new FilterTypeNS\NotIn(['fields' => [
-                            'values' => [
-                                'name' => 'values',
-                                'type' => Type::listOf(Type::nonNull($graphQLType)),
-                            ],
-                        ]
-                        ]),
+                        'type' => Type::listOf($graphQLType),
+                        'description' => 'building...',
                     ];
                 }
 
-                if ($filterManager->has('startswith')) {
-                    $fields[$fieldName . '_startswith'] = [
-                        'name' => $fieldName . '_startswith',
-                        'type' => new FilterTypeNS\StartsWith(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
-                    ];
-                }
+                if ($graphQLType == Type::string()) {
+                    if ($filterManager->has('startswith')) {
+                        $fields[$fieldName . '_startswith'] = [
+                            'name' => $fieldName . '_startswith',
+                            'type' => $graphQLType,
+                            'description' => 'building...',
+                        ];
+                    }
 
-                if ($filterManager->has('endswith')) {
-                    $fields[$fieldName . '_endswith'] = [
-                        'name' => $fieldName . '_endswith',
-                        'type' => new FilterTypeNS\EndsWith(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
-                    ];
-                }
+                    if ($filterManager->has('endswith')) {
+                        $fields[$fieldName . '_endswith'] = [
+                            'name' => $fieldName . '_endswith',
+                            'type' => $graphQLType,
+                            'description' => 'building...',
+                        ];
+                    }
 
-                if ($filterManager->has('contains')) {
-                    $fields[$fieldName . '_contains'] = [
-                        'name' => $fieldName . '_contains',
-                        'type' => new FilterTypeNS\EndsWith(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
-                    ];
+                    if ($filterManager->has('contains')) {
+                        $fields[$fieldName . '_contains'] = [
+                            'name' => $fieldName . '_contains',
+                            'type' => $graphQLType,
+                            'description' => 'building...',
+                        ];
+                    }
                 }
 
                 if ($filterManager->has('memberof')) {
                     $fields[$fieldName . '_memberof'] = [
                         'name' => $fieldName . '_memberof',
-                        'type' => new FilterTypeNS\EndsWith(['fields' => [
-                            'value' => [
-                                'name' => 'value',
-                                'type' => Type::nonNull($graphQLType),
-                            ],
-                        ]
-                        ]),
+                        'type' => $graphQLType,
+                        'description' => 'building...',
                     ];
                 }
             }

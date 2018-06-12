@@ -144,56 +144,73 @@ final class EntityTypeAbstractFactory implements
                                                 continue;
                                             }
 
-                                            if (strstr($field, '_')) {
-                                                $field = strtok($field, '_');
-                                                $filter = strtok('_');
-
-                                                if ($filter == 'sort') {
-                                                    $orderByArray[] = [
-                                                        'type' => 'field',
-                                                        'field' => $field,
-                                                        'direction' => $value,
-                                                    ];
-                                                } elseif ($filter == 'between') {
-                                                    $filterArray[] = [
-                                                        'type' => 'gte',
-                                                        'field' => $field,
-                                                        'value' => $value['from'],
-                                                        'format' => $value['format'],
-                                                    ];
-                                                    $filterArray[] = [
-                                                        'type' => 'lte',
-                                                        'field' => $field,
-                                                        'value' => $value['to'],
-                                                        'format' => $value['format'],
-                                                    ];
-                                                } elseif ($filter == 'isnull') {
-                                                    $filterArray[] = [
-                                                        'type' => 'eq',
-                                                        'field' => $field,
-                                                        'value' => null,
-                                                        'format' => $value['format'],
-                                                    ];
-                                                } elseif ($filter == 'isnotnull') {
-                                                    $filterArray[] = [
-                                                        'type' => 'neq',
-                                                        'field' => $field,
-                                                        'value' => null,
-                                                        'format' => $value['format'],
-                                                    ];
-                                                } else {
-                                                    $value['type'] = $filter;
-                                                    $value['field'] = $field;
-                                                    $filterArray[] = $value;
-                                                }
-                                            } else {
+                                            if (! strstr($field, '_')) {
                                                 $filterArray[] = [
                                                     'type' => 'eq',
                                                     'field' => $field,
                                                     'value' => $value,
-                                                    'where' => 'and',
-                                                    'format' => 'Y-m-d\TH:i:sP',
                                                 ];
+                                            } else {
+                                                $field = strtok($field, '_');
+                                                $filter = strtok('_');
+
+                                                switch ($filter) {
+                                                    case 'sort':
+                                                        $orderByArray[] = [
+                                                            'type' => 'field',
+                                                            'field' => $field,
+                                                            'direction' => $value,
+                                                        ];
+                                                        break;
+                                                    case 'in':
+                                                        $filterArray[] = [
+                                                            'type' => 'in',
+                                                            'field' => $field,
+                                                            'values' => $value,
+                                                        ];
+                                                        break;
+                                                    case 'notin':
+                                                        $filterArray[] = [
+                                                            'type' => 'notin',
+                                                            'field' => $field,
+                                                            'values' => $value,
+                                                        ];
+                                                        break;
+                                                    case 'between':
+                                                        $filterArray[] = [
+                                                            'type' => 'gte',
+                                                            'field' => $field,
+                                                            'value' => $value['from'],
+                                                        ];
+                                                        $filterArray[] = [
+                                                            'type' => 'lte',
+                                                            'field' => $field,
+                                                            'value' => $value['to'],
+                                                        ];
+                                                        break;
+                                                    case 'isnull':
+                                                        if ($value == true) {
+                                                            $filterArray[] = [
+                                                                'type' => 'eq',
+                                                                'field' => $field,
+                                                                'value' => null,
+                                                            ];
+                                                        } else {
+                                                            $filterArray[] = [
+                                                                'type' => 'neq',
+                                                                'field' => $field,
+                                                                'value' => null,
+                                                            ];
+                                                        }
+                                                        break;
+                                                    default:
+                                                        $filterArray[] = [
+                                                            'type' => $filter,
+                                                            'field' => $field,
+                                                            'value' => $value,
+                                                        ];
+                                                        break;
+                                                }
                                             }
                                         }
 

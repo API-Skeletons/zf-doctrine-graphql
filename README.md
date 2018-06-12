@@ -44,8 +44,6 @@ There are three sections to the generated configuration:
 * `zf-doctrine-graphql`: An array of configuration options.  The option(s) are
   * `limit`: The maximum number of results to return for each entity or collection.
 
-* `zf-doctrine-graphql-query-provider`: This allows you to provide security to your top level entity queries.  For each top level entity query a query provider is required.
-
 * `zf-doctrine-graphql-hydrator`: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
 
 To generate configuration:
@@ -154,6 +152,7 @@ Use
 ---
 
 ```php
+use Exception;
 use GraphQL\GraphQL;
 use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
 use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
@@ -189,7 +188,7 @@ try {
 } catch (Exception $e) {
     $output = [
         'errors' => [[
-                'exception' => $e->getMessage()
+            'exception' => $e->getMessage(),
         ]]
     ];
 }

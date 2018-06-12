@@ -36,7 +36,8 @@ install:
   - composer show --installed
 
 script:
-  - ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml
+  - if [[ EXECUTE_COVERAGE == "true" ]]; then ./vendor/bin/phpunit --coverage-clover=build/logs/clover.xml ; fi
+  - if [[ EXECUTE_COVERAGE != "true" ]]; then ./vendor/bin/phpunit ; fi
   - ./vendor/bin/phpcs
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
 

@@ -220,6 +220,11 @@ final class EntityTypeAbstractFactory implements
 
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $metadata = $objectManager->getClassMetadata($entityClassName);
+
+                                        foreach ($filterArray as $filter) {
+                                            $filterArray['format'] = 'Y-m-d\TH:i:sP',
+                                        }
+
                                         $criteria = $criteriaBuilder->create($metadata, $filterArray, $orderByArray);
 
                                         if ($skip) {

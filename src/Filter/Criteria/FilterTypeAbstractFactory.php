@@ -47,6 +47,7 @@ final class FilterTypeAbstractFactory implements
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
     {
         $config = $container->get('config');
+        $fields = [];
         $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
         $filterManager = $container->get(FilterManager::class);

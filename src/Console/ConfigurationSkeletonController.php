@@ -7,6 +7,7 @@ use Interop\Container\ContainerInterface;
 use Zend\Mvc\Console\Controller\AbstractConsoleController;
 use Zend\Config\Config;
 use Zend\Config\Writer\PhpArray;
+use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use ZF\Doctrine\GraphQL\Hydrator\Strategy;
 use ZF\Doctrine\GraphQL\Hydrator\Filter;
 
@@ -43,7 +44,15 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
             $strategies = [];
             $filters = [];
             foreach ($classMetadata->getAssociationNames() as $associationName) {
-                $strategies[$associationName] = Strategy\AssociationDefault::class;
+
+                $mapping = $classMetadata->getAssociationMapping($associationName);
+
+                // See comment on NullifyOwningAssociation for details of why this is done
+                if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
+                    $strategies[$associationName] = Strategy\NullifyOwningAssociation::class;
+                } else {
+                    $strategies[$associationName] = Strategy\AssociationDefault::class;
+                }
             }
 
             foreach ($classMetadata->getFieldNames() as $fieldName) {

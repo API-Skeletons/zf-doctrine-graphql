@@ -4,7 +4,6 @@ namespace ZF\Doctrine\GraphQL\Hydrator\Strategy;
 
 use Zend\Hydrator\Strategy\StrategyInterface;
 use DoctrineModule\Stdlib\Hydrator\Strategy\AbstractCollectionStrategy;
-use ZF\Hal\Collection;
 
 /**
  * Return the same value

@@ -90,10 +90,10 @@ Running Queries
 
 An example query using the included filtering:
 
-Fetch 100 performances for each artist with 'Dead' in their name.
+Fetch at most 100 performances in CA for each artist with 'Dead' in their name.
 
 ```php
-$query = "{ artist ( filter: { name_contains: \"Dead\" } ) { name performance ( filter: { _limit: 100 } ) { performanceDate venue } } }";
+$query = "{ artist ( filter: { name_contains: \"Dead\" } ) { name performance ( filter: { _limit: 100 state:\"CA\" } ) { performanceDate venue } } }";
 ```
 
 Filtering

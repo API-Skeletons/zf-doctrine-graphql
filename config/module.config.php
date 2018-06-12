@@ -22,7 +22,6 @@ return [
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
             Filter\Criteria\Loader::class => Filter\Criteria\LoaderFactory::class,
             Filter\Criteria\FilterManager::class => Filter\Criteria\FilterManagerFactory::class,
-            QueryProvider\QueryProviderManager::class => QueryProvider\QueryProviderManagerFactory::class,
             Resolve\ResolveManager::class => Resolve\ResolveManagerFactory::class,
             Resolve\Loader::class => Resolve\LoaderFactory::class,
             Type\Loader::class => Type\LoaderFactory::class,

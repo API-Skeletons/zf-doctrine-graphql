@@ -70,4 +70,16 @@ class UserTest extends AbstractTest
 
         $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
     }
+
+    public function testFetchCriteriaForRelation()
+    {
+        $schema = $this->getSchema();
+
+        $query = "{ user( filter: { id:1 } ) { id artist { id performance ( filter: { id: 3 } ) { id } } } }";
+
+        $result = GraphQL::executeQuery($schema, $query);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
+    }
 }

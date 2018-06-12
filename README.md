@@ -114,151 +114,86 @@ Each of these tools takes a fully qualified entity name as a paramter allowing y
 There is not a tool for mutations.  Those are left to the developer to build.
 
 
-Query Providers
----------------
+Filtering Query Builders
+------------------------
 
-Each top level entity to query requires a Query Provider.  The configuration section `zf-doctrine-graphql-query-provider` is a service manager configuration for your Query Providers.  This is where to implement security for
-your data.  It is expected that related data to a top level entity is allowable for the user.  If there is data
-which a user should not be able to get to adjust your hydrator filters to disallow querying that relation.
+Each top level entity to query uses a QueryBuilder object.  This QueryBuilder object should be modified to filter
+the data for the logged in user.  This is the security layer.
+QueryBuilders are built then triggered through an event.  Listen to this event and modify the passed QueryBuilder to
+apply your security.  The queryBuilder already has the entityClassName assigned to fetch with the alias 'row'.
 
-Example Configuration for one top level Artist entity:
+Three parameters are passed in the FILTER_QUERY_BUILDER event: objectManager, entityClassName, queryBuilder.
+
 ```php
-    'zf-doctrine-graphql-query-provider' => [
-        'aliases' => [
-            \Db\Entity\Artist::class => \GraphQLApi\QueryProvider\Artist::class,
-        ],
-        'invokables' => [
-            \GraphQLApi\QueryProvider\Artist::class => \GraphQLApi\QueryProvider\Artist::class,
-        ],
-    ],
-```
+use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
 
-Example Query Provider:
-```php
-namespace GraphQLApi\QueryProvider;
+$events = $container->get('SharedEventManager');
 
-use Doctrine\Common\Persistence\ObjectManager;
-use Doctrine\ORM\QueryBuilder;
-use ZF\Doctrine\GraphQL\QueryProvider\QueryProviderInterface;
-use Db\Entity;
-
-final class Artist implements
-    QueryProviderInterface
-{
-    /**
-     * @param ResourceEvent $event
-     * @return QueryBuilder
-     */
-    public function createQuery(ObjectManager $objectManager) : QueryBuilder
+$events->attach(
+    EntityResolveAbstractFactory::class,
+    EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
+    function(Event $event)
     {
-        $queryBuilder = $objectManager->createQueryBuilder();
-        $queryBuilder
-            ->select('row')
-            ->from(Entity\Artist::class, 'row')
-            ;
-
-        return $queryBuilder;
-    }
-}
+        switch ($event->getParam('entityClassName')) {
+            case 'Db\Entity\Performance':
+                // Modify the queryBuilder for your needs
+                $event->getParam('queryBuilder')
+                    ->andWhere('row.id = 1')
+                    ;
+                break;
+            default:
+                break;
+        }
+    },
+    100
+);
 ```
-
-The 'row' alias for the default entity is required to be 'row'.
 
 
 Use
 ---
 
-Create a new RPC controller
-
-Controller Factory
-```php
-use Interop\Container\ContainerInterface;
-use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
-use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
-use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
-
-class GraphQLControllerFactory
-{
-    public function __invoke(
-        ContainerInterface $container,
-        $requestedName,
-        array $options = null
-    ) {
-        $typeLoader = $container->get(TypeLoader::class);
-        $filterLoader = $container->get(FilterLoader::class);
-        $resolveLoader = $container->get(ResolveLoader::class);
-
-        return new GraphQLController($typeLoader, $filterLoader, $resolveLoader);
-    }
-}
-```
-
-Controller Class
-
-```php
-use Exception;
 use GraphQL\GraphQL;
-use Zend\Mvc\Controller\AbstractActionController;
-use ZF\ContentNegotiation\ViewModel as ContentNegotiationViewModel;
 use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
 use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
 use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
-use Db\Entity;
 
-class GraphQLController extends AbstractActionController
-{
-    private $typeLoader;
-    private $filterLoader;
-    private $resolveLoader;
+$typeLoader = $container->get(TypeLoader::class);
+$filterLoader = $container->get(FilterLoader::class);
+$resolveLoader = $container->get(ResolveLoader::class);
 
-    public function __construct(TypeLoader $typeLoader, FilterLoader $filterLoader, ResolveLoader $resolveLoader)
-    {
-        $this->typeLoader = $typeLoader;
-        $this->filterLoader = $filterLoader;
-        $this->resolveLoader = $resolveLoader;
-    }
+$input = $_POST;
 
-    public function graphQLAction()
-    {
-        $input = $this->bodyParams();
-
-        $typeLoader = $this->typeLoader;
-        $resolveLoader = $this->resolveLoader;
-
-        $schema = new Schema([
-            'query' => new ObjectType([
-                'name' => 'query',
-                'fields' => [
-                    'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class)),
-                        'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class),
-                        ],
-                        'resolve' => $resolveLoader(Entity\Artist::class),
-                    ],
+$schema = new Schema([
+    'query' => new ObjectType([
+        'name' => 'query',
+        'fields' => [
+            'artist' => [
+                'type' => Type::listOf($typeLoader(Entity\Artist::class)),
+                'args' => [
+                    'filter' => $filterLoader(Entity\Artist::class),
                 ],
-            ]),
-        ]);
+                'resolve' => $resolveLoader(Entity\Artist::class),
+            ],
+        ],
+    ]),
+]);
 
-        $query = $input['query'];
-        $variableValues = isset($input['variables']) ? $input['variables'] : null;
+$query = $input['query'];
+$variableValues = isset($input['variables']) ? $input['variables'] : null;
 
-        try {
-            $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context = null, $variableValues);
-            $output = $result->toArray();
-        } catch (Exception $e) {
-            $output = [
-                'errors' => [[
-                        'exception' => $e->getMessage()
-                ]]
-            ];
-        }
-
-        return new ContentNegotiationViewModel([
-            'payload' => $output,
-        ]);
-    }
+try {
+    $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context = null, $variableValues);
+    $output = $result->toArray();
+} catch (Exception $e) {
+    $output = [
+        'errors' => [[
+                'exception' => $e->getMessage()
+        ]]
+    ];
 }
+
+echo json_encode($output);
 ```
 
 

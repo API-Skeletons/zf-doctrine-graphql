@@ -7,18 +7,49 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManagerInterface;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
-use ZF\Doctrine\GraphQL\QueryProvider\QueryProviderManager;
 
 final class EntityResolveAbstractFactory implements
     AbstractFactoryInterface
 {
+    const FILTER_QUERY_BUILDER = 'filterQueryBuilder';
+
+    protected $events;
+
+    private function createEventManager(SharedEventManagerInterface $sharedEventManager)
+    {
+        $this->events = new EventManager(
+            $sharedEventManager,
+            [
+                __CLASS__,
+                get_class($this)
+            ]
+        );
+
+        return $this->events;
+    }
+
+    public function getEventManager()
+    {
+        return $this->events;
+    }
+
+    /**
+     * @codeCoverageIgnore
+     */
     public function canCreateServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this->canCreate($services, $requestedName);
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function createServiceWithName(ServiceLocatorInterface $services, $name, $requestedName)
     {
         return $this($services, $requestedName);
@@ -27,28 +58,21 @@ final class EntityResolveAbstractFactory implements
     public function canCreate(ContainerInterface $container, $requestedName)
     {
         $hydratorManager = $container->get('HydratorManager');
-        $queryProviderManager = $container->get(QueryProviderManager::class);
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
 
-        if (! $queryProviderManager->has($requestedName)) {
-            throw new Exception('QueryProvider not found for ' . $requestedName);
-        }
-
-        if (! $hydratorManager->has($hydratorAlias)) {
-            throw new Exception('Hydrator configuration not found for ' . $requestedName);
-        }
-
-        return $queryProviderManager->has($requestedName) && $hydratorManager->has($hydratorAlias);
+        return $hydratorManager->has($hydratorAlias);
     }
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
     {
+        // Setup Events
+        $this->createEventManager($container->get('SharedEventManager'));
+
         $config = $container->get('config');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
-        $queryProviderManager = $container->get(QueryProviderManager::class);
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
         return function (
@@ -60,16 +84,23 @@ final class EntityResolveAbstractFactory implements
             $objectManager,
             $requestedName,
             $filterManager,
-            $orderByManager,
-            $queryProviderManager
+            $orderByManager
         ) {
 
             // Build query builder from Query Provider
-            if (! $queryProviderManager->has($requestedName)) {
-                throw new Exception('Missing query provider for ' . $requestedName);
-            }
-            $queryProvider = $queryProviderManager->get($requestedName);
-            $queryBuilder = $queryProvider->createQuery($objectManager);
+            $queryBuilder = ($objectManager->createQueryBuilder())
+                ->select('row')
+                ->from($requestedName, 'row')
+                ;
+            $this->getEventManager()->trigger(
+                self::FILTER_QUERY_BUILDER,
+                $this,
+                [
+                    'objectManager' => $objectManager,
+                    'queryBuilder' => $queryBuilder,
+                    'entityClassName' => $requestedName,
+                ]
+            );
 
             // Resolve top level filters
             $filter = $args['filter'] ?? [];

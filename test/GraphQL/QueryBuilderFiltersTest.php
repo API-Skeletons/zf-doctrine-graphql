@@ -223,4 +223,16 @@ class QueryBuilderFiltersTest extends AbstractTest
 
         $this->assertEquals(3, sizeof($output['data']['performance']));
     }
+
+    public function testOverTheLimit()
+    {
+        $schema = $this->getSchema();
+
+        $query = "{ performance ( filter: { _limit: 10000 } ) { id performanceDate } }";
+
+        $result = GraphQL::executeQuery($schema, $query);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['performance']));
+    }
 }

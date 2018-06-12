@@ -34,7 +34,6 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
             'zf-doctrine-graphql' => [
                 'limit' => 2000,
             ],
-            'zf-doctrine-graphql-query-provider' => [],
             'zf-doctrine-graphql-hydrator' => []
         ];
 

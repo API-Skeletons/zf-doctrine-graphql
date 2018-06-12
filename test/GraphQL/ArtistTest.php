@@ -12,7 +12,7 @@ class ArtistTest extends AbstractTest
     {
         $schema = $this->getSchema();
 
-        $query = "{ artist { id name } }";
+        $query = "{ artist { id name createdAt } }";
 
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();

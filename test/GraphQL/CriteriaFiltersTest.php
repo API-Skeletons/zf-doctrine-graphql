@@ -223,4 +223,17 @@ class CriteriaFiltersTest extends AbstractTest
 
         $this->assertEquals(2, sizeof($output['data']['artist'][0]['performance']));
     }
+
+
+    public function testOverTheLimit()
+    {
+        $schema = $this->getSchema();
+
+        $query = '{ artist ( filter: { id:1 } ) {  performance ( filter: { _limit: 20000 } ) { id venue performanceDate } } }';
+
+        $result = GraphQL::executeQuery($schema, $query);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
+    }
 }

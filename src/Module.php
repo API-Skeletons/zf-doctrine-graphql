@@ -48,13 +48,6 @@ class Module implements
         $serviceListener = $sm->get('ServiceListener');
 
         $serviceListener->addServiceManager(
-            QueryProvider\QueryProviderManager::class,
-            'zf-doctrine-graphql-query-provider',
-            QueryProvider\QueryProviderInterface::class,
-            'getZFDoctrineGraphQLQueryProviderConfig'
-        );
-
-        $serviceListener->addServiceManager(
             Type\TypeManager::class,
             'zf-doctrine-graphql-type',
             ObjectType::class,

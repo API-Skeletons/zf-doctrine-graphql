@@ -3,21 +3,6 @@ return [
     'zf-doctrine-graphql' => [
         'limit' => 1000,
     ],
-    'zf-doctrine-graphql-query-provider' => [
-        'aliases' => [
-            \DbTest\Entity\Artist::class => \DbTest\QueryProvider\Artist::class,
-            \DbTest\Entity\Performance::class => \DbTest\QueryProvider\Performance::class,
-            \DbTest\Entity\User::class => \DbTest\QueryProvider\User::class,
-            \DbTest\Entity\Address::class => \DbTest\QueryProvider\Address::class,
-        ],
-        'invokables' => [
-            \DbTest\QueryProvider\Artist::class => \DbTest\QueryProvider\Artist::class,
-            \DbTest\QueryProvider\Performance::class => \DbTest\QueryProvider\Performance::class,
-            \DbTest\QueryProvider\User::class => \DbTest\QueryProvider\User::class,
-            \DbTest\QueryProvider\Address::class => \DbTest\QueryProvider\Address::class,
-        ],
-    ],
-
     'zf-doctrine-graphql-hydrator' => [
         'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist' => [
             'entity_class' => \DbTest\Entity\Artist::class,

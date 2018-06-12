@@ -62,7 +62,6 @@ final class FilterTypeAbstractFactory implements
         $instantiator = new Instantiator();
         $entity = $instantiator->instantiate($requestedName);
         $entityFields = array_keys($hydrator->extract($entity));
-        $references = [];
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);
 
@@ -261,11 +260,7 @@ final class FilterTypeAbstractFactory implements
 
         return new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . 'CriteriaFilter',
-            'fields' => function () use ($fields, $references) {
-                foreach ($references as $referenceName => $resolve) {
-                    $fields[$referenceName] = $resolve();
-                }
-
+            'fields' => function () use ($fields) {
                 return $fields;
             },
         ]);

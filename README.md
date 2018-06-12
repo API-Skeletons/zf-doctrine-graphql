@@ -106,7 +106,8 @@ filter: { name: "Grateful Dead" }
 ```
 
 You may only use each field's filter once per filter action.
-You may also use any of the following:
+
+**Provided Filters**
 ```
 fieldName_eq         -  Equals; same as name: value
 fieldName_neq        -  Not Equals
@@ -121,10 +122,10 @@ fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'
 fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
 fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
 fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field is null.
-                        If FALSE returns results where the field is not null.
-     NOTE: acts as "isEmpty" for collection filters.  A value of false will be
-           handled as though it were null.
-fieldName_sort       - Sort the result by this field.  Value is 'asc' or 'desc'
+                          If FALSE returns results where the field is not null.
+                          NOTE: acts as "isEmpty" for collection filters.  A value of false will
+                          be handled as though it were null.
+fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
 ```
 
 The format for using these filters is:

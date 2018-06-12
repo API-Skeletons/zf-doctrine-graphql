@@ -42,4 +42,4 @@ script:
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
 
 after_script:
-  - php vendor/bin/coveralls
+  - php vendor/bin/php-coveralls

@@ -246,10 +246,6 @@ final class FilterTypeAbstractFactory implements
             }
         }
 
-        $fields['_debug'] = [
-            'name' => '_debug',
-            'type' => Type::boolean(),
-        ];
         $fields['_skip'] = [
             'name' => '_skip',
             'type' => Type::int(),

@@ -75,17 +75,11 @@ final class EntityResolveAbstractFactory implements
             $filter = $args['filter'] ?? [];
             $filterArray = [];
             $orderByArray = [];
-            $debugQuery = false;
             $skip = 0;
             $limit = $config['zf-doctrine-graphql']['limit'];
             foreach ($filter as $field => $value) {
 
                 // Command fields
-                if ($field == '_debug') {
-                    $debugQuery = $value;
-                    continue;
-                }
-
                 if ($field == '_skip') {
                     $skip = $value;
                     continue;
@@ -205,12 +199,6 @@ final class EntityResolveAbstractFactory implements
             }
             if ($limit) {
                 $queryBuilder->setMaxResults($limit);
-            }
-
-            if ($debugQuery) {
-                print_r($queryBuilder->getQuery()->getDql());
-                print_r($queryBuilder->getQuery()->getParameters());
-                die();
             }
 
             return $queryBuilder->getQuery()->getResult();

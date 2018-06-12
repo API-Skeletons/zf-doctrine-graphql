@@ -328,18 +328,3 @@ variable to set the max limit size and anything under this limit is
 valid.  To select a page of data set the `_skip:10 _limit:10` and
 increment `_skip` by the `_limit` for each request.  These pagination
 filters exist for filtering collections too.
-
-
-Debugging Filters
------------------
-
-With so many filter options it can get confusing what your query looks like
-so there is a `_debug` filter field which will output only the DQL version of your query.
-```js
-filter: { _debug:true name:"Grateful Dead" }
-```
-will output similar to
-```sql
-SELECT row FROM Db\Entity\Artist row WHERE row.name = :a5b1619627f9c1
-```
-The debug filter only works for the top level resource and not collection filters.

@@ -85,6 +85,14 @@ echo json_encode($output);
 Running Queries
 ===============
 
+An example query using the included filtering:
+
+Fetch 100 performances for each artist with 'Dead' in their name.
+
+```php
+$query = "{ artist ( filter: { name_contains: \"Dead\" } ) { name performance ( filter: { _limit: 100 } ) { performanceDate venue } } }";
+```
+
 Filtering
 ---------
 

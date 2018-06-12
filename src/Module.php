@@ -3,7 +3,6 @@
 namespace ZF\Doctrine\GraphQL;
 
 use Exception;
-use Zend\ModuleManager\Feature\BootstrapListenerInterface;
 use Zend\ModuleManager\Feature\ConfigProviderInterface;
 use Zend\ModuleManager\Feature\InitProviderInterface;
 use Zend\ModuleManager\Feature\ConsoleUsageProviderInterface;
@@ -16,7 +15,6 @@ use GraphQL\Type\Definition\InputObjectType;
 use GraphQL\GraphQL;
 
 class Module implements
-    BootstrapListenerInterface,
     ConfigProviderInterface,
     InitProviderInterface,
     ConsoleUsageProviderInterface
@@ -74,15 +72,5 @@ class Module implements
             'function',
             'getZFDoctrineGraphQLResolveConfig'
         );
-    }
-
-    public function onBootstrap(EventInterface $event)
-    {
-        $fieldResolver = $event->getParam('application')
-            ->getServiceManager()
-            ->get(Field\FieldResolver::class)
-            ;
-
-        GraphQL::setDefaultFieldResolver($fieldResolver);
     }
 }

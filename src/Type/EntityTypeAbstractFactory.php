@@ -14,7 +14,6 @@ use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use ZF\Doctrine\GraphQL\Filter\Criteria\FilterManager;
-use ZF\Doctrine\GraphQL\Field\FieldResolver;
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 
 final class EntityTypeAbstractFactory implements
@@ -58,7 +57,6 @@ final class EntityTypeAbstractFactory implements
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
-        $fieldResolver = $container->get(FieldResolver::class);
         $criteriaFilterManager = $container->get(FilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
 
@@ -102,7 +100,6 @@ final class EntityTypeAbstractFactory implements
                                 $config,
                                 $typeManager,
                                 $criteriaFilterManager,
-                                $fieldResolver,
                                 $targetEntity,
                                 $objectManager,
                                 $criteriaBuilder,
@@ -120,12 +117,11 @@ final class EntityTypeAbstractFactory implements
                                         ResolveInfo $resolveInfo
                                     ) use (
                                         $config,
-                                        $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
                                         $hydratorManager
                                     ) {
-                                        $collection = $fieldResolver($source, $args, $context, $resolveInfo);
+                                        $collection = $source[$resolveInfo->fieldName];
 
                                         // Do not process empty collections
                                         if (! $collection->count()) {

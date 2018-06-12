@@ -127,8 +127,7 @@ fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field
                           NOTE: acts as "isEmpty" for collection filters.  A value of false will
                           be handled as though it were null.
 fieldName_sort       -  Sort the result by this field.  Value is 'asc' or 'desc'
-fieldName_distinct   -  Return a unique list of fieldName.  The fieldName must be selected.  Only
-                          one distinct fieldName allowed per query.
+fieldName_distinct   -  Return a unique list of fieldName.  Only one distinct fieldName allowed per filter.
 ```
 
 The format for using these filters is:

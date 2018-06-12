@@ -15,7 +15,7 @@ matrix:
   include:
     - php: 7.1
       env:
-        - EXECUTE_COVERAGE=true
+        - EXECUTE_COVERAGE="true"
         - DEPS=lowest
     - php: 7.1
       env:
@@ -37,8 +37,8 @@ install:
 script:
   - mkdir -p build/logs
   - ./vendor/bin/phpcs
-  - if [[ EXECUTE_COVERAGE == 'true' ]]; then ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml ; fi
-  - if [[ EXECUTE_COVERAGE != 'true' ]]; then ./vendor/bin/phpunit ; fi
+  - if [[ EXECUTE_COVERAGE == "true" ]]; then ./vendor/bin/phpunit --coverage-clover build/logs/clover.xml ; fi
+  - if [[ EXECUTE_COVERAGE != "true" ]]; then ./vendor/bin/phpunit ; fi
   - ./vendor/bin/phpstan analyze -c phpstan.neon --level=7 src/
 
 after_script:

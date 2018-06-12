@@ -44,7 +44,6 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
             $strategies = [];
             $filters = [];
             foreach ($classMetadata->getAssociationNames() as $associationName) {
-
                 $mapping = $classMetadata->getAssociationMapping($associationName);
 
                 // See comment on NullifyOwningAssociation for details of why this is done

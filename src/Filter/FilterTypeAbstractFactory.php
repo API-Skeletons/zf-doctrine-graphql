@@ -109,7 +109,7 @@ final class FilterTypeAbstractFactory implements
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();
             }
-#FIXME add non null
+
             if ($graphQLType) {
                 if ($orderByManager->has('field')) {
                     $fields[$fieldName . '_sort'] = [

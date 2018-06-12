@@ -109,7 +109,6 @@ final class EntityResolveAbstractFactory implements
             $skip = 0;
             $limit = $config['zf-doctrine-graphql']['limit'];
             foreach ($filter as $field => $value) {
-
                 // Command fields
                 if ($field == '_skip') {
                     $skip = $value;
@@ -127,10 +126,10 @@ final class EntityResolveAbstractFactory implements
                 if (! strstr($field, '_')) {
                     // Handle field:value
                      $filterArray[] = [
-                        'type' => 'eq',
-                        'field' => $field,
-                        'value' => $value,
-                    ];
+                         'type' => 'eq',
+                         'field' => $field,
+                         'value' => $value,
+                     ];
                 } else {
                     $field = strtok($field, '_');
                     $filter = strtok('_');

@@ -110,7 +110,7 @@ You may only use each field's filter once per filter action.
 
 **Provided Filters**
 ```
-fieldName_eq         -  Equals; same as name: value
+fieldName_eq         -  Equals; same as name: value.  DateTime not supported.
 fieldName_neq        -  Not Equals
 fieldName_gt         -  Greater Than
 fieldName_lt         -  Less Than
@@ -118,7 +118,7 @@ fieldName_gte        -  Greater Than or Equal To
 fieldName_lte        -  Less Than or Equal To
 fieldName_in         -  Filter for values in an array
 fieldName_notin      -  Filter for values not in an array
-fieldName_between    -  Fiilter between `from` and `to` values
+fieldName_between    -  Fiilter between `from` and `to` values.  Good substitute for DateTime Equals.
 fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
 fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
 fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
@@ -239,6 +239,8 @@ string
 text
 datetime
 ```
+
+Dates are handled as ISO 8601 e.g. 2004-02-12T15:19:21+00:00
 
 If you have need to support a datatype not listed here please create an issue on the github project.
 

@@ -18,6 +18,7 @@ return [
             Hydrator\Strategy\FieldDefault::class => Hydrator\Strategy\FieldDefault::class,
         ],
         'factories' => [
+            Field\FieldResolver::class => Field\FieldResolverFactory::class,
             Filter\Loader::class => Filter\LoaderFactory::class,
             Filter\FilterManager::class => Filter\FilterManagerFactory::class,
             Criteria\Loader::class => Criteria\LoaderFactory::class,

@@ -15,6 +15,7 @@ use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use ZF\Doctrine\GraphQL\Criteria\FilterManager;
+use ZF\Doctrine\GraphQL\Field\FieldResolver;
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 
 final class EntityTypeAbstractFactory implements
@@ -57,6 +58,7 @@ final class EntityTypeAbstractFactory implements
         $fields = [];
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
+        $fieldResolver = $container->get(FieldResolver::class);
         $typeManager = $container->get(TypeManager::class);
         $criteriaFilterManager = $container->get(FilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
@@ -101,6 +103,7 @@ final class EntityTypeAbstractFactory implements
                                 $config,
                                 $typeManager,
                                 $criteriaFilterManager,
+                                $fieldResolver,
                                 $targetEntity,
                                 $objectManager,
                                 $criteriaBuilder,
@@ -118,15 +121,16 @@ final class EntityTypeAbstractFactory implements
                                         ResolveInfo $resolveInfo
                                     ) use (
                                         $config,
+                                        $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
                                         $hydratorManager
                                     ) {
-                                        $collection = $source[$resolveInfo->fieldName];
+                                        $collection = $fieldResolver($source, $args, $context, $resolveInfo);
 
                                         // Do not process empty collections
-                                        if (! $collection->count()) {
-                                            return null;
+                                        if (! sizeof($collection)) {
+                                            return [];
                                         }
 
                                         $filter = $args['filter'] ?? [];
@@ -324,9 +328,9 @@ final class EntityTypeAbstractFactory implements
         }
 
         return new EntityType([
-            'name' => $name,
+            'name' => $requestedName,
             'description' => 'testing description',
-            'fields' => function () use ($fields, $references) {
+            'fields' => function () use ($fields, $references, $name) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();
                 }

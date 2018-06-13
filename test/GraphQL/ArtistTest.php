@@ -41,6 +41,6 @@ class ArtistTest extends AbstractTest
         $result = GraphQL::executeQuery($schema, $query);
         $output = $result->toArray();
 
-        $this->assertEquals([0 => 'artist', 1 => 0, 2 => 'user'], $output['errors'][0]['path']);
+        $this->assertEmpty($output['data']['artist'][0]['user']);
     }
 }

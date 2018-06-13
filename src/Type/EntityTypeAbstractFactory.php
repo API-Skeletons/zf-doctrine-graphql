@@ -330,7 +330,7 @@ final class EntityTypeAbstractFactory implements
         return new EntityType([
             'name' => $requestedName,
             'description' => 'testing description',
-            'fields' => function () use ($fields, $references, $name) {
+            'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();
                 }

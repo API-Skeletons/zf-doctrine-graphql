@@ -2,6 +2,7 @@
 return [
     'zf-doctrine-graphql' => [
         'limit' => 1000,
+        'use_hydrator_cache' => true,
     ],
     'zf-doctrine-graphql-hydrator' => [
         'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist' => [

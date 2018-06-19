@@ -38,11 +38,21 @@ class FieldResolver
 
         $entityClassName = ClassUtils::getRealClass(get_class($source));
         $splObjectHash = spl_object_hash($source);
+        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+
+        // For disabled hydrator cache do not store hydrator result
+        if (isset($this->config['use_hydrator_cache']) && ! $this->config['use_hydrator_cache']) {
+            $hydrator = $this->hydratorManager->get($hydratorAlias);
+            $data = $hydrator->extract($source);
+
+            return $data[$info->fieldName] ?? null;
+        }
+
+        // Use hydrator cache
         if (isset($this->extractValues[$splObjectHash][$info->fieldName])) {
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
         $hydrator = $this->hydratorManager->get($hydratorAlias);
         $this->extractValues[$splObjectHash] = $hydrator->extract($source);
 

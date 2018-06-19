@@ -22,24 +22,29 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
 
     public function indexAction()
     {
-         $objectManagerAlias = $this->params()->fromRoute('object-manager') ?? 'doctrine.entitymanager.orm_default';
+        $objectManagerAlias = $this->params()->fromRoute('object-manager') ?? 'doctrine.entitymanager.orm_default';
+        $hydratorNamespace = $this->params()->fromRoute('hydrator-namespace') ?? '\\Default';
 
         if (! $this->container->has($objectManagerAlias)) {
             throw new Exception('Invalid object manager alias');
         }
-         $objectManager = $this->container->get($objectManagerAlias);
+        $objectManager = $this->container->get($objectManagerAlias);
 
         $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
 
         $config = [
             'zf-doctrine-graphql' => [
                 'limit' => 2000,
+                'use_hydrator_cache' => true,
             ],
             'zf-doctrine-graphql-hydrator' => []
         ];
 
         foreach ($metadata as $classMetadata) {
-            $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $classMetadata->getName());
+            $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
+                . str_replace('\\', '_', $classMetadata->getName())
+                . $hydratorNamespace
+                ;
 
             $strategies = [];
             $filters = [];

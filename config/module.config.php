@@ -89,7 +89,7 @@ return [
                 'graphql-skeleton' => [
                     'type' => 'simple',
                     'options' => [
-                        'route'    => 'graphql:config-skeleton [--object-manager=]',
+                        'route'    => 'graphql:config-skeleton [--hydrator-sections=] [--object-manager=]',
                         'defaults' => [
                             'controller' => Console\ConfigurationSkeletonController::class,
                             'action' => 'index'

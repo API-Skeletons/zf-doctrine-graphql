@@ -7,6 +7,9 @@ use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function __invoke()
     {
         return [

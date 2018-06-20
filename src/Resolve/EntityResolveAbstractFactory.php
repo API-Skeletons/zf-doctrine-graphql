@@ -13,8 +13,9 @@ use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 
-final class EntityResolveAbstractFactory implements
+final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
     const FILTER_QUERY_BUILDER = 'filterQueryBuilder';
@@ -65,24 +66,28 @@ final class EntityResolveAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
     {
+        if ($this->isCached($requestedName, $options)) {
+            return $this->getCache($requestedName, $options);
+        }
+
         // Setup Events
         $this->createEventManager($container->get('SharedEventManager'));
 
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydrator = $hydratorManager->get($hydratorAlias);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+        $hydrator = $hydratorManager->build($hydratorAlias, $options);
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
-        return function (
+        $instance = function (
             $obj,
             $args,
             $context
         ) use (
-            $config,
+            $options,
             $hydrator,
             $objectManager,
             $requestedName,
@@ -111,7 +116,7 @@ final class EntityResolveAbstractFactory implements
             $orderByArray = [];
             $distinctField = null;
             $skip = 0;
-            $limit = $config['zf-doctrine-graphql']['limit'];
+            $limit = $options['limit'];
             foreach ($filter as $field => $value) {
                 // Command fields
                 if ($field == '_skip') {
@@ -120,7 +125,7 @@ final class EntityResolveAbstractFactory implements
                 }
 
                 if ($field == '_limit') {
-                    if ($value <= $config['zf-doctrine-graphql']['limit']) {
+                    if ($value <= $options['limit']) {
                         $limit = $value;
                     }
                     continue;
@@ -264,5 +269,9 @@ final class EntityResolveAbstractFactory implements
 
             return $matching;
         };
+
+        $this->cache($requestedName, $options, $instance);
+
+        return $instance;
     }
 }

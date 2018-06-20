@@ -12,8 +12,7 @@ class FieldResolverFactory
         array $options = null
     ) {
         $hydratorManager = $container->get('HydratorManager');
-        $config = $container->get('config');
 
-        return new FieldResolver($hydratorManager, $config);
+        return new FieldResolver($hydratorManager);
     }
 }

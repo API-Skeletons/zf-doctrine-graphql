@@ -8,229 +8,286 @@ use Db\Entity;
 
 class QueryBuilderFiltersTest extends AbstractTest
 {
-    public function testEquals()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testEquals($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_eq: 1 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['performance']));
     }
 
-    public function testNotEquals()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testNotEquals($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_neq: 1 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(4, sizeof($output['data']['performance']));
     }
 
-    public function testGreaterThan()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testGreaterThan($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_gt: 1 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(4, sizeof($output['data']['performance']));
     }
 
-    public function testGreaterThanOrEquals()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testGreaterThanOrEquals($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_gte: 2 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(4, sizeof($output['data']['performance']));
     }
 
-    public function testLessThan()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testLessThan($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_lt: 2 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['performance']));
     }
 
-    public function testLessThanOrEquals()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testLessThanOrEquals($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_lte: 2 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(2, sizeof($output['data']['performance']));
     }
 
-    public function testIsNull()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testIsNull($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { isTradable_isnull:true } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['performance']));
     }
 
-    public function testIsNotNull()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testIsNotNull($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { isTradable_isnull:false } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(4, sizeof($output['data']['performance']));
     }
 
-    public function testIn()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testIn($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_in: [3, 4] } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(2, sizeof($output['data']['performance']));
     }
 
-    public function testNotIn()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testNotIn($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_notin: [3, 4] } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(3, sizeof($output['data']['performance']));
     }
 
-    public function testBetween()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testBetween($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { id_between: { from: 2 to: 4} } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(3, sizeof($output['data']['performance']));
     }
 
-    public function testContains()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testContains($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { venue_contains: \"enue\" } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['performance']));
     }
 
-    public function testStartsWith()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testStartsWith($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { venue_startswith: \"v\" } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['performance']));
     }
 
-    public function testEndsWith()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testEndsWith($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { venue_endswith: \"5\" } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['performance']));
     }
 
-    public function testSortAsc()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testSortAsc($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = '{ performance ( filter: { venue_sort:"asc" } ) { id venue performanceDate } }';
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals('venue1', $output['data']['performance'][0]['venue']);
     }
 
-    public function testSortDesc()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testSortDesc($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = '{ performance ( filter: { venue_sort:"desc" } ) { id venue performanceDate } }';
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals('venue5', $output['data']['performance'][0]['venue']);
     }
 
-    public function testSkip()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testSkip($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { _skip: 3 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(2, sizeof($output['data']['performance']));
     }
 
-    public function testLimit()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testLimit($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { _limit: 3 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(3, sizeof($output['data']['performance']));
     }
 
-    public function testOverTheLimit()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testOverTheLimit($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance ( filter: { _limit: 10000 } ) { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['performance']));

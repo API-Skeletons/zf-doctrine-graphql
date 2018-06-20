@@ -14,11 +14,12 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
+use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
+use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 use ZF\Doctrine\GraphQL\Criteria\FilterManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
-use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 
-final class EntityTypeAbstractFactory implements
+final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
     /**
@@ -51,6 +52,10 @@ final class EntityTypeAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
     {
+        if ($this->isCached($requestedName, $options)) {
+            return $this->getCache($requestedName, $options);
+        }
+
         $name = str_replace('\\', '_', $requestedName);
         $objectManagerAlias = null;
         $hydratorAlias = null;
@@ -64,8 +69,8 @@ final class EntityTypeAbstractFactory implements
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
 
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
-        $hydrator = $hydratorManager->get($hydratorAlias);
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
+        $hydrator = $hydratorManager->build($hydratorAlias, $options);
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
         // Create an instance of the entity in order to get fields from the hydrator.
@@ -89,9 +94,9 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::MANY_TO_ONE:
                         case ClassMetadataInfo::TO_ONE:
                             $targetEntity = $associationMetadata['targetEntity'];
-                            $references[$fieldName] = function () use ($typeManager, $targetEntity) {
+                            $references[$fieldName] = function () use ($typeManager, $targetEntity, $options) {
                                 return [
-                                    'type' => $typeManager->get($targetEntity),
+                                    'type' => $typeManager->build($targetEntity, $options),
                                 ];
                             };
                             break;
@@ -100,7 +105,7 @@ final class EntityTypeAbstractFactory implements
                         case ClassMetadataInfo::TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
                             $references[$fieldName] = function () use (
-                                $config,
+                                $options,
                                 $typeManager,
                                 $criteriaFilterManager,
                                 $fieldResolver,
@@ -110,9 +115,9 @@ final class EntityTypeAbstractFactory implements
                                 $hydratorManager
                             ) {
                                 return [
-                                    'type' => Type::listOf($typeManager->get($targetEntity)),
+                                    'type' => Type::listOf($typeManager->build($targetEntity, $options)),
                                     'args' => [
-                                        'filter' => $criteriaFilterManager->get($targetEntity),
+                                        'filter' => $criteriaFilterManager->build($targetEntity, $options),
                                     ],
                                     'resolve' => function (
                                         $source,
@@ -120,7 +125,7 @@ final class EntityTypeAbstractFactory implements
                                         $context,
                                         ResolveInfo $resolveInfo
                                     ) use (
-                                        $config,
+                                        $options,
                                         $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
@@ -138,7 +143,7 @@ final class EntityTypeAbstractFactory implements
                                         $orderByArray = [];
                                         $distinctField = null;
                                         $skip = 0;
-                                        $limit = $config['zf-doctrine-graphql']['limit'];
+                                        $limit = $options['limit'];
 
                                         foreach ($filter as $field => $value) {
                                             if ($field == '_skip') {
@@ -240,8 +245,8 @@ final class EntityTypeAbstractFactory implements
                                         }
 
                                         if ($limit) {
-                                            if ($config['zf-doctrine-graphql']['limit'] < $limit) {
-                                                $limit = $config['zf-doctrine-graphql']['limit'];
+                                            if ($options['limit'] < $limit) {
+                                                $limit = $options['limit'];
                                             }
                                             $criteria->setMaxResults($limit);
                                         }
@@ -250,7 +255,7 @@ final class EntityTypeAbstractFactory implements
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
                                             . str_replace('\\', '_', $entityClassName);
-                                        $hydrator = $hydratorManager->get($hydratorAlias);
+                                        $hydrator = $hydratorManager->build($hydratorAlias, $options);
 
                                         $data = new ArrayCollection();
                                         foreach ($collection as $key => $value) {
@@ -327,8 +332,8 @@ final class EntityTypeAbstractFactory implements
             }
         }
 
-        return new EntityType([
-            'name' => $requestedName,
+        $instance = new EntityType([
+            'name' => $requestedName . '_' . $options['hydrator_section'],
             'description' => 'testing description',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
@@ -338,5 +343,9 @@ final class EntityTypeAbstractFactory implements
                 return $fields;
             },
         ]);
+
+        $this->cache($requestedName, $options, $instance);
+
+        return $instance;
     }
 }

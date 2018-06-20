@@ -12,8 +12,9 @@ use ZF\Doctrine\Criteria\Filter\Service\FilterManager;
 use ZF\Doctrine\Criteria\OrderBy\Service\OrderByManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Criteria\Type as FilterTypeNS;
+use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 
-final class FilterTypeAbstractFactory implements
+final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
     /**
@@ -46,6 +47,10 @@ final class FilterTypeAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
     {
+        if ($this->isCached($requestedName, $options)) {
+            return $this->getCache($requestedName, $options);
+        }
+
         $config = $container->get('config');
         $fields = [];
         $hydratorManager = $container->get('HydratorManager');
@@ -54,7 +59,7 @@ final class FilterTypeAbstractFactory implements
         $orderByManager = $container->get(OrderByManager::class);
 
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
         $hydrator = $hydratorManager->get($hydratorAlias);
@@ -265,11 +270,15 @@ final class FilterTypeAbstractFactory implements
             'type' => Type::int(),
         ];
 
-        return new FilterType([
+        $instance = new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . 'CriteriaFilter',
             'fields' => function () use ($fields) {
                 return $fields;
             },
         ]);
+
+        $this->cache($requestedName, $options, $instance);
+
+        return $instance;
     }
 }

@@ -8,25 +8,31 @@ use Db\Entity;
 
 class PerformanceTest extends AbstractTest
 {
-    public function testPerformanceEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testPerformanceEntity($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance { id performanceDate } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['performance']));
     }
 
-    public function testArtistManyToOne()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistManyToOne($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ performance { id artist { name } } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals('artist1', $output['data']['performance'][0]['artist']['name']);

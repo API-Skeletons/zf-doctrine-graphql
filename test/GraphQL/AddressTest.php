@@ -8,37 +8,46 @@ use Db\Entity;
 
 class AddressTest extends AbstractTest
 {
-    public function testAddressEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressEntity($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ address { id address } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['address']));
     }
 
-    public function testAddressFilterId()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressFilterId($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ address (filter: { id:1 }) { id address } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['address']));
     }
 
-    public function testAddressUser1to1()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressUser1to1($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ address (filter: { id:1 }) { id address user { id name } } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals('test1', $output['data']['address'][0]['user']['name']);

@@ -10,9 +10,12 @@ use Db\Entity;
 
 class EventsTest extends AbstractTest
 {
-    public function testUserEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserEntity($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $container = $this->getApplication()->getServiceManager();
         $events = $container->get('SharedEventManager');
@@ -37,7 +40,7 @@ class EventsTest extends AbstractTest
 
         $query = "{ performance { id } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(1, sizeof($output['data']['performance']));

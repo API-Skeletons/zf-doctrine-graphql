@@ -2,6 +2,8 @@
 
 namespace ZF\Doctrine\GraphQL\Filter;
 
+use ZF\Doctrine\GraphQL\Context;
+
 class Loader
 {
     protected $filterManager;
@@ -11,8 +13,10 @@ class Loader
         $this->filterManager = $filterManager;
     }
 
-    public function __invoke(string $name) : FilterType
+    public function __invoke(string $name, Context $context = null) : FilterType
     {
-        return $this->filterManager->get($name);
+        $context = $context ?? new Context();
+
+        return $this->filterManager->build($name, $context->toArray());
     }
 }

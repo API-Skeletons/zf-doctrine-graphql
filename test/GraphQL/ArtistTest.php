@@ -8,37 +8,46 @@ use Db\Entity;
 
 class ArtistTest extends AbstractTest
 {
-    public function testArtistEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistEntity($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ artist { id name createdAt } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['artist']));
     }
 
-    public function testArtistPerformanceOneToMany()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistPerformanceOneToMany($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ artist ( filter: { id: 1 } ) { id performance { id } } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
     }
 
-    public function testArtistUserManyToManyIsBlockedBecauseArtistIsOwner()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistUserManyToManyIsBlockedBecauseArtistIsOwner($schemaName, $context)
     {
-        $schema = $this->getSchema();
+        $schema = $this->getSchema($schemaName);
 
         $query = "{ artist { id user { id } } }";
 
-        $result = GraphQL::executeQuery($schema, $query);
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
         $this->assertEmpty($output['data']['artist'][0]['user']);

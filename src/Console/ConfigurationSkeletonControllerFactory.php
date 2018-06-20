@@ -5,6 +5,9 @@ namespace ZF\Doctrine\GraphQL\Console;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\Factory\FactoryInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class ConfigurationSkeletonControllerFactory implements
     FactoryInterface
 {

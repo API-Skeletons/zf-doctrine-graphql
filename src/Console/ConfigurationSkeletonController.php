@@ -11,6 +11,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use ZF\Doctrine\GraphQL\Hydrator\Strategy;
 use ZF\Doctrine\GraphQL\Hydrator\Filter;
 
+/**
+ * @codeCoverageIgnore
+ */
 final class ConfigurationSkeletonController extends AbstractConsoleController
 {
     private $container;

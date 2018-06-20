@@ -39,6 +39,7 @@ class DoctrineHydrator implements HydratorInterface
 
     /**
      * @return \Zend\Hydrator\HydratorInterface
+     * @codeCoverageIgnore
      */
     public function getHydrateService()
     {
@@ -64,6 +65,7 @@ class DoctrineHydrator implements HydratorInterface
      * @param object $object
      *
      * @return object
+     * @codeCoverageIgnore
      */
     public function hydrate(array $data, $object)
     {

@@ -57,6 +57,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return $this->lookupCache[$requestedName];
         }
 
+        // @codeCoverageIgnoreStart
         if (! $container->has('config')) {
             return false;
         }
@@ -72,6 +73,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
 
             return false;
         }
+        // @codeCoverageIgnoreEnd
 
         $this->lookupCache[$requestedName] = true;
 
@@ -90,6 +92,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      * @return bool
      *
      * @throws ServiceNotFoundException
+     * @codeCoverageIgnore
      */
     public function canCreateServiceWithName(ServiceLocatorInterface $hydratorManager, $name, $requestedName)
     {
@@ -154,6 +157,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      * @param string                  $requestedName
      *
      * @return DoctrineHydrator
+     * @codeCoverageIgnore
      */
     public function createServiceWithName(ServiceLocatorInterface $hydratorManager, $name, $requestedName)
     {
@@ -170,7 +174,9 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return 'ORM';
         }
 
+        // @codeCoverageIgnoreStart
         throw new ServiceNotCreatedException('Unknown object manager type: ' . get_class($objectManager));
+        // @codeCoverageIgnoreEnd
     }
 
     /**
@@ -183,9 +189,11 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function loadObjectManager(ContainerInterface $container, $config)
     {
+        // @codeCoverageIgnoreStart
         if (! $container->has($config['object_manager'])) {
             throw new ServiceNotCreatedException('The object_manager could not be found.');
         }
+        // @codeCoverageIgnoreEnd
 
         return $container->get($config['object_manager']);
     }
@@ -242,6 +250,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return;
         }
 
+        // @codeCoverageIgnoreStart
         $namingStrategyKey = $config['naming_strategy'];
         if (! $container->has($namingStrategyKey)) {
             throw new ServiceNotCreatedException(sprintf('Invalid naming strategy %s.', $namingStrategyKey));
@@ -258,6 +267,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         if ($namingStrategy instanceof ObjectManagerAwareInterface) {
             $namingStrategy->setObjectManager($objectManager);
         }
+        // @codeCoverageIgnoreEnd
 
         $hydrator->setNamingStrategy($namingStrategy);
     }
@@ -280,6 +290,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         }
 
         foreach ($config['strategies'] as $field => $strategyKey) {
+            // @codeCoverageIgnoreStart
             if (! $container->has($strategyKey)) {
                 throw new ServiceNotCreatedException(sprintf('Invalid strategy %s for field %s', $strategyKey, $field));
             }
@@ -290,6 +301,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
                     sprintf('Invalid strategy class %s for field %s', get_class($strategy), $field)
                 );
             }
+            // @codeCoverageIgnoreEnd
 
             // Attach object manager:
             if ($strategy instanceof ObjectManagerAwareInterface) {
@@ -312,12 +324,14 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function configureHydratorFilters($hydrator, ContainerInterface $container, $config, $objectManager)
     {
+        // @codeCoverageIgnoreStart
         if (! $hydrator instanceof FilterEnabledInterface
             || ! isset($config['filters'])
             || ! is_array($config['filters'])
         ) {
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         foreach ($config['filters'] as $name => $filterConfig) {
             $conditionMap = [
@@ -329,6 +343,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
                             FilterComposite::CONDITION_OR;
 
             $filterService = $filterConfig['filter'];
+            // @codeCoverageIgnoreStart
             if (! $container->has($filterService)) {
                 throw new ServiceNotCreatedException(
                     sprintf('Invalid filter %s for field %s: service does not exist', $filterService, $name)
@@ -341,6 +356,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
                     sprintf('Filter service %s must implement FilterInterface', get_class($filterService))
                 );
             }
+            // @codeCoverageIgnoreEnd
 
             if ($filterService instanceof ObjectManagerAwareInterface) {
                 $filterService->setObjectManager($objectManager);

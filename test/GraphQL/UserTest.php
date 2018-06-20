@@ -8,78 +8,95 @@ use Db\Entity;
 
 class UserTest extends AbstractTest
 {
-    public function testUserEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserEntity($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ user { id name } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ user { id name } }";
 
-            $this->assertEquals(5, sizeof($output['data']['user']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['user']));
     }
 
-    public function testUserFilterId()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserFilterId($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ user (filter: { id:1 }) { id name } }";
+        $schema = $this->getSchema($schemaName);
+        $query = "{ user (filter: { id:1 }) { id name } }";
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
 
-            $this->assertEquals(1, sizeof($output['data']['user']));
-        }
+        $this->assertEquals(1, sizeof($output['data']['user']));
     }
 
-    public function testUserAddress()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserAddress($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ user (filter: { id:1 }) { id name address { id address } } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ user (filter: { id:1 }) { id name address { id address } } }";
 
-            $this->assertEquals('address1', $output['data']['user'][0]['address']['address']);
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals('address1', $output['data']['user'][0]['address']['address']);
     }
 
-    public function testPasswordFilter()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testPasswordFilter($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schemaName => $schema) {
-            $query = "{ user (filter: { id:1 }) { password } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ user (filter: { id:1 }) { password } }";
 
-            $this->assertEquals(
-                'Cannot query field "password" on type "DbTest\Entity\User_' . $schemaName . '".',
-                $output['errors'][0]['message']
-            );
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(
+            'Cannot query field "password" on type "DbTest\Entity\User_' . $schemaName . '".',
+            $output['errors'][0]['message']
+        );
     }
 
-    public function testUserArtistManyToManyWorksBecauseArtistIsOwner()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserArtistManyToManyWorksBecauseArtistIsOwner($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ user( filter: { id:1 } ) { id artist { id } } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ user( filter: { id:1 } ) { id artist { id } } }";
 
-            $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
     }
 
-    public function testFetchCriteriaForRelation()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testFetchCriteriaForRelation($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ user( filter: { id:1 } ) { id artist { id performance ( filter: { id: 3 } ) { id } } } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ user( filter: { id:1 } ) { id artist { id performance ( filter: { id: 3 } ) { id } } } }";
 
-            $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['user'][0]['artist']));
     }
 }

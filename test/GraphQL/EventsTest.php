@@ -10,36 +10,39 @@ use Db\Entity;
 
 class EventsTest extends AbstractTest
 {
-    public function testUserEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testUserEntity($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $container = $this->getApplication()->getServiceManager();
-            $events = $container->get('SharedEventManager');
+        $schema = $this->getSchema($schemaName);
 
-            $events->attach(
-                EntityResolveAbstractFactory::class,
-                EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
-                function(Event $event)
-                {
-                    switch ($event->getParam('entityClassName')) {
-                        case 'DbTest\Entity\Performance':
-                            $event->getParam('queryBuilder')
-                                ->andWhere('row.id = 1')
-                                ;
-                            break;
-                        default:
-                            break;
-                    }
-                },
-                100
-            );
+        $container = $this->getApplication()->getServiceManager();
+        $events = $container->get('SharedEventManager');
 
-            $query = "{ performance { id } }";
+        $events->attach(
+            EntityResolveAbstractFactory::class,
+            EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
+            function(Event $event)
+            {
+                switch ($event->getParam('entityClassName')) {
+                    case 'DbTest\Entity\Performance':
+                        $event->getParam('queryBuilder')
+                            ->andWhere('row.id = 1')
+                            ;
+                        break;
+                    default:
+                        break;
+                }
+            },
+            100
+        );
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ performance { id } }";
 
-            $this->assertEquals(1, sizeof($output['data']['performance']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(1, sizeof($output['data']['performance']));
     }
 }

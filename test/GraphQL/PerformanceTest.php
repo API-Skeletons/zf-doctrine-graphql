@@ -8,27 +8,33 @@ use Db\Entity;
 
 class PerformanceTest extends AbstractTest
 {
-    public function testPerformanceEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testPerformanceEntity($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ performance { id performanceDate } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ performance { id performanceDate } }";
 
-            $this->assertEquals(5, sizeof($output['data']['performance']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['performance']));
     }
 
-    public function testArtistManyToOne()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistManyToOne($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ performance { id artist { name } } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ performance { id artist { name } } }";
 
-            $this->assertEquals('artist1', $output['data']['performance'][0]['artist']['name']);
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals('artist1', $output['data']['performance'][0]['artist']['name']);
     }
 }

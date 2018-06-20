@@ -8,39 +8,48 @@ use Db\Entity;
 
 class AddressTest extends AbstractTest
 {
-    public function testAddressEntity()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressEntity($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ address { id address } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ address { id address } }";
 
-            $this->assertEquals(5, sizeof($output['data']['address']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['address']));
     }
 
-    public function testAddressFilterId()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressFilterId($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ address (filter: { id:1 }) { id address } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ address (filter: { id:1 }) { id address } }";
 
-            $this->assertEquals(1, sizeof($output['data']['address']));
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(1, sizeof($output['data']['address']));
     }
 
-    public function testAddressUser1to1()
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testAddressUser1to1($schemaName, $context)
     {
-        foreach ($this->schemaDataProvider() as $schema) {
-            $query = "{ address (filter: { id:1 }) { id address user { id name } } }";
+        $schema = $this->getSchema($schemaName);
 
-            $result = GraphQL::executeQuery($schema, $query);
-            $output = $result->toArray();
+        $query = "{ address (filter: { id:1 }) { id address user { id name } } }";
 
-            $this->assertEquals('test1', $output['data']['address'][0]['user']['name']);
-        }
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals('test1', $output['data']['address'][0]['user']['name']);
     }
 }

@@ -202,17 +202,32 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
             ;
     }
 
-    /**
-     * Because schema require the application they cannot
-     * be created as a traditional data provider.
-     */
-    protected function schemaDataProvider() {
+    public function schemaDataProvider() {
+        $testContext = new Context();
+        $testContext->setHydratorSection('test');
+
         $providers = [
-            'default' => $this->getDefaultSchema(),
-            'test' => $this->getTestSchema(),
+            [
+                'schemaName' => 'default',
+                'context' => new Context(),
+            ],
+            [
+                'schemaName' => 'test',
+                'context' => $testContext,
+            ],
         ];
 
         return $providers;
+    }
+
+    protected function getSchema($schemaName)
+    {
+        switch ($schemaName) {
+            case 'default':
+                return $this->getDefaultSchema();
+            case 'test':
+                return $this->getTestSchema();
+        }
     }
 
     protected function getDefaultSchema()

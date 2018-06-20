@@ -225,18 +225,18 @@ The `Context` object provided enables configuration of GraphQL through the follo
 
 * limit - Set a maximum limit of each data section in a query
 * hydratorSection - Which section within the hydrator configuration should be used
-* useHydratorCache - By default all hydrator operations are cached.  Disabling this value will
-                     cache only the most recent hydrator operation in anticipation that the next
-                     hydrator call will be for the same object.  If it is not then the cache is
-                     flushed and a hydrator extract call is made for the new object.
+* useHydratorCache - By default all hydrator operations are not cached.  Enabling this value will
+                     cache all the hydrator operation in anticipation that the result may be reused.
 
 
 useHydratorCache Context Option
 -------------------------------
 
-The hydrator cache by defaults stores all extract operations of every entity involved in a GraphQL query.  This is
-slightly data intensive.  If you find you need to limit memory use or are interested in an alternative, setting the
-useHydratorCache option to false may be of interest.
+The hydrator cache by defaults stores only the most recent hydrator extract data in anticipation that the next
+call to the
+[FieldResolver](https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php)
+will be the same object and the cache can be used.  If the same object is not requesed
+for extraction then the cache is flushed and the new result is cached.
 
 For a query
 ```

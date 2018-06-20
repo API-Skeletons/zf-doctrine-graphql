@@ -53,33 +53,40 @@ $resolveLoader = $container->get(ResolveLoader::class);
 
 $input = $_POST;
 
+// Context is used for configuration level variables and is optional
+$context = (new Context())
+    ->setLimit(1000)
+    ->setHydratorSection('default')
+    ->setUseHydratorCache(true)
+    ;
+
 $schema = new Schema([
     'query' => new ObjectType([
         'name' => 'query',
         'fields' => [
             'artist' => [
-                'type' => Type::listOf($typeLoader(Entity\Artist::class)),
+                'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
                 'args' => [
-                    'filter' => $filterLoader(Entity\Artist::class),
+                    'filter' => $filterLoader(Entity\Artist::class, $context),
                 ],
-                'resolve' => $resolveLoader(Entity\Artist::class),
+                'resolve' => $resolveLoader(Entity\Artist::class, $context),
             ],
             'performance' => [
-                'type' => Type::listOf($typeLoader(Entity\Performance::class)),
+                'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
                 'args' => [
-                    'filter' => $filterLoader(Entity\Performance::class),
+                    'filter' => $filterLoader(Entity\Performance::class, $context),
                 ],
-                'resolve' => $resolveLoader(Entity\Performance::class),
+                'resolve' => $resolveLoader(Entity\Performance::class, $context),
             ],
         ],
     ]),
 ]);
 
 $query = $input['query'];
-$variableValues = isset($input['variables']) ? $input['variables'] : null;
+$variableValues = $input['variables'] ?? null;
 
 try {
-    $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context = null, $variableValues);
+    $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues);
     $output = $result->toArray();
 } catch (Exception $e) {
     $output = [
@@ -179,21 +186,20 @@ filters exist for filtering collections too.
 Configuration
 =============
 
-Because creating hydrator configurations for every entity in your object manager(s) is tedious
+This module uses hydrators to extract data from the Doctrine entities.  You can configure multiple
+sections of hydrators so one permissioned user may receive different data than a different permission
+or one query to an entity may return differnet fields than another query to the same entity.
+
+Because creating hydrator configurations for every section for every entity in your object manager(s) is tedious
 this module provides an auto-generating configuration tool.
-
-There are two sections to the generated configuration:
-
-* `zf-doctrine-graphql`: An array of configuration options.  The option(s) are
-  * `limit`: The maximum number of results to return for each entity or collection.
-
-* `zf-doctrine-graphql-hydrator`: An array of hydrator configurations.  Every entity within the tree of data you will serve through GraphQL must have a Hydrator Configuration.
 
 To generate configuration:
 
 ```sh
-php public/index.php graphql:config-skeleton [--object-manager=]
+php public/index.php graphql:config-skeleton [--hydrator-sections] [--object-manager=]
 ```
+
+The hydrator-sections parameter is a comma delimited list of sections to generate such as `default,admin`.
 
 The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
 For each object manager you want to serve data with in your application create a configuration using this
@@ -201,14 +207,55 @@ tool.  The tool outputs a configuration file.  Write the file to your project ro
 it to your `config/autoload` directory.
 
 ```sh
-php public/index.php graphql:hydrator:config-skeleton > zf-doctrine-graphql-orm_default.global.php
+php public/index.php graphql:config-skeleton > zf-doctrine-graphql-orm_default.global.php
 mv zf-doctrine-graphql-orm_default.global.php config/autoload
 ```
 
 (Writing directly into the `config/autoload` directory is not recommended at run time.)
 
-Default hydrator strategies and filters are sed for every association and field in your ORM.
-Modify each hydrator configuration with your hydrator strategies and hydrator filters as needed.
+Default hydrator strategies and filters are set for every association and field in your ORM.
+Modify each hydrator configuration section with your hydrator strategies and hydrator filters as needed.
+
+
+Context
+-------
+
+The `Context` object provided enables configuration of GraphQL through the following options:
+
+* limit - Set a maximum limit of each data section in a query
+* hydratorSection - Which section within the hydrator configuration should be used
+* useHydratorCache - By default all hydrator operations are cached.  Disabling this value will
+                     cache only the most recent hydrator operation in anticipation that the next
+                     hydrator call will be for the same object.  If it is not then the cache is
+                     flushed and a hydrator extract call is made for the new object.
+
+
+useHydratorCache Context Option
+-------------------------------
+
+The hydrator cache by defaults stores all extract operations of every entity involved in a GraphQL query.  This is
+slightly data intensive.  If you find you need to limit memory use or are interested in an alternative, setting the
+useHydratorCache option to false may be of interest.
+
+For a query
+```
+{ artist ( filter: { id: 2 } ) { performance { performanceDate } } }
+```
+All performance dates for the artist 2 will be returned.  Internally each performance is extracted according to the
+hydrator filters and strategies assigned to the hydrator section and entity.  This may be many more fields than just
+performanceDate.  And since we are only interested in one value setting useHydratorCache to false will flush the cache
+with each new object so once a performanceDate is read and the next performance is sent to the
+[FieldResolver](https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php)
+the previous hydrator extract data is purged.
+
+For a query
+```
+{ performance ( filter: { id:1 } ) { performanceDate set1 set2 artist { name } set3 } }
+```
+useHydratorCache set to true will cause set3 to be pulled from the cache.  If it were set to false set3 would generate
+a new hydrator extract operation on an entity which had already been extracted once before.
+
+useHydratorCache set to false will fetch set1 and set2 from the single-entity cache created by the performanceDate.
 
 
 Type Casting Entity Values

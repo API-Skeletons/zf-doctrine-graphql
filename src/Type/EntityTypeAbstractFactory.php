@@ -145,7 +145,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         $orderByArray = [];
                                         $distinctField = null;
                                         $skip = 0;
-                                        $limit = $config['zf-doctrine-graphql']['limit'];
+                                        $limit = $options['limit'];
 
                                         foreach ($filter as $field => $value) {
                                             if ($field == '_skip') {
@@ -247,8 +247,8 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         }
 
                                         if ($limit) {
-                                            if ($config['zf-doctrine-graphql']['limit'] < $limit) {
-                                                $limit = $config['zf-doctrine-graphql']['limit'];
+                                            if ($options['limit'] < $limit) {
+                                                $limit = $options['limit'];
                                             }
                                             $criteria->setMaxResults($limit);
                                         }

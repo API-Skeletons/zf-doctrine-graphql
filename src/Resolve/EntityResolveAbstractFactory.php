@@ -88,6 +88,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $context
         ) use (
             $config,
+            $options,
             $hydrator,
             $objectManager,
             $requestedName,
@@ -116,7 +117,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $orderByArray = [];
             $distinctField = null;
             $skip = 0;
-            $limit = $config['zf-doctrine-graphql']['limit'];
+            $limit = $options['limit'];
             foreach ($filter as $field => $value) {
                 // Command fields
                 if ($field == '_skip') {
@@ -125,7 +126,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 }
 
                 if ($field == '_limit') {
-                    if ($value <= $config['zf-doctrine-graphql']['limit']) {
+                    if ($value <= $options['limit']) {
                         $limit = $value;
                     }
                     continue;

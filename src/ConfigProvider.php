@@ -11,16 +11,15 @@ class ConfigProvider
     {
         return [
             'dependencies' => $this->getDependencyConfig(),
-            'zf-doctrine-criteria-filter' => $this->getDoctrineCriteriaFilterConfig(),
             'hydrators' => $this->getHydratorConfig(),
-            'zf-doctrine-graphql-type' => $this->getDoctrineGraphQLTypeConfig(),
-            'zf-doctrine-graphql-filter' => $this->getDoctrineGraphQLFilterConfig(),
-            'zf-doctrine-graphql-criteria' => $this->getDoctrineGraphQLCriteriaConfig(),
-            'zf-doctrine-graphql-resolve' => $this->getDoctrineGraphQLResolveConfig(),
             'controllers' => $this->getControllerConfig(),
             'console' => [
                 'router' => $this->getConsoleRouterConfig(),
             ],
+            'zf-doctrine-graphql-type' => $this->getDoctrineGraphQLTypeConfig(),
+            'zf-doctrine-graphql-filter' => $this->getDoctrineGraphQLFilterConfig(),
+            'zf-doctrine-graphql-criteria' => $this->getDoctrineGraphQLCriteriaConfig(),
+            'zf-doctrine-graphql-resolve' => $this->getDoctrineGraphQLResolveConfig(),
         ];
     }
 
@@ -37,7 +36,6 @@ class ConfigProvider
                 Hydrator\Strategy\AssociationDefault::class => InvokableFactory::class,
                 Hydrator\Strategy\FieldDefault::class => InvokableFactory::class,
 
-                Criteria\Loader::class => Criteria\LoaderFactory::class,
                 Criteria\FilterManager::class => Criteria\FilterManagerFactory::class,
                 Field\FieldResolver::class => Field\FieldResolverFactory::class,
                 Filter\Loader::class => Filter\LoaderFactory::class,
@@ -46,22 +44,6 @@ class ConfigProvider
                 Resolve\Loader::class => Resolve\LoaderFactory::class,
                 Type\Loader::class => Type\LoaderFactory::class,
                 Type\TypeManager::class => Type\TypeManagerFactory::class,
-            ],
-        ];
-    }
-
-    public function getDoctrineCriteriaFilterConfig()
-    {
-        return [
-            'aliases' => [
-                'between' => Filter\Criteria\Type\Between::class,
-                'isnull' => Filter\Criteria\Type\IsNull::class,
-                'isnotnull' => Filter\Criteria\Type\IsNotNull::class,
-            ],
-            'factories' => [
-                Filter\Criteria\Type\Between::class => InvokableFactory::class,
-                Filter\Criteria\Type\IsNull::class => InvokableFactory::class,
-                Filter\Criteria\Type\IsNotNull::class => InvokableFactory::class,
             ],
         ];
     }

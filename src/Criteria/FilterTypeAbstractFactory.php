@@ -178,7 +178,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     ];
                 }
 
-                if ($filterManager->has('isnull') && $filterManager->has('isnotnull')) {
+                if ($filterManager->has('eq') && $filterManager->has('neq')) {
                     $fields[$fieldName . '_isnull'] = [
                         'name' => $fieldName . '_isnull',
                         'type' => Type::boolean(),

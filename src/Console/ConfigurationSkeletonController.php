@@ -38,7 +38,8 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
 
         foreach (explode(',', $hydratorSections) as $section) {
             foreach ($metadata as $classMetadata) {
-                $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $classMetadata->getName());
+                $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
+                    . str_replace('\\', '_', $classMetadata->getName());
 
                 $strategies = [];
                 $filters = [];

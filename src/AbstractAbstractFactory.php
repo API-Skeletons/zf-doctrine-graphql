@@ -11,7 +11,7 @@ abstract class AbstractAbstractFactory
 {
     private $services = [];
 
-    protected function isCached($requestedName, $options)
+    protected function isCached($requestedName, array $options = null)
     {
         foreach ($this->services as $service) {
             if ($service['requestedName'] == $requestedName && $service['options'] == $options) {
@@ -22,7 +22,7 @@ abstract class AbstractAbstractFactory
         return false;
     }
 
-    protected function getCache($requestedName, array $options)
+    protected function getCache($requestedName, array $options = null)
     {
         foreach ($this->services as $service) {
             if ($service['requestedName'] == $requestedName && $service['options'] == $options) {
@@ -33,7 +33,7 @@ abstract class AbstractAbstractFactory
         throw new Exception('Cache not found for ' . $requestedName);
     }
 
-    protected function cache($requestedName, $options, $instance)
+    protected function cache($requestedName, array $options = null, $instance)
     {
         foreach ($this->services as $service) {
             if ($service['requestedName'] == $requestedName && $service['options'] == $options) {

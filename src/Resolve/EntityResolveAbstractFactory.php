@@ -87,7 +87,6 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $args,
             $context
         ) use (
-            $config,
             $options,
             $hydrator,
             $objectManager,

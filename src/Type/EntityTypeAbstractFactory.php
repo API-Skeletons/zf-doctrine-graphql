@@ -105,7 +105,6 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                         case ClassMetadataInfo::TO_MANY:
                             $targetEntity = $associationMetadata['targetEntity'];
                             $references[$fieldName] = function () use (
-                                $config,
                                 $options,
                                 $typeManager,
                                 $criteriaFilterManager,
@@ -126,7 +125,6 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         $context,
                                         ResolveInfo $resolveInfo
                                     ) use (
-                                        $config,
                                         $options,
                                         $fieldResolver,
                                         $objectManager,

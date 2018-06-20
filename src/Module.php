@@ -23,7 +23,21 @@ class Module implements
 {
     public function getConfig()
     {
-        return include __DIR__ . '/../config/module.config.php';
+        $configProvider = new ConfigProvider();
+
+        return [
+            'service_manager' => $configProvider->getDependencyConfig(),
+            'zf-doctrine-criteria-filter' => $configProvider->getDoctrineCriteriaFilterConfig(),
+            'hydrators' => $configProvider->getHydratorConfig(),
+            'zf-doctrine-graphql-type' => $configProvider->getDoctrineGraphQLTypeConfig(),
+            'zf-doctrine-graphql-filter' => $configProvider->getDoctrineGraphQLFilterConfig(),
+            'zf-doctrine-graphql-criteria' => $configProvider->getDoctrineGraphQLCriteriaConfig(),
+            'zf-doctrine-graphql-resolve' => $configProvider->getDoctrineGraphQLResolveConfig(),
+            'controllers' => $configProvider->getControllerConfig(),
+            'console' => [
+                'router' => $configProvider->getConsoleRouterConfig(),
+            ],
+        ];
     }
 
     /**

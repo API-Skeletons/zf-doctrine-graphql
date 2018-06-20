@@ -1,6 +1,8 @@
 zf-doctrine-graphql
 ===================
 
+GraphQL for Doctrine using Hydrators
+
 [![Build Status](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql)
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)
 [![Gitter](https://badges.gitter.im/api-skeletons/open-source.svg)](https://gitter.im/api-skeletons/open-source)
@@ -170,7 +172,7 @@ To select a distinct list of years
 { artist ( filter: { id:2 } ) { performance( filter: { year_distinct: true year_sort: "asc" } ) { year } } }
 ```
 
-All filters are AND filters.
+All filters are AND filters.  For OR support use multiple aliases queries and aggregate them.
 TODO:  Add `orx` and `andx` support
 
 
@@ -301,7 +303,7 @@ text
 datetime
 ```
 
-Dates are handled as ISO 8601 e.g. 2004-02-12T15:19:21+00:00
+Dates are handled as ISO 8601 e.g. `2004-02-12T15:19:21+00:00`
 
 If you have need to support a datatype not listed here please create an issue on the github project.
 

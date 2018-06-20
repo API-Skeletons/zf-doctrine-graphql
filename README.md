@@ -197,7 +197,7 @@ this module provides an auto-generating configuration tool.
 To generate configuration:
 
 ```sh
-php public/index.php graphql:config-skeleton [--hydrator-sections] [--object-manager=]
+php public/index.php graphql:config-skeleton [--hydrator-sections=] [--object-manager=]
 ```
 
 The hydrator-sections parameter is a comma delimited list of sections to generate such as `default,admin`.

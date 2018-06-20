@@ -6,8 +6,9 @@ namespace ZF\Doctrine\GraphQL\Field;
 
 use Exception as FieldResolverException;
 use Zend\Hydrator\HydratorPluginManager;
-use GraphQL\Type\Definition\ResolveInfo;
 use Doctrine\Common\Util\ClassUtils;
+use GraphQL\Type\Definition\ResolveInfo;
+use ZF\Doctrine\GraphQL\Context;
 
 /**
  * A field resolver which uses the Doctrine hydrator. Can be used byReference or byValue.
@@ -15,7 +16,6 @@ use Doctrine\Common\Util\ClassUtils;
 class FieldResolver
 {
     private $hydratorManager;
-    private $config;
 
     /**
      * Cache all hydrator extract operations based on spl object hash
@@ -24,13 +24,12 @@ class FieldResolver
      */
     private $extractValues = [];
 
-    public function __construct(HydratorPluginManager $hydratorManager, array $config)
+    public function __construct(HydratorPluginManager $hydratorManager)
     {
         $this->hydratorManager = $hydratorManager;
-        $this->config = $config;
     }
 
-    public function __invoke($source, $args, $context, ResolveInfo $info)
+    public function __invoke($source, $args, Context $context, ResolveInfo $info)
     {
         if (is_array($source)) {
             return $source[$info->fieldName];
@@ -40,15 +39,24 @@ class FieldResolver
         $splObjectHash = spl_object_hash($source);
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
 
-        // For disabled hydrator cache do not store hydrator result
-        if (isset($this->config['use_hydrator_cache']) && ! $this->config['use_hydrator_cache']) {
-            $hydrator = $this->hydratorManager->get($hydratorAlias);
-            $data = $hydrator->extract($source);
+        /**
+         * For disabled hydrator cache store only last hydrator result and reuse for consecutive calls
+         * then drop the cache if it doesn't hit.
+         */
+        if (! $context->getUseHydratorCache()) {
+            if (isset($this->extractValues[$splObjectHash])) {
+                return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
+            } else {
+                $this->extractValues = [];
+            }
 
-            return $data[$info->fieldName] ?? null;
+            $hydrator = $this->hydratorManager->get($hydratorAlias);
+            $this->extractValues[$splObjectHash] = $hydrator->extract($source);
+
+            return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        // Use hydrator cache
+        // Use full hydrator cache
         if (isset($this->extractValues[$splObjectHash][$info->fieldName])) {
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }

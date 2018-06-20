@@ -205,7 +205,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
     public function schemaDataProvider() {
         $testContext = new Context();
         $testContext->setHydratorSection('test');
-
+        $testContext->setUseHydratorCache(false);
         $providers = [
             [
                 'schemaName' => 'default',
@@ -287,6 +287,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
 
         $context = new Context();
         $context->setHydratorSection('test');
+        $context->setUseHydratorCache(false);
 
         $schema = new Schema([
             'query' => new ObjectType([

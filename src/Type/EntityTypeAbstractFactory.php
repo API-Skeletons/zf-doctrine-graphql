@@ -127,6 +127,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         ResolveInfo $resolveInfo
                                     ) use (
                                         $config,
+                                        $options,
                                         $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,

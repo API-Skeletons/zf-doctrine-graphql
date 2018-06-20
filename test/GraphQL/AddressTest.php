@@ -10,37 +10,37 @@ class AddressTest extends AbstractTest
 {
     public function testAddressEntity()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ address { id address } }";
 
-        $query = "{ address { id address } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals(5, sizeof($output['data']['address']));
+            $this->assertEquals(5, sizeof($output['data']['address']));
+        }
     }
 
     public function testAddressFilterId()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ address (filter: { id:1 }) { id address } }";
 
-        $query = "{ address (filter: { id:1 }) { id address } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals(1, sizeof($output['data']['address']));
+            $this->assertEquals(1, sizeof($output['data']['address']));
+        }
     }
 
     public function testAddressUser1to1()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ address (filter: { id:1 }) { id address user { id name } } }";
 
-        $query = "{ address (filter: { id:1 }) { id address user { id name } } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals('test1', $output['data']['address'][0]['user']['name']);
+            $this->assertEquals('test1', $output['data']['address'][0]['user']['name']);
+        }
     }
 }

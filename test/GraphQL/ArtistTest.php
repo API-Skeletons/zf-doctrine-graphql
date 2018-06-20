@@ -10,37 +10,37 @@ class ArtistTest extends AbstractTest
 {
     public function testArtistEntity()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ artist { id name createdAt } }";
 
-        $query = "{ artist { id name createdAt } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals(5, sizeof($output['data']['artist']));
+            $this->assertEquals(5, sizeof($output['data']['artist']));
+        }
     }
 
     public function testArtistPerformanceOneToMany()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ artist ( filter: { id: 1 } ) { id performance { id } } }";
 
-        $query = "{ artist ( filter: { id: 1 } ) { id performance { id } } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
+            $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
+        }
     }
 
     public function testArtistUserManyToManyIsBlockedBecauseArtistIsOwner()
     {
-        $schema = $this->getSchema();
+        foreach ($this->schemaDataProvider() as $schema) {
+            $query = "{ artist { id user { id } } }";
 
-        $query = "{ artist { id user { id } } }";
+            $result = GraphQL::executeQuery($schema, $query);
+            $output = $result->toArray();
 
-        $result = GraphQL::executeQuery($schema, $query);
-        $output = $result->toArray();
-
-        $this->assertEmpty($output['data']['artist'][0]['user']);
+            $this->assertEmpty($output['data']['artist'][0]['user']);
+        }
     }
 }

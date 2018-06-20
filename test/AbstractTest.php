@@ -13,6 +13,7 @@ use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
 use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
 use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
+use ZF\Doctrine\GraphQL\Context;
 
 abstract class AbstractTest extends AbstractHttpControllerTestCase
 {
@@ -201,44 +202,108 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
             ;
     }
 
-    protected function getSchema()
+    /**
+     * Because schema require the application they cannot
+     * be created as a traditional data provider.
+     */
+    protected function schemaDataProvider() {
+        $providers = [
+            'default' => $this->getDefaultSchema(),
+            'test' => $this->getTestSchema(),
+        ];
+
+        return $providers;
+    }
+
+    protected function getDefaultSchema()
     {
         $serviceManager = $this->getApplication()->getServiceManager();
         $typeLoader = $serviceManager->get(TypeLoader::class);
         $filterLoader = $serviceManager->get(FilterLoader::class);
         $resolveLoader = $serviceManager->get(ResolveLoader::class);
 
+        $context = new Context();
+
         $schema = new Schema([
             'query' => new ObjectType([
                 'name' => 'query',
                 'fields' => [
                     'artist' => [
-                        'type' => Type::listOf($typeLoader(Entity\Artist::class)),
+                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
                         'args' => [
-                            'filter' => $filterLoader(Entity\Artist::class),
+                            'filter' => $filterLoader(Entity\Artist::class, $context),
                         ],
-                        'resolve' => $resolveLoader(Entity\Artist::class),
+                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
                     ],
                     'performance' => [
-                        'type' => Type::listOf($typeLoader(Entity\Performance::class)),
+                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
                         'args' => [
-                            'filter' => $filterLoader(Entity\Performance::class),
+                            'filter' => $filterLoader(Entity\Performance::class, $context),
                         ],
-                        'resolve' => $resolveLoader(Entity\Performance::class),
+                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
                     ],
                     'user' => [
-                        'type' => Type::listOf($typeLoader(Entity\User::class)),
+                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
                         'args' => [
-                            'filter' => $filterLoader(Entity\User::class),
+                            'filter' => $filterLoader(Entity\User::class, $context),
                         ],
-                        'resolve' => $resolveLoader(Entity\User::class),
+                        'resolve' => $resolveLoader(Entity\User::class, $context),
                     ],
                     'address' => [
-                        'type' => Type::listOf($typeLoader(Entity\Address::class)),
+                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
                         'args' => [
-                            'filter' => $filterLoader(Entity\Address::class),
+                            'filter' => $filterLoader(Entity\Address::class, $context),
                         ],
-                        'resolve' => $resolveLoader(Entity\Address::class),
+                        'resolve' => $resolveLoader(Entity\Address::class, $context),
+                    ],
+                ],
+            ]),
+        ]);
+
+        return $schema;
+    }
+
+    protected function getTestSchema()
+    {
+        $serviceManager = $this->getApplication()->getServiceManager();
+        $typeLoader = $serviceManager->get(TypeLoader::class);
+        $filterLoader = $serviceManager->get(FilterLoader::class);
+        $resolveLoader = $serviceManager->get(ResolveLoader::class);
+
+        $context = new Context();
+        $context->setHydratorSection('test');
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Artist::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
+                    ],
+                    'performance' => [
+                        'type' => Type::listOf($typeLoader(Entity\Performance::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Performance::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Performance::class, $context),
+                    ],
+                    'user' => [
+                        'type' => Type::listOf($typeLoader(Entity\User::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\User::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\User::class, $context),
+                    ],
+                    'address' => [
+                        'type' => Type::listOf($typeLoader(Entity\Address::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Address::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Address::class, $context),
                     ],
                 ],
             ]),

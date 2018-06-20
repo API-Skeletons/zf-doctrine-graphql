@@ -12,8 +12,9 @@ use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
+use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 
-final class FilterTypeAbstractFactory implements
+final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
     /**
@@ -46,14 +47,18 @@ final class FilterTypeAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
     {
+        if ($this->isCached($requestedName, $options)) {
+            return $this->getCache($requestedName, $options);
+        }
+
         $fields = [];
         $config = $container->get('config');
         $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
 
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
-        $hydrator = $hydratorManager->get($hydratorAlias);
+        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
+        $hydrator = $hydratorManager->build($hydratorAlias, $options);
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
         $filterManager = $container->get(ORMFilterManager::class);
@@ -247,7 +252,7 @@ final class FilterTypeAbstractFactory implements
             'type' => Type::int(),
         ];
 
-        return new FilterType([
+        $instance = new FilterType([
             'name' => str_replace('\\', '_', $requestedName) . 'Filter',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
@@ -257,5 +262,9 @@ final class FilterTypeAbstractFactory implements
                 return $fields;
             },
         ]);
+
+        $this->cache($requestedName, $options, $instance);
+
+        return $instance;
     }
 }

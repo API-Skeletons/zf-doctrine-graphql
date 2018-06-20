@@ -73,25 +73,6 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return false;
         }
 
-        // Validate object manager
-        $config = $config[$namespace];
-        if (! isset($config[$requestedName]) || ! isset($config[$requestedName]['object_manager'])) {
-            throw new ServiceNotFoundException(sprintf(
-                '%s requires that a valid "object_manager" is specified for hydrator %s; no service found',
-                __METHOD__,
-                $requestedName
-            ));
-        }
-
-        // Validate object class
-        if (! isset($config[$requestedName]['entity_class'])) {
-            throw new ServiceNotFoundException(sprintf(
-                '%s requires that a valid "entity_class" is specified for hydrator %s; no service found',
-                __METHOD__,
-                $requestedName
-            ));
-        }
-
         $this->lookupCache[$requestedName] = true;
 
         return true;
@@ -131,7 +112,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config');
-        $config = $config[self::FACTORY_NAMESPACE][$requestedName];
+        $config = $config[self::FACTORY_NAMESPACE][$requestedName]['default'];
 
         $objectManager = $this->loadObjectManager($container, $config);
 

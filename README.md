@@ -322,6 +322,9 @@ Each of these tools takes a fully qualified entity name as a paramter allowing y
 There is not a tool for mutations.  Those are left to the developer to build.
 
 
+Events
+======
+
 Filtering Query Builders
 ------------------------
 
@@ -356,3 +359,18 @@ $events->attach(
     100
 );
 ```
+
+
+Resolve
+-------
+
+The `EntityResolveAbstractFactory::RESOLVE` event includes the paramters
+and allows you to override the whole ResolveLoader event.  This allows
+you to have custom parameters and act on them through the ResolveLoader RESOLVE event.
+
+
+Resolve Post
+------------
+
+The `EntityResolveAbstractFactory::RESOLVE_POST` event allows you to modify the values
+returned from the ResolveLoader via an ArrayObject or replace the values.

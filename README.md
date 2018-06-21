@@ -1,7 +1,5 @@
-zf-doctrine-graphql
-===================
-
 GraphQL for Doctrine using Hydrators
+====================================
 
 [![Build Status](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql)
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)
@@ -15,7 +13,6 @@ Data is collected via hydrators thereby
 allowing full control over each field using hydrator filters and strategies.
 Multiple object managers are supported.
 Multiple hydrator configurations are supported.
-This library enables queries only.
 
 
 Installation
@@ -322,6 +319,9 @@ Each of these tools takes a fully qualified entity name as a paramter allowing y
 There is not a tool for mutations.  Those are left to the developer to build.
 
 
+Events
+======
+
 Filtering Query Builders
 ------------------------
 
@@ -356,3 +356,18 @@ $events->attach(
     100
 );
 ```
+
+
+Resolve
+-------
+
+The `EntityResolveAbstractFactory::RESOLVE` event includes the paramters
+and allows you to override the whole ResolveLoader event.  This allows
+you to have custom parameters and act on them through the ResolveLoader RESOLVE event.
+
+
+Resolve Post
+------------
+
+The `EntityResolveAbstractFactory::RESOLVE_POST` event allows you to modify the values
+returned from the ResolveLoader via an ArrayObject or replace the values.

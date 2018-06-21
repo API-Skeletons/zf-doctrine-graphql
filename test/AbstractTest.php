@@ -67,7 +67,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $performance3->artist = $artist1;
         $performance3->performanceDate = '2011-01-03';
         $performance3->venue = 'venue3';
-        $performance3->attendance = 3000;
+        $performance3->attendance = 2000;
         $performance3->isTradable = false;
         $performance3->ticketPrice = 30.01;
         $objectManager->persist($performance3);

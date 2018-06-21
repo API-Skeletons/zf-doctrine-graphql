@@ -4,6 +4,7 @@ namespace ZF\Doctrine\GraphQL\Resolve;
 
 use Closure;
 use Exception;
+use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -18,6 +19,8 @@ use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
+    const RESOLVE = 'resolve';
+    const RESOLVE_POST = 'resolvePost';
     const FILTER_QUERY_BUILDER = 'filterQueryBuilder';
 
     protected $events;
@@ -95,6 +98,23 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $orderByManager
         ) {
 
+            // Allow listener to resolve function
+            $results = $this->getEventManager()->trigger(
+                self::RESOLVE,
+                $this,
+                [
+                    'object' => $obj,
+                    'arguments' => $args,
+                    'context' => $context,
+                    'hydrator' => $hydrator,
+                    'objectManager' => $objectManager,
+                    'entityClassName' => $requestedName,
+                ]
+            );
+            if ($results->stopped()) {
+                return $results->last();
+            }
+
             // Build query builder from Query Provider
             $queryBuilder = ($objectManager->createQueryBuilder())
                 ->select('row')
@@ -104,6 +124,9 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 self::FILTER_QUERY_BUILDER,
                 $this,
                 [
+                    'object' => $obj,
+                    'arguments' => $args,
+                    'context' => $context,
                     'objectManager' => $objectManager,
                     'queryBuilder' => $queryBuilder,
                     'entityClassName' => $requestedName,
@@ -267,7 +290,27 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 }
             }
 
-            return $matching;
+            // Allow listener to resolve post function
+            $matching = new ArrayObject($matching);
+            $results = $this->getEventManager()->trigger(
+                self::RESOLVE_POST,
+                $this,
+                [
+                    'object' => $obj,
+                    'arguments' => $args,
+                    'context' => $context,
+                    'matching' => $matching,
+                    'hydrator' => $hydrator,
+                    'objectManager' => $objectManager,
+                    'queryBuilder' => $queryBuilder,
+                    'entityClassName' => $requestedName,
+                ]
+            );
+            if ($results->stopped()) {
+                return $results->last();
+            }
+
+            return $matching->getArrayCopy();
         };
 
         $this->cache($requestedName, $options, $instance);

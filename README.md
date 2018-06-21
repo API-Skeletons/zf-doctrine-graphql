@@ -1,7 +1,5 @@
-zf-doctrine-graphql
-===================
-
 GraphQL for Doctrine using Hydrators
+====================================
 
 [![Build Status](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql)
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)
@@ -15,7 +13,6 @@ Data is collected via hydrators thereby
 allowing full control over each field using hydrator filters and strategies.
 Multiple object managers are supported.
 Multiple hydrator configurations are supported.
-This library enables queries only.
 
 
 Installation

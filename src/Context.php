@@ -10,26 +10,9 @@ use Zend\Stdlib\AbstractOptions;
  */
 class Context extends AbstractOptions
 {
-    protected $hydratorSection;
-    protected $limit;
-    protected $useHydratorCache;
-
-    public function __construct($options = null)
-    {
-        parent::__construct($options);
-
-        if (! $this->getHydratorSection()) {
-            $this->setHydratorSection('default');
-        }
-
-        if (! $this->getLimit()) {
-            $this->setLimit(1000);
-        }
-
-        if ($this->getUseHydratorCache() !== false) {
-            $this->setUseHydratorCache(true);
-        }
-    }
+    protected $hydratorSection = 'default';
+    protected $limit = 1000;
+    protected $useHydratorCache = false;
 
     public function setHydratorSection(string $value)
     {

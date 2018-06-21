@@ -361,7 +361,7 @@ $events->attach(
 Resolve
 -------
 
-The `EntityResolveAbstractFactory::RESOLVE` event includes the paramters
+The `EntityResolveAbstractFactory::RESOLVE` event includes the `parameters`
 and allows you to override the whole ResolveLoader event.  This allows
 you to have custom parameters and act on them through the ResolveLoader RESOLVE event.
 

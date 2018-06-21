@@ -86,6 +86,8 @@ $query = $input['query'];
 $variableValues = $input['variables'] ?? null;
 
 try {
+    // Context in the `executeQuery` is required.  If you do not assign a specific context as shown
+    // you still need to send a `new Context()` to `executeQuery`.
     $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues);
     $output = $result->toArray();
 } catch (Exception $e) {

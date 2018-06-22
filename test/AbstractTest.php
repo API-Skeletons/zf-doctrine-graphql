@@ -41,6 +41,7 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $artist1 = new Entity\Artist();
         $artist1->name = 'artist1';
         $artist1->createdAt = new DateTime('2010-02-01');
+        $artist1->alias = ['a1', 'a2', 'a3'];
         $objectManager->persist($artist1);
 
         $performance1 = new Entity\Performance();
@@ -96,21 +97,25 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         $artist2 = new Entity\Artist();
         $artist2->name = 'artist2';
         $artist2->createdAt = new DateTime('2010-02-02');
+        $artist2->alias = ['b1', 'b2', 'b3'];
         $objectManager->persist($artist2);
 
         $artist3 = new Entity\Artist();
         $artist3->name = 'artist3';
         $artist3->createdAt = new DateTime('2010-02-03');
+        $artist3->alias = ['c1', 'c2', 'c3'];
         $objectManager->persist($artist3);
 
         $artist4 = new Entity\Artist();
         $artist4->name = 'artist4';
         $artist4->createdAt = new DateTime('2010-02-04');
+        $artist4->alias = ['d1', 'd2', 'd3'];
         $objectManager->persist($artist4);
 
         $artist5 = new Entity\Artist();
         $artist5->name = 'artist5';
         $artist5->createdAt = new DateTime('2010-02-05');
+        $artist5->alias = ['e1', 'e2', 'e3'];
         $objectManager->persist($artist5);
 
 

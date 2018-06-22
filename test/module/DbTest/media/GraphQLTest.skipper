@@ -5,6 +5,7 @@
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="758b0c0b-9758-43e5-9c00-db73cc7f851c"/>
       <field name="name" type="string" uuid="73f6ac07-c410-4d37-8a3d-b29edd9b7c1d"/>
       <field name="createdAt" type="datetime" uuid="9f097c65-d9c2-4d14-868e-f27675bccd33"/>
+      <field name="alias" type="array" uuid="f378abc1-af60-4f82-b78e-2030fca1bb11"/>
     </entity>
     <entity name="\DbTest\Entity\Performance" local-name="Performance" namespace="\DbTest\Entity" uuid="e6b34480-99b7-45a9-8704-22b4859f766e">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="611861fc-873b-4944-840e-5c8520a10de3"/>

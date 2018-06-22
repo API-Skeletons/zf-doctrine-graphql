@@ -220,6 +220,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                                             $distinctField = $field;
                                                         }
                                                         break;
+                                                    case 'memberof':
                                                     default:
                                                         $filterArray[] = [
                                                             'type' => $filter,

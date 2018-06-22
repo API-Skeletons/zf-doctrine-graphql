@@ -81,6 +81,9 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             }
 
             $graphQLType = $this->mapFieldType($fieldMetadata['type']);
+            if ($fieldMetadata['type'] == 'array') {
+                $graphQLType = Type::string();
+            }
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();

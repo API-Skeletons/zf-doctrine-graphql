@@ -72,6 +72,9 @@ abstract class AbstractAbstractFactory
             case 'datetime':
                 $graphQLType = Type::string();
                 break;
+            case 'array':
+                $graphQLType = Type::listOf(Type::string());
+                break;
             default:
                 // Do not process unknown for now
                 $graphQLType = null;

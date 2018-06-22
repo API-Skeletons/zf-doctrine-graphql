@@ -252,8 +252,6 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             },
         ]);
 
-        $this->cache($requestedName, $options, $instance);
-
-        return $instance;
+        return $this->cache($requestedName, $options, $instance);
     }
 }

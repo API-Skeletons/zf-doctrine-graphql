@@ -109,23 +109,23 @@ class EventsTest extends AbstractTest
             {
                 $objectManager = $event->getParam('objectManager');
                 $entityClassName = $event->getParam('entityClassName');
-                $matching = $event->getParam('matching');
+                $resultCollection = $event->getParam('resultCollection');
                 $context = $event->getParam('context');
                 $hydrator = $event->getParam('hydrator');
 
-                $matching->exchangeArray([]); // Clear ArrayObject
+                $resultCollection->clear();
 
                 $results = $objectManager->getRepository($entityClassName)->findBy([
                     'attendance' => 2000,
                 ]);
 
                 foreach ($results as $key => $value) {
-                    $matching[$key] = $hydrator->extract($value);
+                    $resultCollection->add($hydrator->extract($value));
                 }
 
                 $event->stopPropagation(true);
 
-                return $matching;
+                return $resultCollection;
             },
             100
         );

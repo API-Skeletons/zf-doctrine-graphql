@@ -47,9 +47,12 @@ abstract class AbstractAbstractFactory
             'options' => $options,
             'instance' => $instance,
         ];
+
+        return $instance;
     }
 
-    protected function mapFieldType(string $fieldType) {
+    protected function mapFieldType(string $fieldType)
+    {
         switch ($fieldType) {
             case 'tinyint':
             case 'smallint':

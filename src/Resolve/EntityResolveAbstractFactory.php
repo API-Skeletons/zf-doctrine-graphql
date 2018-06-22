@@ -12,8 +12,11 @@ use Zend\EventManager\EventManager;
 use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
+use Doctrine\Common\Collections\ArrayCollection;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use ZF\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
+use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 
 final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
@@ -83,6 +86,8 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
+        $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
+        $criteriaBuilder = $container->get(CriteriaBuilder::class);
         $objectManager = $container->get($hydratorConfig['object_manager']);
 
         $instance = function (
@@ -95,7 +100,8 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $objectManager,
             $requestedName,
             $filterManager,
-            $orderByManager
+            $orderByManager,
+            $criteriaBuilder
         ) {
 
             // Allow listener to resolve function
@@ -137,6 +143,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $filter = $args['filter'] ?? [];
             $filterArray = [];
             $orderByArray = [];
+            $criteriaArray = [];
             $distinctField = null;
             $skip = 0;
             $limit = $options['limit'];
@@ -234,6 +241,13 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                                 $distinctField = $field;
                             }
                             break;
+                        case 'memberof':
+                            $criteriaArray[] = [
+                                'type' => 'memberof',
+                                'field' => $field,
+                                'value' => $value,
+                            ];
+                            break;
                         default:
                             $filterArray[] = [
                                 'type' => $filter,
@@ -272,26 +286,34 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 $queryBuilder->setMaxResults($limit);
             }
 
+            // Fetch from Query Builder
             $results = $queryBuilder->getQuery()->getResult();
 
-            $matching = [];
+            // Build hydrated result collection
+            $resultCollection = new ArrayCollection();
             foreach ($results as $key => $value) {
-                $matching[$key] = $hydrator->extract($value);
+                $resultCollection->add($hydrator->extract($value));
             }
 
+            // Criteria post filter
+            if ($criteriaArray) {
+                $criteria = $criteriaBuilder->create($metadata, $criteriaArray, []);
+                $resultCollection = $resultCollection->matching($criteria);
+            }
+
+            // Distinct post filter
             if ($distinctField) {
-                $distinctValueArray = [];
-                foreach ($matching as $key => $value) {
-                    if (! in_array($value[$distinctField], $distinctValueArray)) {
-                        $distinctValueArray[] = $value[$distinctField];
+                $distinctValueCollection = new ArrayCollection();
+                foreach ($resultCollection as $key => $value) {
+                    if (! in_array($value[$distinctField], $distinctValueCollection)) {
+                        $distinctValueCollection->add($value[$distinctField]);
                     } else {
-                        unset($matching[$key]);
+                        $resultCollection->remove($key);
                     }
                 }
             }
 
             // Allow listener to resolve post function
-            $matching = new ArrayObject($matching);
             $results = $this->getEventManager()->trigger(
                 self::RESOLVE_POST,
                 $this,
@@ -299,7 +321,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                     'object' => $obj,
                     'arguments' => $args,
                     'context' => $context,
-                    'matching' => $matching,
+                    'resultCollection' => $resultCollection,
                     'hydrator' => $hydrator,
                     'objectManager' => $objectManager,
                     'queryBuilder' => $queryBuilder,
@@ -310,11 +332,9 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 return $results->last();
             }
 
-            return $matching->getArrayCopy();
+            return $resultCollection->toArray();
         };
 
-        $this->cache($requestedName, $options, $instance);
-
-        return $instance;
+        return $this->cache($requestedName, $options, $instance);
     }
 }

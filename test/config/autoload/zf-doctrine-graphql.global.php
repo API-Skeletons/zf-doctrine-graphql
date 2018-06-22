@@ -16,6 +16,7 @@ return [
                 'strategies' => [
                     'id' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
                     'name' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                    'alias' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                     'createdAt' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                     'performance' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
                     'user' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation::class,

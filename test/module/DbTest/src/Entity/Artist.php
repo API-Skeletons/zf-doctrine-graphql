@@ -11,10 +11,12 @@ class Artist
     public $createdAt;
     public $performance;
     public $user;
+    public $alias;
 
     public function __construct()
     {
         $this->performance = new ArrayCollection();
         $this->user = new ArrayCollection();
+        $this->alias = [];
     }
 }

@@ -52,4 +52,19 @@ class ArtistTest extends AbstractTest
 
         $this->assertEmpty($output['data']['artist'][0]['user']);
     }
+
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testArtistAliasArrayField($schemaName, $context)
+    {
+        $schema = $this->getSchema($schemaName);
+
+        $query = "{ artist ( filter: { name:\"artist1\" } ) { id alias } }";
+
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(['a1', 'a2', 'a3'], $output['data']['artist'][0]['alias']);
+    }
 }

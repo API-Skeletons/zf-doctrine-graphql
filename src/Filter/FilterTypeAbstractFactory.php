@@ -10,6 +10,7 @@ use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
+use ZF\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Filter\Type as FilterTypeNS;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
@@ -62,6 +63,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
         $objectManager = $container->get($hydratorConfig['object_manager']);
         $filterManager = $container->get(ORMFilterManager::class);
+        $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
 
         // Create an instance of the entity in order to get fields from the hydrator.
@@ -81,35 +83,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                 continue;
             }
 
-            switch ($fieldMetadata['type']) {
-                case 'tinyint':
-                case 'smallint':
-                case 'integer':
-                case 'int':
-                case 'bigint':
-                    $graphQLType = Type::int();
-                    break;
-                case 'boolean':
-                    $graphQLType = Type::boolean();
-                    break;
-                case 'decimal':
-                case 'float':
-                    $graphQLType = Type::float();
-                    break;
-                case 'string':
-                case 'text':
-                    $graphQLType = Type::string();
-                    break;
-                case 'datetime':
-                    $graphQLType = Type::string();
-                    break;
-                default:
-                    // @codeCoverageIgnoreStart
-                    // Do not process unknown.  If you have an unknown type please report it.
-                    $graphQLType = null;
-                    break;
-                    // @codeCoverageIgnoreEnd
-            }
+            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();
@@ -236,6 +210,14 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                         'type' => Type::string(),
                     ];
                 }
+
+                if ($criteriaFilterManager->has('memberof')) {
+                    $fields[$fieldName . '_memberof'] = [
+                        'name' => $fieldName . '_memberof',
+                        'type' => Type::string(),
+                        'description' => 'building...',
+                    ];
+                }
             }
             $fields[$fieldName . '_distinct'] = [
                 'name' => $fieldName . '_distinct',
@@ -263,8 +245,6 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             },
         ]);
 
-        $this->cache($requestedName, $options, $instance);
-
-        return $instance;
+        return $this->cache($requestedName, $options, $instance);
     }
 }

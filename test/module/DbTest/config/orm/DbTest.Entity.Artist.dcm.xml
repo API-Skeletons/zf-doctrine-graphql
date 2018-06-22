@@ -6,6 +6,7 @@
     </id>
     <field name="name" type="string" nullable="true"/>
     <field name="createdAt" type="datetime" nullable="true"/>
+    <field name="alias" type="array" nullable="true"/>
     <one-to-many field="performance" target-entity="DbTest\Entity\Performance" mapped-by="artist"/>
     <many-to-many field="user" target-entity="DbTest\Entity\User" inversed-by="artist">
       <join-table name="UserToArtist">

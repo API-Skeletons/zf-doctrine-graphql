@@ -138,6 +138,7 @@ fieldName_between    -  Fiilter between `from` and `to` values.  Good substitute
 fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
 fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
 fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
+fieldName_memberof  -   Matches a value in an array field.
 fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field is null.
                           If FALSE returns results where the field is not null.
                           NOTE: acts as "isEmpty" for collection filters.  A value of false will
@@ -289,6 +290,7 @@ This module would like to support all datatypes representable in a GraphQL respo
 supported:
 
 ```
+array    - Arrays are handled as arrays of strings because Doctrine does not type the values of the array.
 tinyint
 smallint
 integer

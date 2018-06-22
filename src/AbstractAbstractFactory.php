@@ -3,6 +3,7 @@
 namespace ZF\Doctrine\GraphQL;
 
 use Exception;
+use GraphQL\Type\Definition\Type;
 
 /**
  * Enable caching of build() resources
@@ -46,5 +47,37 @@ abstract class AbstractAbstractFactory
             'options' => $options,
             'instance' => $instance,
         ];
+    }
+
+    protected function mapFieldType(string $fieldType) {
+        switch ($fieldType) {
+            case 'tinyint':
+            case 'smallint':
+            case 'integer':
+            case 'int':
+            case 'bigint':
+                $graphQLType = Type::int();
+                break;
+            case 'boolean':
+                $graphQLType = Type::boolean();
+                break;
+            case 'decimal':
+            case 'float':
+                $graphQLType = Type::float();
+                break;
+            case 'string':
+            case 'text':
+                $graphQLType = Type::string();
+                break;
+            case 'datetime':
+                $graphQLType = Type::string();
+                break;
+            default:
+                // Do not process unknown for now
+                $graphQLType = null;
+                break;
+        }
+
+        return $graphQLType;
     }
 }

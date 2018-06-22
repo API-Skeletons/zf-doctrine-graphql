@@ -288,32 +288,10 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                 }
             }
 
-            switch ($fieldMetadata['type']) {
-                case 'tinyint':
-                case 'smallint':
-                case 'integer':
-                case 'int':
-                case 'bigint':
-                    $graphQLType = Type::int();
-                    break;
-                case 'boolean':
-                    $graphQLType = Type::boolean();
-                    break;
-                case 'decimal':
-                case 'float':
-                    $graphQLType = Type::float();
-                    break;
-                case 'string':
-                case 'text':
-                    $graphQLType = Type::string();
-                    break;
-                case 'datetime':
-                    $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
-                    break;
-                default:
-                    // Do not process unknown for now
-                    $graphQLType = null;
-                    break;
+            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
+            // Override for datetime
+            if ($fieldMetadata['type'] == 'datetime') {
+                $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
             }
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {

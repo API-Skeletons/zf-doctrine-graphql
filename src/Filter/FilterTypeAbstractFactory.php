@@ -81,35 +81,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                 continue;
             }
 
-            switch ($fieldMetadata['type']) {
-                case 'tinyint':
-                case 'smallint':
-                case 'integer':
-                case 'int':
-                case 'bigint':
-                    $graphQLType = Type::int();
-                    break;
-                case 'boolean':
-                    $graphQLType = Type::boolean();
-                    break;
-                case 'decimal':
-                case 'float':
-                    $graphQLType = Type::float();
-                    break;
-                case 'string':
-                case 'text':
-                    $graphQLType = Type::string();
-                    break;
-                case 'datetime':
-                    $graphQLType = Type::string();
-                    break;
-                default:
-                    // @codeCoverageIgnoreStart
-                    // Do not process unknown.  If you have an unknown type please report it.
-                    $graphQLType = null;
-                    break;
-                    // @codeCoverageIgnoreEnd
-            }
+            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();

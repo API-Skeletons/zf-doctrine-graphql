@@ -218,7 +218,6 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                         'description' => 'building...',
                     ];
                 }
-
             }
             $fields[$fieldName . '_distinct'] = [
                 'name' => $fieldName . '_distinct',

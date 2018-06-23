@@ -51,7 +51,8 @@ class FieldResolver
                 $this->extractValues = [];
             }
 
-            $this->extractValues[$splObjectHash] = $this->hydratorExtractTool->extract($source, $hydratorAlias, $context);
+            $this->extractValues[$splObjectHash]
+                = $this->hydratorExtractTool->extract($source, $hydratorAlias, $context);
 
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }

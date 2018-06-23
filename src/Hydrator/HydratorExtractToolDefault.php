@@ -67,7 +67,7 @@ class HydratorExtractToolDefault implements
     private function optionsToArray($options)
     {
         if ($options instanceof Context) {
-            $options = $options->toArray($options);
+            $options = $options->toArray();
         }
 
         return $options;

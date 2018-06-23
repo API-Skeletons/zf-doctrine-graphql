@@ -386,7 +386,12 @@ Hydrator Extract Tool
 
 All hydrator extract operations are handled through the Hydrator Extract Tool.  This tool is engineered to be overridden
 thanks to a service manager alias.  Should you find the need to add custom caching to hydrator results this is where to
-to it.
+do it.  To register a custom hydrator extract tool use
+```php
+    'aliases' => [
+        'ZF\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => CustomExtractTool::class,
+    ],
+```
 
 
 Field Resolver

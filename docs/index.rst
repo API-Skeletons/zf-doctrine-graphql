@@ -7,13 +7,13 @@ Welcome to the documentation for `api-skeletons/zf-doctrine-graphql <https://git
 
     :caption: Table of Contents
 
-    docs/about
-    docs/installation
-    docs/use
-    docs/queries
-    docs/configuration
-    docs/events
-    docs/internals
+    about
+    installation
+    use
+    queries
+    configuration
+    events
+    internals
 
 .. role:: raw-html(raw)
    :format: html

@@ -375,3 +375,23 @@ Resolve Post
 
 The `EntityResolveAbstractFactory::RESOLVE_POST` event allows you to modify the values
 returned from the ResolveLoader via an ArrayObject or replace the values.
+
+
+Internals
+=========
+
+
+Hydrator Extract Tool
+---------------------
+
+All hydrator extract operations are handled through the Hydrator Extract Tool.  This tool is engineered to be overridden
+thanks to a service manager alias.  Should you find the need to add custom caching to hydrator results this is where to
+to it.
+
+
+Field Resolver
+--------------
+
+This standard part of GraphQL resolves individual fields and is where the built in caching resides.  This resolver uses
+the Hydrator Extract Tool and returns one field value at a time.  For high performance writing your own Field Resolver is an
+option.  To register a custom field resolver use `GraphQL::setDefaultFieldResolver($fieldResolver);`

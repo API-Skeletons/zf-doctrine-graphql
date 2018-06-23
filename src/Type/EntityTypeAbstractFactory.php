@@ -9,7 +9,6 @@ use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
@@ -62,21 +61,20 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $fieldMetadata = null;
         $fields = [];
         $config = $container->get('config');
-        $hydratorManager = $container->get('HydratorManager');
         $fieldResolver = $container->get(FieldResolver::class);
         $typeManager = $container->get(TypeManager::class);
         $criteriaFilterManager = $container->get(FilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
-
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
-        $hydrator = $hydratorManager->build($hydratorAlias, $options);
-        $objectManager = $container->get($hydratorConfig['object_manager']);
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $objectManager = $container
+            ->get(
+                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+            );
 
-        // Create an instance of the entity in order to get fields from the hydrator.
-        $instantiator = new Instantiator();
-        $entity = $instantiator->instantiate($requestedName);
-        $entityFields = array_keys($hydrator->extract($entity));
+        // Get an array of the hydrator fields
+        $entityFields = $hydratorExtractTool->getFieldArray($requestedName, $hydratorAlias, $options);
+
         $references = [];
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);
@@ -112,7 +110,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                 $targetEntity,
                                 $objectManager,
                                 $criteriaBuilder,
-                                $hydratorManager
+                                $hydratorExtractTool
                             ) {
                                 return [
                                     'type' => Type::listOf($typeManager->build($targetEntity, $options)),
@@ -129,7 +127,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         $fieldResolver,
                                         $objectManager,
                                         $criteriaBuilder,
-                                        $hydratorManager
+                                        $hydratorExtractTool
                                     ) {
                                         $collection = $fieldResolver($source, $args, $context, $resolveInfo);
 
@@ -256,12 +254,9 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
                                             . str_replace('\\', '_', $entityClassName);
-                                        $hydrator = $hydratorManager->build($hydratorAlias, $options);
 
-                                        $data = new ArrayCollection();
-                                        foreach ($collection as $key => $value) {
-                                            $data->add($hydrator->extract($value));
-                                        }
+                                        $data = $hydratorExtractTool
+                                            ->extractToCollection($collection, $hydratorAlias, $options);
 
                                         $matching = $data->matching($criteria);
 

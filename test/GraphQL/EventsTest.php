@@ -55,16 +55,17 @@ class EventsTest extends AbstractTest
 
         $container = $this->getApplication()->getServiceManager();
         $events = $container->get('SharedEventManager');
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
             EntityResolveAbstractFactory::class,
             EntityResolveAbstractFactory::RESOLVE,
-            function(Event $event)
+            function(Event $event) use ($hydratorExtractTool)
             {
                 $object = $event->getParam('object');
                 $arguments = $event->getParam('arguments');
                 $context = $event->getParam('context');
-                $hydrator = $event->getParam('hydrator');
+                $hydratorAlias = $event->getParam('hydratorAlias');
                 $objectManager = $event->getParam('objectManager');
                 $entityClassName = $event->getParam('entityClassName');
 
@@ -72,14 +73,11 @@ class EventsTest extends AbstractTest
                     'attendance' => 2000,
                 ]);
 
-                $matching = [];
-                foreach ($results as $key => $value) {
-                    $matching[$key] = $hydrator->extract($value);
-                }
+                $resultCollection = $hydratorExtractTool->extractToCollection($results, $hydratorAlias, $context);
 
                 $event->stopPropagation(true);
 
-                return $matching;
+                return $resultCollection;
             },
             100
         );
@@ -101,26 +99,26 @@ class EventsTest extends AbstractTest
 
         $container = $this->getApplication()->getServiceManager();
         $events = $container->get('SharedEventManager');
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
             EntityResolveAbstractFactory::class,
             EntityResolveAbstractFactory::RESOLVE_POST,
-            function(Event $event)
+            function(Event $event) use ($hydratorExtractTool)
             {
                 $objectManager = $event->getParam('objectManager');
                 $entityClassName = $event->getParam('entityClassName');
                 $resultCollection = $event->getParam('resultCollection');
                 $context = $event->getParam('context');
-                $hydrator = $event->getParam('hydrator');
-
-                $resultCollection->clear();
+                $hydratorAlias = $event->getParam('hydratorAlias');
 
                 $results = $objectManager->getRepository($entityClassName)->findBy([
                     'attendance' => 2000,
                 ]);
 
+                $resultCollection->clear();
                 foreach ($results as $key => $value) {
-                    $resultCollection->add($hydrator->extract($value));
+                    $resultCollection->add($hydratorExtractTool->extract($value, $hydratorAlias, $context));
                 }
 
                 $event->stopPropagation(true);

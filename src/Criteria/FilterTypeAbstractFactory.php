@@ -53,21 +53,18 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
         $config = $container->get('config');
         $fields = [];
-        $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
         $filterManager = $container->get(FilterManager::class);
         $orderByManager = $container->get(OrderByManager::class);
-
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $objectManager = $container
+            ->get(
+                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+            );
 
-        $objectManager = $container->get($hydratorConfig['object_manager']);
-        $hydrator = $hydratorManager->get($hydratorAlias);
-
-        // Create an instance of the entity in order to get fields from the hydrator.
-        $instantiator = new Instantiator();
-        $entity = $instantiator->instantiate($requestedName);
-        $entityFields = array_keys($hydrator->extract($entity));
+        // Get an array of the hydrator fields
+        $entityFields = $hydratorExtractTool->getFieldArray($requestedName, $hydratorAlias, $options);
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);
 

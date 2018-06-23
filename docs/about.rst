@@ -17,7 +17,7 @@ It allows for Hydrator Filters to completely remove data from the result.
 It allows for Hydrator Naming Strategies.  With all of these hydrator features this repository delivers superior
 data mutability for any case you may have to serve it over GraphQL.
 
-This repository allows for multiple entity managers.  Each hydrator configuration specifies a specific entity manager.
+This repository allows for multiple object managers.  Each hydrator configuration specifies a specific object manager.
 
 This repository allows for multiple GraphQL Schemas.  Served via different RPC endpoints on your application or through
 a more complicated selection of Schema based on input parameters, this repository is flexible enough for any GraphQL

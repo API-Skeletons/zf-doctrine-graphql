@@ -3,6 +3,7 @@ GraphQL for Doctrine using Hydrators
 
 [![Build Status](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql)
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)
+[![Documentation Status](https://readthedocs.org/projects/zf-doctrine-graphql/badge/?version=latest)](http://graphql.apiskeletons.com/en/latest/?badge=latest)
 [![Gitter](https://badges.gitter.im/api-skeletons/open-source.svg)](https://gitter.im/api-skeletons/open-source)
 [![Total Downloads](https://poser.pugx.org/api-skeletons/zf-doctrine-graphql/downloads)](https://packagist.org/packages/api-skeletons/zf-doctrine-graphql)
 
@@ -14,6 +15,9 @@ allowing full control over each field using hydrator filters and strategies.
 Multiple object managers are supported.
 Multiple hydrator configurations are supported.
 
+
+[Read the Documentation](https://graphql.apiskeletons.com)
+==========================================================
 
 Installation
 ------------

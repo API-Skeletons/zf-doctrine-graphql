@@ -4,7 +4,6 @@ namespace ZF\Doctrine\GraphQL\Resolve;
 
 use Closure;
 use Exception;
-use ArrayObject;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -80,15 +79,16 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         $this->createEventManager($container->get('SharedEventManager'));
 
         $config = $container->get('config');
-        $hydratorManager = $container->get('HydratorManager');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydrator = $hydratorManager->build($hydratorAlias, $options);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $filterManager = $container->get(ORMFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
         $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
-        $objectManager = $container->get($hydratorConfig['object_manager']);
+        $objectManager = $container
+            ->get(
+                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+            );
 
         $instance = function (
             $obj,
@@ -96,7 +96,8 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $context
         ) use (
             $options,
-            $hydrator,
+            $hydratorAlias,
+            $hydratorExtractTool,
             $objectManager,
             $requestedName,
             $filterManager,
@@ -112,7 +113,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                     'object' => $obj,
                     'arguments' => $args,
                     'context' => $context,
-                    'hydrator' => $hydrator,
+                    'hydratorAlias' => $hydratorAlias,
                     'objectManager' => $objectManager,
                     'entityClassName' => $requestedName,
                 ]
@@ -290,10 +291,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             $results = $queryBuilder->getQuery()->getResult();
 
             // Build hydrated result collection
-            $resultCollection = new ArrayCollection();
-            foreach ($results as $key => $value) {
-                $resultCollection->add($hydrator->extract($value));
-            }
+            $resultCollection = $hydratorExtractTool->extractToCollection($results, $hydratorAlias, $options);
 
             // Criteria post filter
             if ($criteriaArray) {
@@ -322,7 +320,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                     'arguments' => $args,
                     'context' => $context,
                     'resultCollection' => $resultCollection,
-                    'hydrator' => $hydrator,
+                    'hydratorAlias' => $hydratorAlias,
                     'objectManager' => $objectManager,
                     'queryBuilder' => $queryBuilder,
                     'entityClassName' => $requestedName,

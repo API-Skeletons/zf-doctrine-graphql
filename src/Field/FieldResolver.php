@@ -9,13 +9,14 @@ use Zend\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Type\Definition\ResolveInfo;
 use ZF\Doctrine\GraphQL\Context;
+use ZF\Doctrine\GraphQL\Hydrator\HydratorExtractToolInterface;
 
 /**
  * A field resolver which uses the Doctrine hydrator. Can be used byReference or byValue.
  */
 class FieldResolver
 {
-    private $hydratorManager;
+    private $hydratorExtractTool;
 
     /**
      * Cache all hydrator extract operations based on spl object hash
@@ -24,9 +25,9 @@ class FieldResolver
      */
     private $extractValues = [];
 
-    public function __construct(HydratorPluginManager $hydratorManager)
+    public function __construct(HydratorExtractToolInterface $hydratorExtractTool)
     {
-        $this->hydratorManager = $hydratorManager;
+        $this->hydratorExtractTool = $hydratorExtractTool;
     }
 
     public function __invoke($source, $args, Context $context, ResolveInfo $info)
@@ -50,8 +51,8 @@ class FieldResolver
                 $this->extractValues = [];
             }
 
-            $hydrator = $this->hydratorManager->get($hydratorAlias);
-            $this->extractValues[$splObjectHash] = $hydrator->extract($source);
+            $this->extractValues[$splObjectHash]
+                = $this->hydratorExtractTool->extract($source, $hydratorAlias, $context);
 
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
@@ -61,8 +62,7 @@ class FieldResolver
             return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
         }
 
-        $hydrator = $this->hydratorManager->get($hydratorAlias);
-        $this->extractValues[$splObjectHash] = $hydrator->extract($source);
+        $this->extractValues[$splObjectHash] = $this->hydratorExtractTool->extract($source, $hydratorAlias, $context);
 
         return $this->extractValues[$splObjectHash][$info->fieldName] ?? null;
     }

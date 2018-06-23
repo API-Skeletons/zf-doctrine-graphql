@@ -29,7 +29,12 @@ class ConfigProvider
     public function getDependencyConfig()
     {
         return [
+            'aliases' => [
+                'ZF\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => Hydrator\HydratorExtractToolDefault::class,
+            ],
             'factories' => [
+                Hydrator\HydratorExtractToolDefault::class => Hydrator\HydratorExtractToolDefaultFactory::class,
+
                 Hydrator\Filter\FilterDefault::class => InvokableFactory::class,
                 Hydrator\Filter\Password::class => InvokableFactory::class,
                 Hydrator\Strategy\ToBoolean::class => InvokableFactory::class,

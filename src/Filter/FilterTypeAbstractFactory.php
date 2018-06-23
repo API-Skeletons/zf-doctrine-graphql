@@ -5,7 +5,6 @@ namespace ZF\Doctrine\GraphQL\Filter;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Doctrine\Instantiator\Instantiator;
 use Doctrine\ORM\Mapping\MappingException;
 use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
@@ -54,22 +53,20 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
         $fields = [];
         $config = $container->get('config');
-        $hydratorManager = $container->get('HydratorManager');
         $typeManager = $container->get(TypeManager::class);
-
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
-        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']];
-        $hydrator = $hydratorManager->build($hydratorAlias, $options);
-
-        $objectManager = $container->get($hydratorConfig['object_manager']);
+        $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $objectManager = $container
+            ->get(
+                $config['zf-doctrine-graphql-hydrator'][$hydratorAlias][$options['hydrator_section']]['object_manager']
+            );
         $filterManager = $container->get(ORMFilterManager::class);
         $criteriaFilterManager = $container->get(CriteriaFilterManager::class);
         $orderByManager = $container->get(ORMOrderByManager::class);
 
-        // Create an instance of the entity in order to get fields from the hydrator.
-        $instantiator = new Instantiator();
-        $entity = $instantiator->instantiate($requestedName);
-        $entityFields = array_keys($hydrator->extract($entity));
+        // Get an array of the hydrator fields
+        $entityFields = $hydratorExtractTool->getFieldArray($requestedName, $hydratorAlias, $options);
+
         $references = [];
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);

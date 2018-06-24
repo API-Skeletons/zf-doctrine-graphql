@@ -41,8 +41,7 @@ The `Context` object provided enables configuration of GraphQL through the follo
 
 * limit - Set a maximum limit of each data section in a query
 * hydratorSection - Which section within the hydrator configuration should be used
-* useHydratorCache - By default all hydrator operations are not cached.  Enabling this value will
-                     cache all the hydrator operation in anticipation that the result may be reused.
+* useHydratorCache - By default all hydrator operations are not cached.  Enabling this value will cache all the hydrator operation in anticipation that the result may be reused.
 
 Context is the configuration for each GraphQL entry point.  This allows unlimited configuration through
 multiple hydrator sections.
@@ -56,7 +55,7 @@ useHydratorCache Context Option
 
 The hydrator cache by defaults stores only the most recent hydrator extract data in anticipation that the next
 call to the
-[FieldResolver](https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php)
+`FieldResolver <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Field/FieldResolver.php>`_
 will be the same object and the cache can be used.  If the same object is not requesed
 for extraction then the cache is flushed and the new result is cached.
 
@@ -98,7 +97,10 @@ correct hydrator strategy.
 Many to Many Owning Side Relationships
 --------------------------------------
 
-`{ artist { user { role { user { name } } } } }`
+.. code-block:: js
+
+    { artist { user { role { user { name } } } } }
+
 
 This query would return all user names who share the same role permissions as the user who created the artist.
 To prevent this the `graphql:config-skeleton` command nullifies the owning side of many to many relations by
@@ -138,8 +140,8 @@ Provided Tools
 
 There are three tools this library provides to help you build your GraphQL Schema.
 
-* **TypeLoader** - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the [api-skeletons/zf-doctrine-criteria](https://github.com/API-Skeletons/zf-doctrine-criteria) library.
-* **FilterLoader** - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the [zfcampus/zf-doctrine-querybuilder](https://github.com/zfcampus/zf-doctrine-querybuilder) library.
+* **TypeLoader** - This tool creates a GraphQL type for a top-level entity and all related entities beneath it.  It also creates resolvers for related collections using the `api-skeletons/zf-doctrine-criteria <https://github.com/API-Skeletons/zf-doctrine-criteria>`_ library.
+* **FilterLoader** - This tool creates filters for all non-related fields (collections) such as strings, integers, etc.  These filters are built from the `zfcampus/zf-doctrine-querybuilder <https://github.com/zfcampus/zf-doctrine-querybuilder>`_ library.
 * **ResolveLoader** - This tool builds the querybuilder object and queries the database based on the FilterLoader filters.
 
 Each of these tools takes a fully qualified entity name as a paramter allowing you to create a top level GraphQL query field for any entity.

@@ -30,8 +30,7 @@ Given an entity which contains a `name` field you may directly filter the name u
 You may only use each field's filter once per filter().  Should a child record have the same name as a parent
 it will share the filter names but fitlers are specific to the entity they filter upon.
 
-Provided Filters
-.. note::
+Provided Filters::
 
     fieldName_eq         -  Equals; same as name: value.  DateTime not supported.
     fieldName_neq        -  Not Equals

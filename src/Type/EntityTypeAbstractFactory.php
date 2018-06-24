@@ -100,7 +100,9 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                             break;
                         case ClassMetadataInfo::ONE_TO_MANY:
                         case ClassMetadataInfo::MANY_TO_MANY:
+                        // @codeCoverageIgnoreStart
                         case ClassMetadataInfo::TO_MANY:
+                        // @codeCoverageIgnoreEnd
                             $targetEntity = $associationMetadata['targetEntity'];
                             $references[$fieldName] = function () use (
                                 $options,
@@ -279,9 +281,11 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                     }
 
                     continue;
+                // @codeCoverageIgnoreStart
                 } catch (MappingException $e) {
                     continue;
                 }
+                // @codeCoverageIgnoreEnd
             }
 
             $graphQLType = $this->mapFieldType($fieldMetadata['type']);

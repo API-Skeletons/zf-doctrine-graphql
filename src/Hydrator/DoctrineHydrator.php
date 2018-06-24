@@ -31,6 +31,7 @@ class DoctrineHydrator implements HydratorInterface
 
     /**
      * @return \Zend\Hydrator\HydratorInterface
+     * @codeCoverageIgnore
      */
     public function getExtractService()
     {

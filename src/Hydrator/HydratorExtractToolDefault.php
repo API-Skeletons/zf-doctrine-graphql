@@ -30,8 +30,10 @@ class HydratorExtractToolDefault implements
 
         $resultCollection = new ArrayCollection();
         foreach ($entityArray as $value) {
+            // @codeCoverageIgnoreStart
             if (is_array($value)) {
                 $resultCollection->add($value);
+            // @codeCoverageIgnoreEnd
             } else {
                 $resultCollection->add($hydrator->extract($value));
             }
@@ -43,9 +45,11 @@ class HydratorExtractToolDefault implements
     // Extract a single entity
     public function extract($entity, string $hydratorAlias, $options)
     {
+        // @codeCoverageIgnoreStart
         if (is_array($entity)) {
             return $entity;
         }
+        // @codeCoverageIgnoreEnd
 
         $options = $this->optionsToArray($options);
         $hydrator = $this->hydratorManager->build($hydratorAlias, $options);

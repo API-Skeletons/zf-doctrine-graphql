@@ -2,7 +2,7 @@ GraphQL for Doctrine using Hydrators
 ====================================
 
 [![Build Status](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql.svg)](https://travis-ci.org/API-Skeletons/zf-doctrine-graphql)
-[![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&123)
+[![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&12)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&12)
 [![Documentation Status](https://readthedocs.org/projects/zf-doctrine-graphql/badge/?version=latest)](http://graphql.apiskeletons.com/en/latest/?badge=latest)
 [![Gitter](https://badges.gitter.im/api-skeletons/open-source.svg)](https://gitter.im/api-skeletons/open-source)
 [![Total Downloads](https://poser.pugx.org/api-skeletons/zf-doctrine-graphql/downloads)](https://packagist.org/packages/api-skeletons/zf-doctrine-graphql)
@@ -28,7 +28,7 @@ $entity->getRelation()->getField1()
 And see it realized in GraphQL with fine grained control over each field via hydrators:
 
 ```js
-{ entity { relation { field1 field2 manyToOne { name field 3} } otherRelation { field4 field5 } } }
+{ entity { relation { field1 field2 manyToOne { name field3 } } otherRelation { field4 field5 } } }
 ```
 
 

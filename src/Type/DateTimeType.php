@@ -16,6 +16,9 @@ use GraphQL\Utils;
 
 final class DateTimeType extends ScalarType
 {
+    /**
+     * @codeCoverageIgnore
+     */
     public function parseLiteral($valueNode, ?array $variables = null)
     {
         // Note: throwing GraphQL\Error\Error vs \UnexpectedValueException to benefit from GraphQL
@@ -27,19 +30,23 @@ final class DateTimeType extends ScalarType
         return $valueNode->value;
     }
 
+    /**
+     * @codeCoverageIgnore
+     */
     public function parseValue($value)
     {
         if (! is_string($value)) {
-            throw new \UnexpectedValueException('Cannot represent value as DateTime date: ' . $value);
+            $stringValue = print_r($value, true);
+            throw new \UnexpectedValueException('Date is not a string: ' . $stringValue);
         }
 
-        return new DateTime($value);
+        return DateTime::createFromFormat('Y-m-d\TH:i:sP', $value);
     }
 
     public function serialize($value)
     {
         if ($value instanceof DateTime) {
-            return $value->format('c');
+            $value = $value->format('c');
         }
 
         return $value;

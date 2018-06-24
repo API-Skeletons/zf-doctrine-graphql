@@ -307,4 +307,19 @@ class QueryBuilderFiltersTest extends AbstractTest
 
         $this->assertEquals(['b1', 'b2', 'b3'], $output['data']['artist'][0]['alias']);
     }
+
+    /**
+     * @dataProvider schemaDataProvider
+     */
+    public function testDistinct($schemaName, $context)
+    {
+        $schema = $this->getSchema($schemaName);
+
+        $query = "{ artist ( filter: { name_distinct: true  } )  { name } }";
+
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals(5, sizeof($output['data']['artist']));
+    }
 }

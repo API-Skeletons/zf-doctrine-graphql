@@ -71,9 +71,11 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
 
         // Setup Events
         $this->createEventManager($container->get('SharedEventManager'));
@@ -303,7 +305,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
             if ($distinctField) {
                 $distinctValueCollection = new ArrayCollection();
                 foreach ($resultCollection as $key => $value) {
-                    if (! in_array($value[$distinctField], $distinctValueCollection)) {
+                    if (! $distinctValueCollection->contains($value[$distinctField])) {
                         $distinctValueCollection->add($value[$distinctField]);
                     } else {
                         $resultCollection->remove($key);

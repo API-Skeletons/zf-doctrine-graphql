@@ -15,6 +15,22 @@ allowing full control over each field using hydrator filters and strategies.
 Multiple object managers are supported.
 Multiple hydrator configurations are supported.
 
+Doctrine provides easy taversal of your database.  Consider the following imaginary query:
+```php
+$entity->getRelation()->getField1()
+                      ->getField2()
+                      ->getManyToOne()->getName()
+                                      ->getField3()
+       ->getOtherRelation()->getField4()
+                           ->getField5()
+```
+
+And see it realized in GraphQL with fine grained control over each field via hydrators:
+
+```js
+{ entity { relation { field1 field2 manyToOne { name field 3} } otherRelation { field4 field5 } } }
+```
+
 
 [Read the Documentation](http://graphql.apiskeletons.com)
 ==========================================================

@@ -1,9 +1,11 @@
 About
 =====
 
-Authored by Tom H Anderson <tom.h.anderson@gmail.com> of API Skeletons this module is the fourth offering in the
+Authored by Tom H Anderson <tom.h.anderson@gmail.com> of `API Skeletons <https://apiskeletons.com>`_
+and a member of the `Doctrine Core <https://www.doctrine-project.org/team/>`_ team specializing in Zend modules,
+this module is the fourth offering in the
 space of Doctrine and GraphQL.  Other implementations have used strategies such as annotations or GraphQL types
-which are only one object deep and only support a single object manager.
+which are only one entity deep and only support a single object manager.
 
 This repository was created because using Hydrators to extract data from entities is the correct way to configure
 the output from the entities.  Then, allowing mulitiple hydrator configurations allows you to create GraphQL endpoints

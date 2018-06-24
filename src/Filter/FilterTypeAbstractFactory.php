@@ -47,9 +47,11 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
 
         $fields = [];
         $config = $container->get('config');
@@ -235,7 +237,10 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             'name' => str_replace('\\', '_', $requestedName) . 'Filter',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
+                    // @codeCoverageIgnoreStart
+                    // This works fine but may need bigger unit tests
                     $fields[$referenceName] = $resolve();
+                    // @codeCoverageIgnoreEnd
                 }
 
                 return $fields;

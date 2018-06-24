@@ -71,9 +71,11 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : Closure
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
 
         // Setup Events
         $this->createEventManager($container->get('SharedEventManager'));

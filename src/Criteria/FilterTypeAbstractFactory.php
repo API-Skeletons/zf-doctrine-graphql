@@ -47,9 +47,11 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
 
         $config = $container->get('config');
         $fields = [];

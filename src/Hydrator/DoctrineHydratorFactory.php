@@ -129,10 +129,12 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             $hydrateService = $this->loadEntityHydrator($container, $config, $objectManager);
         }
 
+        // @codeCoverageIgnoreStart
         if ($useCustomHydrator && $config['hydrator']) {
             $extractService = $container->get($config['hydrator']);
             $hydrateService = $extractService;
         }
+        // @codeCoverageIgnoreEnd
 
         # Use DoctrineModuleHydrator by default
         if (! isset($extractService, $hydrateService)) {
@@ -243,6 +245,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      * @param ObjectManager      $objectManager
      *
      * @throws ServiceNotCreatedException
+     * @codeCoverageIgnore
      */
     public function configureHydratorNamingStrategy($hydrator, ContainerInterface $container, $config, $objectManager)
     {
@@ -250,7 +253,6 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             return;
         }
 
-        // @codeCoverageIgnoreStart
         $namingStrategyKey = $config['naming_strategy'];
         if (! $container->has($namingStrategyKey)) {
             throw new ServiceNotCreatedException(sprintf('Invalid naming strategy %s.', $namingStrategyKey));
@@ -267,7 +269,6 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
         if ($namingStrategy instanceof ObjectManagerAwareInterface) {
             $namingStrategy->setObjectManager($objectManager);
         }
-        // @codeCoverageIgnoreEnd
 
         $hydrator->setNamingStrategy($namingStrategy);
     }
@@ -282,12 +283,14 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
      */
     protected function configureHydratorStrategies($hydrator, ContainerInterface $container, $config, $objectManager)
     {
+        // @codeCoverageIgnoreStart
         if (! $hydrator instanceof StrategyEnabledInterface
             || ! isset($config['strategies'])
             || ! is_array($config['strategies'])
         ) {
             return;
         }
+        // @codeCoverageIgnoreEnd
 
         foreach ($config['strategies'] as $field => $strategyKey) {
             // @codeCoverageIgnoreStart
@@ -304,9 +307,11 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
             // @codeCoverageIgnoreEnd
 
             // Attach object manager:
+            // @codeCoverageIgnoreStart
             if ($strategy instanceof ObjectManagerAwareInterface) {
                 $strategy->setObjectManager($objectManager);
             }
+            // @codeCoverageIgnoreEnd
 
             $hydrator->addStrategy($field, $strategy);
         }
@@ -356,11 +361,12 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
                     sprintf('Filter service %s must implement FilterInterface', get_class($filterService))
                 );
             }
-            // @codeCoverageIgnoreEnd
 
             if ($filterService instanceof ObjectManagerAwareInterface) {
                 $filterService->setObjectManager($objectManager);
             }
+            // @codeCoverageIgnoreEnd
+
             $hydrator->addFilter($name, $filterService, $condition);
         }
     }

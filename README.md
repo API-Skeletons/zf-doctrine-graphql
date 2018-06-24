@@ -16,5 +16,5 @@ Multiple object managers are supported.
 Multiple hydrator configurations are supported.
 
 
-[Read the Documentation](https://graphql.apiskeletons.com)
+[Read the Documentation](http://graphql.apiskeletons.com)
 ==========================================================

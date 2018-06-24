@@ -31,7 +31,9 @@ abstract class AbstractAbstractFactory
             }
         }
 
+        // @codeCoverageIgnoreStart
         throw new Exception('Cache not found for ' . $requestedName);
+        // @codeCoverageIgnoreEnd
     }
 
     protected function cache($requestedName, array $options = null, $instance)
@@ -79,10 +81,12 @@ abstract class AbstractAbstractFactory
                 $graphQLType = Type::listOf(Type::string());
                 break;
             default:
+                // @codeCoverageIgnoreStart
                 // Do not process unknown for now
                 $graphQLType = null;
                 break;
         }
+                // @codeCoverageIgnoreEnd
 
         return $graphQLType;
     }

@@ -28,7 +28,7 @@ $entity->getRelation()->getField1()
 And see it realized in GraphQL with fine grained control over each field via hydrators:
 
 ```js
-{ entity { relation { field1 field2 manyToOne { name field 3} } otherRelation { field4 field5 } } }
+{ entity { relation { field1 field2 manyToOne { name field3 } } otherRelation { field4 field5 } } }
 ```
 
 

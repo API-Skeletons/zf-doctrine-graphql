@@ -6,8 +6,6 @@ and injecting them into an RPC object will yield a working example.
 
 .. code-block:: php
 
-    <?php
-
     use Exception;
     use GraphQL\GraphQL;
     use GraphQL\Type\Schema;

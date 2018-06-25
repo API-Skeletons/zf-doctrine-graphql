@@ -90,4 +90,37 @@ abstract class AbstractAbstractFactory
 
         return $graphQLType;
     }
+
+    /**
+     * In order to support fields with underscores we need to know
+     * if the possible filter name we found as the last _part of the
+     * filter field name is indeed a filter else it could be a field
+     *     e.g. id_name filter resolves to 'name' and is not a filter
+     *     e.g. id_eq filter resolves to 'eq' and is a filter
+     */
+    public function isFilter($filterName)
+    {
+        switch (strtolower($filterName)) {
+            case 'eq':
+            case 'neq':
+            case 'gt':
+            case 'lt':
+            case 'gte':
+            case 'lte':
+            case 'in':
+            case 'notin':
+            case 'between':
+            case 'contains':
+            case 'startswith':
+            case 'endswith':
+            case 'memberof':
+            case 'isnull':
+            case 'sort':
+            case 'distinct':
+                return true;
+            default:
+        }
+
+        return false;
+    }
 }

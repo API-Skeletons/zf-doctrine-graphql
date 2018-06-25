@@ -156,15 +156,19 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                                 continue;
                                             }
 
-                                            if (! strstr($field, '_')) {
-                                                $filterArray[] = [
-                                                    'type' => 'eq',
-                                                    'field' => $field,
-                                                    'value' => $value,
-                                                ];
-                                            } else {
-                                                $field = strtok($field, '_');
-                                                $filter = strtok('_');
+
+                                            // Handle most fields as $field_$type: $value
+                                            // Get right-most _text
+                                            $filter = substr($field, strrpos($field, '_') + 1);
+                                            if (strpos($field, '_') === false || ! $this->isFilter($filter)) {
+                                                // Handle field:value
+                                                 $filterArray[] = [
+                                                     'type' => 'eq',
+                                                     'field' => $field,
+                                                     'value' => $value,
+                                                 ];
+                                            } elseif (strpos($field, '_') !== false && $this->isFilter($filter)) {
+                                                $field = substr($field, 0, strrpos($field, '_'));
 
                                                 switch ($filter) {
                                                     case 'sort':

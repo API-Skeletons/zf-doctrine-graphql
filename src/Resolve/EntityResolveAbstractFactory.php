@@ -165,16 +165,17 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 }
 
                 // Handle most fields as $field_$type: $value
-                if (! strstr($field, '_')) {
+                // Get right-most _text
+                $filter = substr($field, strrpos($field, '_') + 1);
+                if (strpos($field, '_') === false || ! $this->isFilter($filter)) {
                     // Handle field:value
                      $filterArray[] = [
                          'type' => 'eq',
                          'field' => $field,
                          'value' => $value,
                      ];
-                } else {
-                    $field = strtok($field, '_');
-                    $filter = strtok('_');
+                } elseif (strpos($field, '_') !== false && $this->isFilter($filter)) {
+                    $field = substr($field, 0, strrpos($field, '_'));
 
                     switch ($filter) {
                         case 'sort':

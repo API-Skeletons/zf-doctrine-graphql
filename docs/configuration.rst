@@ -76,6 +76,7 @@ the previous hydrator extract data is purged.
 For a query
 
 .. code-block:: js
+
     { performance ( filter: { id:1 } ) { performanceDate set1 set2 artist { name } set3 } }
 
 

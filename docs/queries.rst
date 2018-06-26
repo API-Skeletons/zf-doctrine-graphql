@@ -100,3 +100,13 @@ variable to set the max limit size and anything under this limit is
 valid.  To select a page of data set the `_skip:10 _limit:10` and
 increment `_skip` by the `_limit` for each request.  These pagination
 filters exist for filtering collections too.
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

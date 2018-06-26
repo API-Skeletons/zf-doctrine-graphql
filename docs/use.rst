@@ -67,3 +67,13 @@ and injecting them into an RPC object will yield a working example.
     }
 
     echo json_encode($output);
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

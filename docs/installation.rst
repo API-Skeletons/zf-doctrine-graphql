@@ -14,3 +14,13 @@ zf-component-installer
 
 If you use `zf-component-installer <https://github.com/zendframework/zf-component-installer>`_,
 that plugin will install zf-doctrine-graphql as a module for you.
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

@@ -18,8 +18,12 @@ schema, if you wish, allowing deep GraphQL queries on your data with a single en
     events
     internals
 
+
 .. role:: raw-html(raw)
    :format: html
 
 .. note::
   Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

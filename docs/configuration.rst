@@ -149,3 +149,12 @@ Each of these tools takes a fully qualified entity name as a paramter allowing y
 
 There is not a tool for mutations.  Those are left to the developer to build.
 
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

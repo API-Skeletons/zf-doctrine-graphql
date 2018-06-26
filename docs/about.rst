@@ -28,3 +28,13 @@ needs.
 
 Doctrine provides full navigation of a database schema when properly configured and this repository leverages that
 flexibility to mirror the full database schema navigation to provide GraphQL queries as complex as your data.
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

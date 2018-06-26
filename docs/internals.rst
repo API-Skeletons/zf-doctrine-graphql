@@ -23,3 +23,13 @@ Field Resolver
 This standard part of GraphQL resolves individual fields and is where the built in caching resides.  This resolver uses
 the Hydrator Extract Tool and returns one field value at a time.  For high performance writing your own Field Resolver is an
 option.  To register a custom field resolver use `GraphQL::setDefaultFieldResolver($fieldResolver);`
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

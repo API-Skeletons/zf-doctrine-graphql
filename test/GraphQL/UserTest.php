@@ -65,7 +65,7 @@ class UserTest extends AbstractTest
         $output = $result->toArray();
 
         $this->assertEquals(
-            'Cannot query field "password" on type "DbTest\Entity\User_' . $schemaName . '".',
+            'Cannot query field "password" on type "DbTest_Entity_User__' . $schemaName . '".',
             $output['errors'][0]['message']
         );
     }

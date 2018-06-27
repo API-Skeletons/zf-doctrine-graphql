@@ -315,7 +315,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         }
 
         $instance = new EntityType([
-            'name' => $requestedName . '_' . $options['hydrator_section'],
+            'name' => str_replace('\\', '_', $requestedName) . '__' . $options['hydrator_section'],
             'description' => 'testing description',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {

@@ -8,6 +8,7 @@ use Exception as FieldResolverException;
 use Zend\Hydrator\HydratorPluginManager;
 use Doctrine\Common\Util\ClassUtils;
 use GraphQL\Type\Definition\ResolveInfo;
+use GraphQL\Executor\Executor;
 use ZF\Doctrine\GraphQL\Context;
 use ZF\Doctrine\GraphQL\Hydrator\HydratorExtractToolInterface;
 
@@ -17,6 +18,7 @@ use ZF\Doctrine\GraphQL\Hydrator\HydratorExtractToolInterface;
 class FieldResolver
 {
     private $hydratorExtractTool;
+    private $hydratorManager;
 
     /**
      * Cache all hydrator extract operations based on spl object hash
@@ -25,9 +27,12 @@ class FieldResolver
      */
     private $extractValues = [];
 
-    public function __construct(HydratorExtractToolInterface $hydratorExtractTool)
-    {
+    public function __construct(
+        HydratorExtractToolInterface $hydratorExtractTool,
+        HydratorPluginManager $hydratorManager
+    ) {
         $this->hydratorExtractTool = $hydratorExtractTool;
+        $this->hydratorManager = $hydratorManager;
     }
 
     public function __invoke($source, $args, Context $context, ResolveInfo $info)
@@ -39,6 +44,11 @@ class FieldResolver
         $entityClassName = ClassUtils::getRealClass(get_class($source));
         $splObjectHash = spl_object_hash($source);
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
+
+        // If the hydrator does not exist pass handling to default Executor field resolver
+        if (! $this->hydratorManager->has($hydratorAlias)) {
+            return Executor::defaultFieldResolver($source, $args, $context, $info);
+        }
 
         /**
          * For disabled hydrator cache store only last hydrator result and reuse for consecutive calls

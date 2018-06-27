@@ -12,7 +12,8 @@ class FieldResolverFactory
         array $options = null
     ) {
         $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
+        $hydratorManager = $container->get('HydratorManager');
 
-        return new FieldResolver($hydratorExtractTool);
+        return new FieldResolver($hydratorExtractTool, $hydratorManager);
     }
 }

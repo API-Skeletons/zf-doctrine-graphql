@@ -93,7 +93,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_sort'] = [
                         'name' => $fieldName . '_sort',
                         'type' => Type::string(),
-                        'description' => 'building...',
+                        'description' => 'Sort the result either ASC or DESC',
                     ];
                 }
 
@@ -101,14 +101,14 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName] = [
                         'name' => $fieldName,
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Equals; same as name: value.  DateTime not supported.',
                     ];
 
                     // Add filters
                     $fields[$fieldName . '_eq'] = [
                         'name' => $fieldName . '_eq',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Equals; same as name: value.  DateTime not supported.',
                     ];
                 }
 
@@ -116,7 +116,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_neq'] = [
                         'name' => $fieldName . '_neq',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Not Equals',
                     ];
                 }
 
@@ -124,7 +124,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_lt'] = [
                         'name' => $fieldName . '_lt',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Less Than',
                     ];
                 }
 
@@ -132,7 +132,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_lte'] = [
                         'name' => $fieldName . '_lte',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Less Than or Equal To',
                     ];
                 }
 
@@ -140,7 +140,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_gt'] = [
                         'name' => $fieldName . '_gt',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Greater Than',
                     ];
                 }
 
@@ -148,7 +148,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_gte'] = [
                         'name' => $fieldName . '_gte',
                         'type' => $graphQLType,
-                        'description' => 'building...',
+                        'description' => 'Greater Than or Equal To',
                     ];
                 }
 
@@ -156,7 +156,10 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_isnull'] = [
                         'name' => $fieldName . '_isnull',
                         'type' => Type::boolean(),
-                        'description' => 'building...',
+                        'description' => 'Takes a boolean.  If TRUE return results where the field is null. '
+                            . 'If FALSE returns results where the field is not null. '
+                            . 'NOTE: acts as "isEmpty" for collection filters.  A value of false will '
+                            . 'be handled as though it were null.',
                     ];
                 }
 
@@ -164,7 +167,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_in'] = [
                         'name' => $fieldName . '_in',
                         'type' => Type::listOf(Type::nonNull($graphQLType)),
-                        'description' => 'building...',
+                        'description' => 'Filter for values in an array',
                     ];
                 }
 
@@ -172,13 +175,14 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_notin'] = [
                         'name' => $fieldName . '_notin',
                         'type' => Type::listOf(Type::nonNull($graphQLType)),
-                        'description' => 'building...',
+                        'description' => 'Filter for values not in an array',
                     ];
                 }
 
                 if ($filterManager->has('between')) {
                     $fields[$fieldName . '_between'] = [
                         'name' => $fieldName . '_between',
+                        'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
                         'type' => new FilterTypeNS\Between(['fields' => [
                             'from' => [
                                 'name' => 'from',
@@ -197,16 +201,21 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_contains'] = [
                         'name' => $fieldName . '_contains',
                         'type' => Type::string(),
+                        'description' => 'Strings only. Similar to a Like query as `like \'%value%\'`',
                     ];
 
                     $fields[$fieldName . '_startswith'] = [
                         'name' => $fieldName . '_startswith',
                         'type' => Type::string(),
+                        'documentation' => 'Strings only. '
+                            . 'A like query from the beginning of the value `like \'value%\'`',
                     ];
 
                     $fields[$fieldName . '_endswith'] = [
                         'name' => $fieldName . '_endswith',
                         'type' => Type::string(),
+                        'documentation' => 'Strings only. '
+                            . 'A like query from the end of the value `like \'%value\'`',
                     ];
                 }
 
@@ -214,27 +223,30 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_memberof'] = [
                         'name' => $fieldName . '_memberof',
                         'type' => Type::string(),
-                        'description' => 'building...',
+                        'description' => 'Matches a value in an array field.',
                     ];
                 }
             }
             $fields[$fieldName . '_distinct'] = [
                 'name' => $fieldName . '_distinct',
                 'type' => Type::boolean(),
+                'description' => 'Return a unique list of fieldName.  Only one distinct fieldName allowed per filter.',
             ];
         }
 
         $fields['_skip'] = [
             'name' => '_skip',
             'type' => Type::int(),
+            'documentation' => 'Skip forward x records from beginning of data set.',
         ];
         $fields['_limit'] = [
             'name' => '_limit',
             'type' => Type::int(),
+            'documentation' => 'Limit the number of results to x.',
         ];
 
         $instance = new FilterType([
-            'name' => str_replace('\\', '_', $requestedName) . 'Filter',
+            'name' => str_replace('\\', '_', $requestedName) . '__Filter',
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     // @codeCoverageIgnoreStart

@@ -17,6 +17,14 @@ use GraphQL\Utils;
 final class DateTimeType extends ScalarType
 {
     /**
+     * @var string
+     */
+    public $description =
+'The `DateTime` scalar type represents datetime data.
+The format for the DateTime is ISO-8601
+e.g. 2004-02-12T15:19:21+00:00.';
+
+    /**
      * @codeCoverageIgnore
      */
     public function parseLiteral($valueNode, ?array $variables = null)

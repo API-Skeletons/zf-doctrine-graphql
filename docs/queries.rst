@@ -40,7 +40,7 @@ Provided Filters::
     fieldName_lte        -  Less Than or Equal To
     fieldName_in         -  Filter for values in an array
     fieldName_notin      -  Filter for values not in an array
-    fieldName_between    -  Fiilter between `from` and `to` values.  Good substitute for DateTime Equals.
+    fieldName_between    -  Filter between `from` and `to` values.  Good substitute for DateTime Equals.
     fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
     fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
     fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`

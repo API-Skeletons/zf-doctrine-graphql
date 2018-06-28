@@ -46,7 +46,9 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
 
                 $strategies = [];
                 $filters = [];
+                $documentation = ['_entity' => ''];
                 foreach ($classMetadata->getAssociationNames() as $associationName) {
+                    $documentation[$associationName] = '';
                     $mapping = $classMetadata->getAssociationMapping($associationName);
 
                     // See comment on NullifyOwningAssociation for details of why this is done
@@ -58,6 +60,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                 }
 
                 foreach ($classMetadata->getFieldNames() as $fieldName) {
+                    $documentation[$fieldName] = '';
                     $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
                     // Handle special named fields
@@ -108,6 +111,7 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                     'hydrator' => null,
                     'strategies' => $strategies,
                     'filters' => $filters,
+                    'documentation' => $documentation,
                 ];
             }
         }

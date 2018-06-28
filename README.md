@@ -11,9 +11,9 @@ This library resolves relationships in Doctrine to provide full GraphQL
 querying of specified resources and all related entities.
 Entity metadata is introspected and is therefore Doctrine data driver agnostic.
 Data is collected via hydrators thereby
-allowing full control over each field using hydrator filters and strategies.
-Multiple object managers are supported.
-Multiple hydrator configurations are supported.
+allowing full control over each field using hydrator filters and strategies and naming strategies.
+Multiple object managers are supported. Multiple hydrator configurations are supported.
+Works with GraphiQL.
 
 Doctrine provides easy taversal of your database.  Consider the following imaginary query:
 ```php

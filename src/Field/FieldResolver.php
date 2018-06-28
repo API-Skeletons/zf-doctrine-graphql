@@ -46,9 +46,11 @@ class FieldResolver
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $entityClassName);
 
         // If the hydrator does not exist pass handling to default Executor field resolver
+        // @codeCoverageIgnoreStart
         if (! $this->hydratorManager->has($hydratorAlias)) {
             return Executor::defaultFieldResolver($source, $args, $context, $info);
         }
+        // @codeCoverageIgnoreEnd
 
         /**
          * For disabled hydrator cache store only last hydrator result and reuse for consecutive calls

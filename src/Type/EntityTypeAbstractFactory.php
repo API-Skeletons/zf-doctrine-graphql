@@ -65,6 +65,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $typeManager = $container->get(TypeManager::class);
         $criteriaFilterManager = $container->get(FilterManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
+        $documentationProvider = $container->get('ZF\Doctrine\GraphQL\Documentation\DocumentationProvider');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
         $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
         $objectManager = $container
@@ -309,14 +310,14 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
             if ($graphQLType) {
                 $fields[$fieldName] = [
                     'type' => $graphQLType,
-                    'description' => 'building...',
+                    'description' => $documentationProvider->getField($requestedName, $fieldName, $options),
                 ];
             }
         }
 
         $instance = new EntityType([
             'name' => str_replace('\\', '_', $requestedName) . '__' . $options['hydrator_section'],
-            'description' => 'testing description',
+            'description' => $documentationProvider->getEntity($requestedName, $options),
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();

@@ -32,7 +32,7 @@ class ConfigProvider
             'aliases' => [
                 'ZF\Doctrine\GraphQL\Hydrator\HydratorExtractTool' => Hydrator\HydratorExtractToolDefault::class,
                 'ZF\Doctrine\GraphQL\Documentation\DocumentationProvider'
-                    => Documentation\ApigilityDocumentationProvider::class,
+                    => Documentation\HydratorConfigurationDocumentationProvider::class,
             ],
             'factories' => [
                 Hydrator\HydratorExtractToolDefault::class => Hydrator\HydratorExtractToolDefaultFactory::class,
@@ -55,8 +55,8 @@ class ConfigProvider
                 Type\Loader::class => Type\LoaderFactory::class,
                 Type\TypeManager::class => Type\TypeManagerFactory::class,
 
-                Documentation\ApigilityDocumentationProvider::class =>
-                    Documentation\ApigilityDocumentationProviderFactory::class,
+                Documentation\HydratorConfigurationDocumentationProvider::class =>
+                    Documentation\HydratorConfigurationDocumentationProviderFactory::class,
             ],
         ];
     }

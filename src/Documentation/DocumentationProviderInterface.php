@@ -4,6 +4,6 @@ namespace ZF\Doctrine\GraphQL\Documentation;
 
 interface DocumentationProviderInterface
 {
-    public function getField($entityName, $fieldName);
-    public function getEntity($entityName);
+    public function getField($entityClassName, $fieldName, array $config);
+    public function getEntity($entityClassName, array $config);
 }

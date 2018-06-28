@@ -79,7 +79,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $references = [];
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);
-        die(get_class($classMetadata));
+
         foreach ($entityFields as $fieldName) {
             $graphQLType = null;
             try {
@@ -292,8 +292,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                 }
                 // @codeCoverageIgnoreEnd
             }
-            print_r($fieldMetadata);
-            die($requestedName);
+
             $graphQLType = $this->mapFieldType($fieldMetadata['type']);
             // Override for datetime
             if ($fieldMetadata['type'] == 'datetime') {
@@ -311,14 +310,14 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
             if ($graphQLType) {
                 $fields[$fieldName] = [
                     'type' => $graphQLType,
-                    'description' => $documentationProvider->getField($requestedName, $fieldName),
+                    'description' => $documentationProvider->getField($requestedName, $fieldName, $options),
                 ];
             }
         }
 
         $instance = new EntityType([
             'name' => str_replace('\\', '_', $requestedName) . '__' . $options['hydrator_section'],
-            'description' => $documentationProvider->getEntity($requestedName),
+            'description' => $documentationProvider->getEntity($requestedName, $options),
             'fields' => function () use ($fields, $references) {
                 foreach ($references as $referenceName => $resolve) {
                     $fields[$referenceName] = $resolve();

@@ -16,4 +16,3 @@ class ApigilityDocumentationProviderFactory
         return new ApigilityDocumentationProvider($config);
     }
 }
-

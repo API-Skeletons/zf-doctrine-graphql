@@ -79,7 +79,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $references = [];
 
         $classMetadata = $objectManager->getClassMetadata($requestedName);
-
+        die(get_class($classMetadata));
         foreach ($entityFields as $fieldName) {
             $graphQLType = null;
             try {
@@ -292,7 +292,8 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                 }
                 // @codeCoverageIgnoreEnd
             }
-
+            print_r($fieldMetadata);
+            die($requestedName);
             $graphQLType = $this->mapFieldType($fieldMetadata['type']);
             // Override for datetime
             if ($fieldMetadata['type'] == 'datetime') {

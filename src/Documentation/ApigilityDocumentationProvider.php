@@ -12,7 +12,7 @@ class ApigilityDocumentationProvider implements
         $this->config = $config;
     }
 
-    public function getEntity($entityName)
+    public function getEntity($entityName, array $options)
     {
         // Documentation for entities is stored in the documentation.php config file.
         // Fetching all those files is outside the scope of work for this class for now.
@@ -23,7 +23,7 @@ class ApigilityDocumentationProvider implements
      * Populate the field documentation based on teh input filter
      * for the first matching entity found in zf-rest configuration
      */
-    public function getField($entityName, $fieldName)
+    public function getField($entityName, $fieldName, array $options)
     {
         $inputFilter = null;
         $description = null;

@@ -13,6 +13,7 @@ schema, if you wish, allowing deep GraphQL queries on your data with a single en
     about
     installation
     use
+    documenting
     queries
     configuration
     events

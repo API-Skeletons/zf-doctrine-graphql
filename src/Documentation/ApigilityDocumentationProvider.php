@@ -2,6 +2,9 @@
 
 namespace ZF\Doctrine\GraphQL\Documentation;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ApigilityDocumentationProvider implements
     DocumentationProviderInterface
 {

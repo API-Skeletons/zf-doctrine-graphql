@@ -4,6 +4,9 @@ namespace ZF\Doctrine\GraphQL\Documentation;
 
 use Interop\Container\ContainerInterface;
 
+/**
+ * @codeCoverageIgnore
+ */
 class ApigilityDocumentationProviderFactory
 {
     public function __invoke(

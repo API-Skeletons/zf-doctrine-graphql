@@ -14,6 +14,7 @@ and injecting them into an RPC object will yield a working example.
     use ZF\Doctrine\GraphQL\Type\Loader as TypeLoader;
     use ZF\Doctrine\GraphQL\Filter\Loader as FilterLoader;
     use ZF\Doctrine\GraphQL\Resolve\Loader as ResolveLoader;
+    use ZF\Doctrine\GraphQL\Context;
 
     $typeLoader = $container->get(TypeLoader::class);
     $filterLoader = $container->get(FilterLoader::class);

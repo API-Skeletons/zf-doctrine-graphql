@@ -26,8 +26,8 @@ is more complete and more pertinent to this repository.  A notable section is
 `By Value and By Reference <https://github.com/doctrine/DoctrineModule/blob/master/docs/hydrator.md#by-value-and-by-reference>`_,
 
 
-Hydrator Configuration in zf-doctrine-graphql
----------------------------------------------
+Generated Skeleton Configuration
+--------------------------------
 
 This module uses hydrators to extract data from the Doctrine entities.  You can configure multiple
 sections of hydrators so one permissioned user may receive different data than a different permission

@@ -16,6 +16,7 @@ schema, if you wish, allowing deep GraphQL queries on your data with a single en
     documenting
     queries
     configuration
+    hydrators
     events
     graphiql
     internals

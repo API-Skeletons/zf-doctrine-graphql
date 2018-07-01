@@ -1,37 +1,5 @@
-Configuration
-=============
-
-This module uses hydrators to extract data from the Doctrine entities.  You can configure multiple
-sections of hydrators so one permissioned user may receive different data than a different permission
-or one query to an entity may return differnet fields than another query to the same entity.
-
-Because creating hydrator configurations for every section for every entity in your object manager(s) is tedious
-this module provides an auto-generating configuration tool.
-
-To generate configuration:
-
-.. code-block:: bash
-
-    php public/index.php graphql:config-skeleton [--hydrator-sections=] [--object-manager=]
-
-
-The hydrator-sections parameter is a comma delimited list of sections to generate such as `default,admin`.
-
-The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
-For each object manager you want to serve data with in your application create a configuration using this
-tool.  The tool outputs a configuration file.  Write the file to your project root location then move
-it to your `config/autoload` directory.
-
-.. code-block:: bash
-
-    php public/index.php graphql:config-skeleton > zf-doctrine-graphql-orm_default.global.php
-    mv zf-doctrine-graphql-orm_default.global.php config/autoload
-
-
-(Writing directly into the `config/autoload` directory is not recommended at run time.)
-
-Default hydrator strategies and filters are set for every association and field in your ORM.
-Modify each hydrator configuration section with your hydrator strategies and hydrator filters as needed.
+Schema Configuration
+====================
 
 
 Context
@@ -84,31 +52,6 @@ useHydratorCache set to true will cause set3 to be pulled from the cache.  If it
 a new hydrator extract operation on an entity which had already been extracted once before.
 
 useHydratorCache set to false will fetch set1 and set2 from the single-entity cache created by the performanceDate.
-
-
-Type Casting Entity Values
---------------------------
-
-There are some hydrator stragegies included with this module.  In GraphQL types are very
-important and this module introspects your ORM metadata to correctly type against GraphQL
-types.  By default integer, float, and boolean fields are automatically assigned to the
-correct hydrator strategy.
-
-
-Many to Many Owning Side Relationships
---------------------------------------
-
-.. code-block:: js
-
-    { artist { user { role { user { name } } } } }
-
-
-This query would return all user names who share the same role permissions as the user who created the artist.
-To prevent this the `graphql:config-skeleton` command nullifies the owning side of many to many relations by
-default causing an error when the query tries to go from role > user but not when it goes from user > role
-becuase role is the owning side of the many to many relationship.  See
-`NullifyOwningAssociation <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Hydrator/Strategy/NullifyOwningAssociation.php>`_
-for more information.
 
 
 Supported Data Types

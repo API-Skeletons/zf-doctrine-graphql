@@ -29,6 +29,42 @@ is more complete and more pertinent to this repository.  A notable section is
 Hydrator Configuration in zf-doctrine-graphql
 ---------------------------------------------
 
+This module uses hydrators to extract data from the Doctrine entities.  You can configure multiple
+sections of hydrators so one permissioned user may receive different data than a different permission
+or one query to an entity may return differnet fields than another query to the same entity.
+
+Because creating hydrator configurations for every section for every entity in your object manager(s) is tedious
+this module provides an auto-generating configuration tool.
+
+To generate configuration:
+
+.. code-block:: bash
+
+    php public/index.php graphql:config-skeleton [--hydrator-sections=] [--object-manager=]
+
+
+The hydrator-sections parameter is a comma delimited list of sections to generate such as `default,admin`.
+
+The object-manager parameter is optional and defaults to `doctrine.entitymanager.orm_default`.
+For each object manager you want to serve data with in your application create a configuration using this
+tool.  The tool outputs a configuration file.  Write the file to your project root location then move
+it to your `config/autoload` directory.
+
+.. code-block:: bash
+
+    php public/index.php graphql:config-skeleton > zf-doctrine-graphql-orm_default.global.php
+    mv zf-doctrine-graphql-orm_default.global.php config/autoload
+
+
+(Writing directly into the `config/autoload` directory is not recommended at run time.)
+
+Default hydrator strategies and filters are set for every association and field in your ORM.
+Modify each hydrator configuration section with your hydrator strategies and hydrator filters as needed.
+
+
+Generated Configuration
+-----------------------
+
 Here is an example of a generated configuration::
 
     'ZF\\Doctrine\\GraphQL\\Hydrator\\ZF_Doctrine_Audit_Entity_Revision' => [
@@ -101,3 +137,68 @@ result.
 `documentation` section is for fields only.  Relations are not documented because that is not supported by GraphiQL.
 Use this section to document each field and the entity.  The reserved name `_entity` contains the documentation for the
 entity.
+
+
+Strategies
+----------
+
+There are some hydrator stragegies included with this module.  In GraphQL types are very
+important and this module introspects your ORM metadata to correctly type against GraphQL
+types.  By default integer, float, and boolean fields are automatically assigned to the
+correct hydrator strategy.
+
+
+Many to Many Owning Side Relationships
+--------------------------------------
+
+.. code-block:: js
+
+    { artist { user { role { user { name } } } } }
+
+
+This query would return all user names who share the same role permissions as the user who created the artist.
+To prevent this the `graphql:config-skeleton` command nullifies the owning side of many to many relations by
+default causing an error when the query tries to go from role > user but not when it goes from user > role
+becuase role is the owning side of the many to many relationship.  See
+`NullifyOwningAssociation <https://github.com/API-Skeletons/zf-doctrine-graphql/blob/master/src/Hydrator/Strategy/NullifyOwningAssociation.php>`_
+for more information.
+
+
+Documenting Entities
+--------------------
+
+Introspection of entities is a core component to GraphQL.  The introspection allows you to
+document your types.  Because entities are types there is a section inside each
+hydrator configuration for documenting your entity and fields through introspection.
+
+
+.. code-block:: php
+
+    'documentation' => [
+        '_entity' => 'The Artist entity contains bands, groups, and individual performers.',
+        'id' => 'Primary Key for the Artist',
+        'abbreviation' => 'An abbreviation for the Artist',
+        'createdAt' => 'DateTime the Artist record was created',
+        'description' => 'A description of the Artist',
+        'icon' => 'The Artist icon',
+        'name' => 'The name of the performer.',
+    ],
+
+There is one special field, `_entity` which is the description for the entity itself.
+The rest of the fields describe documentation for each field.
+
+Documentation is specific to each hydrator section allowing you to describe the same entity
+in different ways.  The Documentation will be returned in tools like `GraphiQL <https://github.com/graphql/graphiql>`_
+
+GraphiQL is the standard for browsing introspected GraphQL types.  zf-doctrine-graphql fully supports
+GraphiQL.
+
+
+.. role:: raw-html(raw)
+   :format: html
+
+.. note::
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+
+
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

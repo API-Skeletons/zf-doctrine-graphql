@@ -33,7 +33,11 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
         }
         $objectManager = $this->container->get($objectManagerAlias);
 
+        // Sort entity names
         $metadata = $objectManager->getMetadataFactory()->getAllMetadata();
+        usort($metadata, function ($a, $b) {
+            return $a->getName() <=> $b->getName();
+        });
 
         $config = [
             'zf-doctrine-graphql-hydrator' => []
@@ -47,19 +51,22 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                 $strategies = [];
                 $filters = [];
                 $documentation = ['_entity' => ''];
-                foreach ($classMetadata->getAssociationNames() as $associationName) {
-                    $documentation[$associationName] = '';
-                    $mapping = $classMetadata->getAssociationMapping($associationName);
 
-                    // See comment on NullifyOwningAssociation for details of why this is done
-                    if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
-                        $strategies[$associationName] = Strategy\NullifyOwningAssociation::class;
-                    } else {
-                        $strategies[$associationName] = Strategy\AssociationDefault::class;
+                // Sort field names
+                $fieldNames = $classMetadata->getFieldNames();
+                usort($fieldNames, function ($a, $b) {
+                    if ($a == 'id') {
+                        return -1;
                     }
-                }
 
-                foreach ($classMetadata->getFieldNames() as $fieldName) {
+                    if ($b == 'id') {
+                        return 1;
+                    }
+
+                    return $a <=> $b;
+                });
+
+                foreach ($fieldNames as $fieldName) {
                     $documentation[$fieldName] = '';
                     $fieldMetadata = $classMetadata->getFieldMapping($fieldName);
 
@@ -94,6 +101,24 @@ final class ConfigurationSkeletonController extends AbstractConsoleController
                         default:
                             $strategies[$fieldName] = Strategy\FieldDefault::class;
                             break;
+                    }
+                }
+
+                // Sort association Names
+                $associationNames = $classMetadata->getAssociationNames();
+                usort($associationNames, function ($a, $b) {
+                    return $a <=> $b;
+                });
+
+                foreach ($associationNames as $associationName) {
+#                    $documentation[$associationName] = '';
+                    $mapping = $classMetadata->getAssociationMapping($associationName);
+
+                    // See comment on NullifyOwningAssociation for details of why this is done
+                    if ($mapping['type'] == ClassMetadataInfo::MANY_TO_MANY && $mapping['isOwningSide']) {
+                        $strategies[$associationName] = Strategy\NullifyOwningAssociation::class;
+                    } else {
+                        $strategies[$associationName] = Strategy\AssociationDefault::class;
                     }
                 }
 

@@ -5,7 +5,7 @@ GraphQL for Doctrine using Hydrators
 [![Coverage](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&124)](https://coveralls.io/repos/github/API-Skeletons/zf-doctrine-graphql/badge.svg?branch=master&124)
 [![PHPStan](https://img.shields.io/badge/PHPStan-enabled-brightgreen.svg?style=flat)](https://github.com/phpstan/phpstan)
 [![Documentation Status](https://readthedocs.org/projects/zf-doctrine-graphql/badge/?version=latest)](http://graphql.apiskeletons.com/en/latest/?badge=latest)
-[![License](https://poser.pugx.org/phpstan/phpstan/license)](https://packagist.org/packages/phpstan/phpstan)
+[![License](https://poser.pugx.org/api-skeletons/zf-doctrine-graphql/license)](https://packagist.org/packages/api-skeletons/zf-doctrine-graphql)
 [![Gitter](https://badges.gitter.im/api-skeletons/open-source.svg)](https://gitter.im/api-skeletons/open-source)
 [![Total Downloads](https://poser.pugx.org/api-skeletons/zf-doctrine-graphql/downloads)](https://packagist.org/packages/api-skeletons/zf-doctrine-graphql)
 

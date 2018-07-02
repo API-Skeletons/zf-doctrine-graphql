@@ -175,7 +175,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                          'value' => $value,
                      ];
                 } elseif (strpos($field, '_') !== false && $this->isFilter($filter)) {
-                    $field = substr($field, 0, strrpos($field, '_'));
+                    $field = substr($field, 0, (int)strrpos($field, '_'));
 
                     switch ($filter) {
                         case 'sort':

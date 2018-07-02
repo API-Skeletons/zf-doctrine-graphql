@@ -60,7 +60,7 @@ The format for using these filters is:
     filter: { name_endswith: "Dead" }
 
 
-For isnull the paramter is a boolean
+For isnull the parameter is a boolean
 
 .. code-block:: js
 

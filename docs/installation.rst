@@ -6,7 +6,7 @@ Installation of this module uses composer. For composer documentation, please re
 
     $ composer require api-skeletons/zf-doctrine-graphql
 
-Once installed, add `ZF\Doctrine\GraphQL` to your list of modules inside
+Once installed, add **ZF\\Doctrine\\GraphQL** to your list of modules inside
 `config/application.config.php` or `config/modules.config.php`.
 
 zf-component-installer

@@ -31,7 +31,7 @@ Generating a Skeleton Configuration
 
 This module uses hydrators to extract data from the Doctrine entities.  You can configure multiple
 sections of hydrators so one permissioned user may receive different data than a different permission
-or one query to an entity may return differnet fields than another query to the same entity.
+or one query to an entity may return different fields than another query to the same entity.
 
 Because creating hydrator configurations for every section for every entity in your object manager(s) is tedious
 this module provides an auto-generating configuration tool.
@@ -124,11 +124,11 @@ not used.  But if you want to use the same configured hydrators to hydrate an en
 `hydrator` allows complete overriding of the extract service.  If set the extract and hydrate services will be assigned
 to the specified hydrator.
 
-'naming_strategy' is an instance of `Zend\Hydrator\NamingStrategy\NamingStrategyInterface` and is a service manager
+`naming_strategy` is an instance of **Zend\Hydrator\NamingStrategy\NamingStrategyInterface** and is a service manager
 alias.  You may only have one `naming_strategy` per hydrator configuration.  A naming strategy lets you rename fields.
 
 `strategies` are quite important for extracting entities.  These can change the extracted value in whatever way you wish
-such as `rot13()` email addresses.  The can return an empty value but for that case it's better to filter out the field
+such as `rot13()` email addresses.  They can return an empty value but for that case it's better to filter out the field
 completely.
 
 `filters` are toggle switches for fields.  If you return false for a field name it will remove the field from the extract

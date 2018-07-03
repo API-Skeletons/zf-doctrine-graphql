@@ -227,6 +227,22 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
         return $providers;
     }
 
+    public function eventDataProvider() {
+        $eventContext = new Context();
+        $eventContext->setHydratorSection('event');
+        $eventContext->setUseHydratorCache(false);
+        $eventContext->setLimit(1000);
+
+        $providers = [
+            [
+                'schemaName' => 'event',
+                'context' => $eventContext,
+            ],
+        ];
+
+        return $providers;
+    }
+
     protected function getSchema($schemaName)
     {
         switch ($schemaName) {
@@ -234,6 +250,8 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
                 return $this->getDefaultSchema();
             case 'test':
                 return $this->getTestSchema();
+            case 'event':
+                return $this->getEventSchema();
         }
     }
 
@@ -327,6 +345,35 @@ abstract class AbstractTest extends AbstractHttpControllerTestCase
                             'filter' => $filterLoader(Entity\Address::class, $context),
                         ],
                         'resolve' => $resolveLoader(Entity\Address::class, $context),
+                    ],
+                ],
+            ]),
+        ]);
+
+        return $schema;
+    }
+
+    protected function getEventSchema()
+    {
+        $serviceManager = $this->getApplication()->getServiceManager();
+        $typeLoader = $serviceManager->get(TypeLoader::class);
+        $filterLoader = $serviceManager->get(FilterLoader::class);
+        $resolveLoader = $serviceManager->get(ResolveLoader::class);
+
+        $context = new Context();
+        $context->setHydratorSection('event');
+        $context->setUseHydratorCache(false);
+
+        $schema = new Schema([
+            'query' => new ObjectType([
+                'name' => 'query',
+                'fields' => [
+                    'artist' => [
+                        'type' => Type::listOf($typeLoader(Entity\Artist::class, $context)),
+                        'args' => [
+                            'filter' => $filterLoader(Entity\Artist::class, $context),
+                        ],
+                        'resolve' => $resolveLoader(Entity\Artist::class, $context),
                     ],
                 ],
             ]),

@@ -7,6 +7,10 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManagerInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -21,6 +25,28 @@ use ZF\Doctrine\GraphQL\Field\FieldResolver;
 final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
+    const TYPE_DEFINITION = 'typeDefinition';
+
+    protected $events;
+
+    private function createEventManager(SharedEventManagerInterface $sharedEventManager)
+    {
+        $this->events = new EventManager(
+            $sharedEventManager,
+            [
+                __CLASS__,
+                get_class($this)
+            ]
+        );
+
+        return $this->events;
+    }
+
+    public function getEventManager()
+    {
+        return $this->events;
+    }
+
     /**
      * @codeCoverageIgnore
      */
@@ -54,6 +80,9 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+
+        // Setup Events
+        $this->createEventManager($container->get('SharedEventManager'));
 
         $name = str_replace('\\', '_', $requestedName);
         $objectManagerAlias = null;
@@ -305,6 +334,23 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
             if ($graphQLType && ! $classMetadata->isNullable($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::nonNull($graphQLType);
+            }
+
+            // Send event to allow overriding a field type
+            $results = $this->getEventManager()->trigger(
+                self::TYPE_DEFINITION,
+                $this,
+                [
+                    'fieldName' => $fieldName,
+                    'graphQLType' => $graphQLType,
+                    'classMetadata' => $classMetadata,
+                    'fieldMetadata' => $fieldMetadata,
+                    'hydratorAlias' => $hydratorAlias,
+                    'options' => $options,
+                ]
+            );
+            if ($results->stopped()) {
+                $graphQLType = $results->last();
             }
 
             if ($graphQLType) {

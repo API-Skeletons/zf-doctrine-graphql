@@ -4,9 +4,11 @@ namespace ZFTest\Doctrine\GraphQL\GraphQL;
 
 use ZFTest\Doctrine\GraphQL\AbstractTest;
 use GraphQL\GraphQL;
+use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
+use ZF\Doctrine\GraphQL\Type\EntityTypeAbstractFactory;
 use Zend\EventManager\Event;
-use Db\Entity;
+use DbTest\Entity;
 
 class EventsTest extends AbstractTest
 {
@@ -134,5 +136,55 @@ class EventsTest extends AbstractTest
         $output = $result->toArray();
 
         $this->assertEquals(2, sizeof($output['data']['performance']));
+    }
+
+
+    /**
+     * @dataProvider eventDataProvider
+     */
+    public function testOverrideGraphQLTypeEvent($schemaName, $context)
+    {
+        $container = $this->getApplication()->getServiceManager();
+        $events = $container->get('SharedEventManager');
+        $config = $container->get('config');
+
+        $events->attach(
+            EntityTypeAbstractFactory::class,
+            EntityTypeAbstractFactory::TYPE_DEFINITION,
+            function(Event $event) use ($container, $config)
+            {
+                $hydratorAlias = $event->getParam('hydratorAlias');
+                $options = $event->getParam('options');
+                $fieldName = $event->getParam('fieldName');
+
+                if ($hydratorAlias == 'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist') {
+                    if ($fieldName === 'alias') {
+                        // Update all Artist alias to a multidimentional array
+                        $hydratorConfig = $config['zf-doctrine-graphql-hydrator'][$hydratorAlias];
+                        $objectManager =
+                            $container->get($hydratorConfig[$options['hydrator_section']]['object_manager']);
+
+                        $artist = $objectManager->getRepository(Entity\Artist::class)
+                            ->find(1);
+
+                        $artist->alias = ['multi' => ['dimentional' => 'array']];
+                        $objectManager->flush();
+
+                        $event->stopPropagation();
+
+                        return Type::string();
+                    }
+                }
+            },
+            100
+        );
+
+        $schema = $this->getSchema($schemaName);
+        $query = "{ artist ( filter: { id:1 } ) { id alias } }";
+
+        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
+        $output = $result->toArray();
+
+        $this->assertEquals('{"multi":{"dimentional":"array"}}', $output['data']['artist'][0]['alias']);
     }
 }

@@ -17,4 +17,9 @@ return [
             ],
         ],
     ],
+    'service_manager' => [
+        'invokables' => [
+            'DbTest\Hydrator\Filter\EventTestFilter' => 'DbTest\Hydrator\Filter\EventTestFilter',
+        ],
+    ],
 ];

@@ -118,9 +118,10 @@ abstract class AbstractAbstractFactory
             case 'sort':
             case 'distinct':
                 return true;
+            // @codeCoverageIgnoreStart
             default:
+                return false;
+            // @codeCoverageIgnoreEnd
         }
-
-        return false;
     }
 }

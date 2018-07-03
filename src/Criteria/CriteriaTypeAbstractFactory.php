@@ -11,11 +11,11 @@ use GraphQL\Type\Definition\Type;
 use ZF\Doctrine\Criteria\Filter\Service\FilterManager;
 use ZF\Doctrine\Criteria\OrderBy\Service\OrderByManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
-use ZF\Doctrine\GraphQL\Criteria\Type as FilterTypeNS;
+use ZF\Doctrine\GraphQL\Criteria\Type as CriteriaTypeNS;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 use ZF\Doctrine\GraphQL\Event;
 
-final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
+final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
     /**
@@ -46,7 +46,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
         return isset($config['zf-doctrine-graphql-hydrator'][$hydratorAlias]);
     }
 
-    public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : FilterType
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : CriteriaType
     {
         // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
@@ -187,7 +187,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
                     $fields[$fieldName . '_between'] = [
                         'name' => $fieldName . '_between',
                         'description' => 'Filter between `from` and `to` values.  Good substitute for DateTime Equals.',
-                        'type' => new FilterTypeNS\Between(['fields' => [
+                        'type' => new CriteriaTypeNS\Between(['fields' => [
                             'from' => [
                                 'name' => 'from',
                                 'type' => Type::nonNull($graphQLType),
@@ -272,7 +272,7 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
             'documentation' => 'Limit the number of results to x.',
         ];
 
-        $instance = new FilterType([
+        $instance = new CriteriaType([
             'name' => str_replace('\\', '_', $requestedName) . '__CriteriaFilter',
             'fields' => function () use ($fields) {
                 return $fields;

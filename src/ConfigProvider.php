@@ -47,7 +47,7 @@ class ConfigProvider
                 Hydrator\Strategy\AssociationDefault::class => InvokableFactory::class,
                 Hydrator\Strategy\FieldDefault::class => InvokableFactory::class,
 
-                Criteria\FilterManager::class => Criteria\FilterManagerFactory::class,
+                Criteria\CriteriaManager::class => Criteria\CriteriaManagerFactory::class,
                 Field\FieldResolver::class => Field\FieldResolverFactory::class,
                 Filter\Loader::class => Filter\LoaderFactory::class,
                 Filter\FilterManager::class => Filter\FilterManagerFactory::class,
@@ -96,7 +96,7 @@ class ConfigProvider
     {
         return [
             'abstract_factories' => [
-                Criteria\FilterTypeAbstractFactory::class,
+                Criteria\CriteriaTypeAbstractFactory::class,
             ],
         ];
     }

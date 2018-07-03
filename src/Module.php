@@ -78,7 +78,7 @@ class Module implements
         );
 
         $serviceListener->addServiceManager(
-            Criteria\FilterManager::class,
+            Criteria\CriteriaManager::class,
             'zf-doctrine-graphql-criteria',
             InputObjectType::class,
             'getZFDoctrineGraphQLCriteriaConfig'

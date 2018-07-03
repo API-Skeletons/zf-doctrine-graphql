@@ -6,7 +6,7 @@ use Zend\ServiceManager\AbstractPluginManager;
 use Zend\ServiceManager\Exception;
 use GraphQL\Type\Definition\Type;
 
-class FilterManager extends AbstractPluginManager
+class CriteriaManager extends AbstractPluginManager
 {
     /**
      * @var string

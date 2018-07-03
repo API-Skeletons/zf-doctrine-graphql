@@ -15,7 +15,7 @@ use GraphQL\Type\Definition\Type;
 use GraphQL\Type\Definition\ResolveInfo;
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
-use ZF\Doctrine\GraphQL\Criteria\FilterManager;
+use ZF\Doctrine\GraphQL\Criteria\CriteriaManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
 use ZF\Doctrine\GraphQL\Event;
 
@@ -68,7 +68,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
         $config = $container->get('config');
         $fieldResolver = $container->get(FieldResolver::class);
         $typeManager = $container->get(TypeManager::class);
-        $criteriaFilterManager = $container->get(FilterManager::class);
+        $criteriaFilterManager = $container->get(CriteriaManager::class);
         $criteriaBuilder = $container->get(CriteriaBuilder::class);
         $documentationProvider = $container->get('ZF\Doctrine\GraphQL\Documentation\DocumentationProvider');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);

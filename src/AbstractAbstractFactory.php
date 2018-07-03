@@ -18,7 +18,7 @@ abstract class AbstractAbstractFactory
     private $services = [];
     protected $events;
 
-    protected function createEventManager(SharedEventManagerInterface $sharedEventManager)
+    private function createEventManager(SharedEventManagerInterface $sharedEventManager)
     {
         $this->events = new EventManager(
             $sharedEventManager,

@@ -1,6 +1,12 @@
 Events
 ======
 
+All events are grouped under a common **ZF\Doctrine\GraphQL\Event** object.  In this repository the same event
+can be called in different places based on context such as when building an EntityType and when building the
+filters for an EntityType; both places need the same type override.  That is why all events are grouped.
+
+
+
 Filtering Query Builders
 ------------------------
 
@@ -11,13 +17,13 @@ apply your security.  The queryBuilder already has the entityClassName assigned 
 
 .. code-block:: php
 
-    use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
+    use ZF\Doctrine\GraphQL\Event;
 
     $events = $container->get('SharedEventManager');
 
     $events->attach(
-        EntityResolveAbstractFactory::class,
-        EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
+        Event::class,
+        Event::FILTER_QUERY_BUILDER,
         function(Event $event)
         {
             switch ($event->getParam('entityClassName')) {
@@ -38,7 +44,7 @@ apply your security.  The queryBuilder already has the entityClassName assigned 
 Resolve
 -------
 
-The **EntityResolveAbstractFactory::RESOLVE** event includes the **parameters**
+The **Event::RESOLVE** event includes the **parameters**
 and allows you to override the whole ResolveLoader event.  This allows
 you to have custom parameters and act on them through the ResolveLoader RESOLVE event.
 
@@ -46,29 +52,29 @@ you to have custom parameters and act on them through the ResolveLoader RESOLVE 
 Resolve Post
 ------------
 
-The **EntityResolveAbstractFactory::RESOLVE_POST** event allows you to modify the values
+The **Event::RESOLVE_POST** event allows you to modify the values
 returned from the ResolveLoader via an ArrayObject or replace the values.
 
 
 Override GraphQL Type
 ---------------------
 
-The **EntityTypeAbstractFactory::TYPE_DEFINITION** event allows you to override the GraphQL
+The **Event::MAP_FIELD_TYPE** event allows you to override the GraphQL
 type for any field.  Imagine you have an **array** field on an entity and the array field
 is multi-dimentional.  Because this module handles arrays as arrays of strings (because
 GraphQL needs to know exact subtypes of types) it cannot handle a multi-dimentional array.
-A good solution is to turn the value into JSON and override the type to a String.
+A good solution is to turn the value into JSON in a hydrator strategy and override the type to a String.
 
 .. code-block:: php
 
     use GraphQL\Type\Definition\Type;
-    use ZF\Doctrine\GraphQL\Type\EntityTypeAbstractFactory;
+    use ZF\Doctrine\GraphQL\Event;
 
     $events = $container->get('SharedEventManager');
 
     $events->attach(
-        EntityTypeAbstractFactory::class,
-        EntityTypeAbstractFactory::TYPE_DEFINITION,
+        Event::class,
+        Event::MAP_FIELD_TYPE,
         function(Event $event)
         {
             $hydratorAlias = $event->getParam('hydratorAlias');

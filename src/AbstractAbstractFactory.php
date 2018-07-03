@@ -23,7 +23,7 @@ abstract class AbstractAbstractFactory
         $this->events = new EventManager(
             $sharedEventManager,
             [
-                'ZF\\Doctrine\\GraphQL\\Event',
+                Event::class,
             ]
         );
 

@@ -1,7 +1,7 @@
 Events
 ======
 
-All events are grouped under a common **ZF\Doctrine\GraphQL\Event** object.  In this repository the same event
+All events are grouped under a common **ZF\\Doctrine\\GraphQL\\Event** object.  In this repository the same event
 can be called in different places based on context such as when building an EntityType and when building the
 filters for an EntityType; both places need the same type override.  That is why all events are grouped.
 
@@ -100,4 +100,4 @@ A good solution is to turn the value into JSON in a hydrator strategy and overri
   Authored by **API Skeletons <https://apiskeletons.com>**_.  All rights reserved.
 
 
-:raw-html:**<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>**
+:raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

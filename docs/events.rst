@@ -61,6 +61,7 @@ A good solution is to turn the value into JSON and override the type to a String
 
 .. code-block:: php
 
+    use GraphQL\Type\Definition\Type;
     use ZF\Doctrine\GraphQL\Type\EntityTypeAbstractFactory;
 
     $events = $container->get('SharedEventManager');

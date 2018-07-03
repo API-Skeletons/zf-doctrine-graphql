@@ -3,11 +3,10 @@
 namespace ZFTest\Doctrine\GraphQL\GraphQL;
 
 use ZFTest\Doctrine\GraphQL\AbstractTest;
+use Zend\EventManager\Event as ZendEvent;
 use GraphQL\GraphQL;
 use GraphQL\Type\Definition\Type;
-use ZF\Doctrine\GraphQL\Resolve\EntityResolveAbstractFactory;
-use ZF\Doctrine\GraphQL\Type\EntityTypeAbstractFactory;
-use Zend\EventManager\Event;
+use ZF\Doctrine\GraphQL\Event;
 use DbTest\Entity;
 
 class EventsTest extends AbstractTest
@@ -15,7 +14,7 @@ class EventsTest extends AbstractTest
     /**
      * @dataProvider schemaDataProvider
      */
-    public function testUserEntity($schemaName, $context)
+    public function testQueryBuilderEvent($schemaName, $context)
     {
         $schema = $this->getSchema($schemaName);
 
@@ -23,9 +22,9 @@ class EventsTest extends AbstractTest
         $events = $container->get('SharedEventManager');
 
         $events->attach(
-            EntityResolveAbstractFactory::class,
-            EntityResolveAbstractFactory::FILTER_QUERY_BUILDER,
-            function(Event $event)
+            Event::class,
+            Event::FILTER_QUERY_BUILDER,
+            function(ZendEvent $event)
             {
                 switch ($event->getParam('entityClassName')) {
                     case 'DbTest\Entity\Performance':
@@ -60,9 +59,9 @@ class EventsTest extends AbstractTest
         $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
-            EntityResolveAbstractFactory::class,
-            EntityResolveAbstractFactory::RESOLVE,
-            function(Event $event) use ($hydratorExtractTool)
+            Event::class,
+            Event::RESOLVE,
+            function(ZendEvent $event) use ($hydratorExtractTool)
             {
                 $object = $event->getParam('object');
                 $arguments = $event->getParam('arguments');
@@ -104,9 +103,9 @@ class EventsTest extends AbstractTest
         $hydratorExtractTool = $container->get('ZF\\Doctrine\\GraphQL\\Hydrator\\HydratorExtractTool');
 
         $events->attach(
-            EntityResolveAbstractFactory::class,
-            EntityResolveAbstractFactory::RESOLVE_POST,
-            function(Event $event) use ($hydratorExtractTool)
+            Event::class,
+            Event::RESOLVE_POST,
+            function(ZendEvent $event) use ($hydratorExtractTool)
             {
                 $objectManager = $event->getParam('objectManager');
                 $entityClassName = $event->getParam('entityClassName');
@@ -149,9 +148,9 @@ class EventsTest extends AbstractTest
         $config = $container->get('config');
 
         $events->attach(
-            EntityTypeAbstractFactory::class,
-            EntityTypeAbstractFactory::TYPE_DEFINITION,
-            function(Event $event) use ($container, $config)
+            Event::class,
+            Event::MAP_FIELD_TYPE,
+            function(ZendEvent $event) use ($container, $config)
             {
                 $hydratorAlias = $event->getParam('hydratorAlias');
                 $options = $event->getParam('options');

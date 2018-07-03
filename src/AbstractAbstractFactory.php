@@ -3,6 +3,11 @@
 namespace ZF\Doctrine\GraphQL;
 
 use Exception;
+use Interop\Container\ContainerInterface;
+use Zend\EventManager\EventManager;
+use Zend\EventManager\EventManagerAwareInterface;
+use Zend\EventManager\EventManagerInterface;
+use Zend\EventManager\SharedEventManagerInterface;
 use GraphQL\Type\Definition\Type;
 
 /**
@@ -11,6 +16,30 @@ use GraphQL\Type\Definition\Type;
 abstract class AbstractAbstractFactory
 {
     private $services = [];
+    protected $events;
+
+    protected function createEventManager(SharedEventManagerInterface $sharedEventManager)
+    {
+        $this->events = new EventManager(
+            $sharedEventManager,
+            [
+                'ZF\\Doctrine\\GraphQL\\Event',
+            ]
+        );
+
+        return $this->events;
+    }
+
+    public function getEventManager()
+    {
+        return $this->events;
+    }
+
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
+    {
+        // Setup Events
+        $this->createEventManager($container->get('SharedEventManager'));
+    }
 
     protected function isCached($requestedName, array $options = null)
     {

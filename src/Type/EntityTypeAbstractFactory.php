@@ -7,10 +7,6 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\SharedEventManagerInterface;
 use Doctrine\Common\Util\ClassUtils;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -21,32 +17,11 @@ use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 use ZF\Doctrine\GraphQL\Criteria\FilterManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
+use ZF\Doctrine\GraphQL\Event;
 
 final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
-    const TYPE_DEFINITION = 'typeDefinition';
-
-    protected $events;
-
-    private function createEventManager(SharedEventManagerInterface $sharedEventManager)
-    {
-        $this->events = new EventManager(
-            $sharedEventManager,
-            [
-                __CLASS__,
-                get_class($this)
-            ]
-        );
-
-        return $this->events;
-    }
-
-    public function getEventManager()
-    {
-        return $this->events;
-    }
-
     /**
      * @codeCoverageIgnore
      */
@@ -77,12 +52,13 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
 
-        // Setup Events
-        $this->createEventManager($container->get('SharedEventManager'));
+        parent::__invoke($container, $requestedName, $options);
 
         $name = str_replace('\\', '_', $requestedName);
         $objectManagerAlias = null;
@@ -338,7 +314,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
             // Send event to allow overriding a field type
             $results = $this->getEventManager()->trigger(
-                self::TYPE_DEFINITION,
+                Event::MAP_FIELD_TYPE,
                 $this,
                 [
                     'fieldName' => $fieldName,

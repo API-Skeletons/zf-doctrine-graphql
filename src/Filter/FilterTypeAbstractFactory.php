@@ -53,6 +53,8 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
         }
         // @codeCoverageIgnoreEnd
 
+        parent::__invoke($container, $requestedName, $options);
+
         $fields = [];
         $config = $container->get('config');
         $typeManager = $container->get(TypeManager::class);

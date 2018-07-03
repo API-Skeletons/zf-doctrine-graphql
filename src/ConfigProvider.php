@@ -42,6 +42,7 @@ class ConfigProvider
                 Hydrator\Strategy\ToBoolean::class => InvokableFactory::class,
                 Hydrator\Strategy\ToFloat::class => InvokableFactory::class,
                 Hydrator\Strategy\ToInteger::class => InvokableFactory::class,
+                Hydrator\Strategy\ToJson::class => InvokableFactory::class,
                 Hydrator\Strategy\NullifyOwningAssociation::class => InvokableFactory::class,
                 Hydrator\Strategy\AssociationDefault::class => InvokableFactory::class,
                 Hydrator\Strategy\FieldDefault::class => InvokableFactory::class,

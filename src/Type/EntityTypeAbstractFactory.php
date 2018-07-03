@@ -17,6 +17,7 @@ use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 use ZF\Doctrine\GraphQL\Criteria\FilterManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
+use ZF\Doctrine\GraphQL\Event;
 
 final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -51,9 +52,13 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null) : EntityType
     {
+        // @codeCoverageIgnoreStart
         if ($this->isCached($requestedName, $options)) {
             return $this->getCache($requestedName, $options);
         }
+        // @codeCoverageIgnoreEnd
+
+        parent::__invoke($container, $requestedName, $options);
 
         $name = str_replace('\\', '_', $requestedName);
         $objectManagerAlias = null;
@@ -305,6 +310,23 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
 
             if ($graphQLType && ! $classMetadata->isNullable($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::nonNull($graphQLType);
+            }
+
+            // Send event to allow overriding a field type
+            $results = $this->getEventManager()->trigger(
+                Event::MAP_FIELD_TYPE,
+                $this,
+                [
+                    'fieldName' => $fieldName,
+                    'graphQLType' => $graphQLType,
+                    'classMetadata' => $classMetadata,
+                    'fieldMetadata' => $fieldMetadata,
+                    'hydratorAlias' => $hydratorAlias,
+                    'options' => $options,
+                ]
+            );
+            if ($results->stopped()) {
+                $graphQLType = $results->last();
             }
 
             if ($graphQLType) {

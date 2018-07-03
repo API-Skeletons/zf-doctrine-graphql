@@ -115,7 +115,7 @@ class DoctrineHydratorFactory implements AbstractFactoryInterface
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config');
-        $config = $config[self::FACTORY_NAMESPACE][$requestedName]['default'];
+        $config = $config[self::FACTORY_NAMESPACE][$requestedName][$options['hydrator_section']];
 
         $objectManager = $this->loadObjectManager($container, $config);
 

@@ -13,6 +13,7 @@ use ZF\Doctrine\Criteria\OrderBy\Service\OrderByManager;
 use ZF\Doctrine\GraphQL\Type\TypeManager;
 use ZF\Doctrine\GraphQL\Criteria\Type as FilterTypeNS;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
+use ZF\Doctrine\GraphQL\Event;
 
 final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -53,6 +54,8 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
         }
         // @codeCoverageIgnoreEnd
 
+        parent::__invoke($container, $requestedName, $options);
+
         $config = $container->get('config');
         $fields = [];
         $typeManager = $container->get(TypeManager::class);
@@ -86,6 +89,23 @@ final class FilterTypeAbstractFactory extends AbstractAbstractFactory implements
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();
+            }
+
+            // Send event to allow overriding a field type
+            $results = $this->getEventManager()->trigger(
+                Event::MAP_FIELD_TYPE,
+                $this,
+                [
+                    'fieldName' => $fieldName,
+                    'graphQLType' => $graphQLType,
+                    'classMetadata' => $classMetadata,
+                    'fieldMetadata' => $fieldMetadata,
+                    'hydratorAlias' => $hydratorAlias,
+                    'options' => $options,
+                ]
+            );
+            if ($results->stopped()) {
+                $graphQLType = $results->last();
             }
 
             if ($graphQLType) {

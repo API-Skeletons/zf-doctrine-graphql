@@ -7,44 +7,17 @@ use Exception;
 use Interop\Container\ContainerInterface;
 use Zend\ServiceManager\AbstractFactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Zend\EventManager\EventManager;
-use Zend\EventManager\EventManagerAwareInterface;
-use Zend\EventManager\EventManagerInterface;
-use Zend\EventManager\SharedEventManagerInterface;
 use Doctrine\Common\Collections\ArrayCollection;
 use ZF\Doctrine\QueryBuilder\Filter\Service\ORMFilterManager;
 use ZF\Doctrine\QueryBuilder\OrderBy\Service\ORMOrderByManager;
 use ZF\Doctrine\Criteria\Filter\Service\FilterManager as CriteriaFilterManager;
 use ZF\Doctrine\Criteria\Builder as CriteriaBuilder;
 use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
+use ZF\Doctrine\GraphQL\Event;
 
 final class EntityResolveAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
 {
-    const RESOLVE = 'resolve';
-    const RESOLVE_POST = 'resolvePost';
-    const FILTER_QUERY_BUILDER = 'filterQueryBuilder';
-
-    protected $events;
-
-    private function createEventManager(SharedEventManagerInterface $sharedEventManager)
-    {
-        $this->events = new EventManager(
-            $sharedEventManager,
-            [
-                __CLASS__,
-                get_class($this)
-            ]
-        );
-
-        return $this->events;
-    }
-
-    public function getEventManager()
-    {
-        return $this->events;
-    }
-
     /**
      * @codeCoverageIgnore
      */
@@ -77,8 +50,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
         }
         // @codeCoverageIgnoreEnd
 
-        // Setup Events
-        $this->createEventManager($container->get('SharedEventManager'));
+        parent::__invoke($container, $requestedName, $options);
 
         $config = $container->get('config');
         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\' . str_replace('\\', '_', $requestedName);
@@ -109,7 +81,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
 
             // Allow listener to resolve function
             $results = $this->getEventManager()->trigger(
-                self::RESOLVE,
+                Event::RESOLVE,
                 $this,
                 [
                     'object' => $obj,
@@ -130,7 +102,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
                 ->from($requestedName, 'row')
                 ;
             $this->getEventManager()->trigger(
-                self::FILTER_QUERY_BUILDER,
+                Event::FILTER_QUERY_BUILDER,
                 $this,
                 [
                     'object' => $obj,
@@ -316,7 +288,7 @@ final class EntityResolveAbstractFactory extends AbstractAbstractFactory impleme
 
             // Allow listener to resolve post function
             $results = $this->getEventManager()->trigger(
-                self::RESOLVE_POST,
+                Event::RESOLVE_POST,
                 $this,
                 [
                     'object' => $obj,

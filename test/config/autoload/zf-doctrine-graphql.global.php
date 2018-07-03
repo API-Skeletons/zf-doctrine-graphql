@@ -1,9 +1,5 @@
 <?php
 return [
-    'zf-doctrine-graphql' => [
-        'limit' => 1000,
-        'use_hydrator_cache' => true,
-    ],
     'zf-doctrine-graphql-hydrator' => [
         'ZF\\Doctrine\\GraphQL\\Hydrator\\DbTest_Entity_Artist' => [
             'default' => [
@@ -37,8 +33,9 @@ return [
                 'hydrator' => null,
                 'strategies' => [
                     'id' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
-                    'name' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                    'alias' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                     'createdAt' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                    'name' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
                     'performance' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
                     'user' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation::class,
                 ],
@@ -46,6 +43,28 @@ return [
                     'default' => [
                         'condition' => 'and',
                         'filter' => \ZF\Doctrine\GraphQL\Hydrator\Filter\FilterDefault::class,
+                    ],
+                ],
+            ],
+            'event' => [
+                'entity_class' => \DbTest\Entity\Artist::class,
+                'object_manager' => 'doctrine.entitymanager.orm_default',
+                'by_value' => false,
+                'use_generated_hydrator' => true,
+                'naming_strategy' => null,
+                'hydrator' => null,
+                'strategies' => [
+                    'id' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToInteger::class,
+                    'alias' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\ToJson::class,
+                    'createdAt' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                    'name' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\FieldDefault::class,
+                    'performance' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\AssociationDefault::class,
+                    'user' => \ZF\Doctrine\GraphQL\Hydrator\Strategy\NullifyOwningAssociation::class,
+                ],
+                'filters' => [
+                    'eventTest' => [
+                        'condition' => 'and',
+                        'filter' => 'DbTest\Hydrator\Filter\EventTestFilter',
                     ],
                 ],
             ],

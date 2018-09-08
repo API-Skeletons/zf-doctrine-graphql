@@ -9,6 +9,8 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use GraphQL\Type\Definition\Type;
+use Doctrine\DBAL\Types\Type as ORMType;
+use ZF\Doctrine\GraphQL\Type\CustomTypeInterface;
 
 /**
  * Enable caching of build() resources
@@ -110,9 +112,13 @@ abstract class AbstractAbstractFactory
                 $graphQLType = Type::listOf(Type::string());
                 break;
             default:
-                // @codeCoverageIgnoreStart
-                // Do not process unknown for now
                 $graphQLType = null;
+
+                $ormType = ORMType::getType($fieldType);
+                if ($ormType instanceof CustomTypeInterface) {
+                    $graphQLType = $ormType->mapGraphQLFieldType();
+                }
+                // @codeCoverageIgnoreStart
                 break;
         }
                 // @codeCoverageIgnoreEnd

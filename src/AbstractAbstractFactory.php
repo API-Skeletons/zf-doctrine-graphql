@@ -116,7 +116,7 @@ abstract class AbstractAbstractFactory
 
                 $ormType = ORMType::getType($fieldType);
                 if ($ormType instanceof CustomTypeInterface) {
-                    $graphQLType = $ormType->mapGraphQLFieldType($fieldType);
+                    $graphQLType = $ormType->mapGraphQLFieldType();
                 }
                 // @codeCoverageIgnoreStart
                 break;

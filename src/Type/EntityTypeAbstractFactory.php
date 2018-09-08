@@ -18,6 +18,8 @@ use ZF\Doctrine\GraphQL\AbstractAbstractFactory;
 use ZF\Doctrine\GraphQL\Criteria\CriteriaManager;
 use ZF\Doctrine\GraphQL\Field\FieldResolver;
 use ZF\Doctrine\GraphQL\Event;
+use Doctrine\DBAL\Types\Type as ORMType;
+use ZF\Doctrine\GraphQL\Type\CustomTypeInterface;
 
 final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
     AbstractFactoryInterface
@@ -299,9 +301,11 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
             }
 
             $graphQLType = $this->mapFieldType($fieldMetadata['type']);
-            // Override for datetime
-            if ($fieldMetadata['type'] == 'datetime') {
-                $graphQLType = $container->get(TypeManager::class)->get(DateTime::class);
+
+            // Override for custom fields
+            $typeManager = $container->get(TypeManager::class);
+            if ($typeManager->has($fieldMetadata['type'])) {
+                $graphQLType = $typeManager->get($fieldMetadata['type']);
             }
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {

@@ -9,8 +9,7 @@ use Zend\EventManager\EventManagerAwareInterface;
 use Zend\EventManager\EventManagerInterface;
 use Zend\EventManager\SharedEventManagerInterface;
 use GraphQL\Type\Definition\Type;
-use Doctrine\DBAL\Types\Type as ORMType;
-use ZF\Doctrine\GraphQL\Type\CustomTypeInterface;
+use ZF\Doctrine\GraphQL\Type\TypeManager;
 
 /**
  * Enable caching of build() resources
@@ -84,8 +83,10 @@ abstract class AbstractAbstractFactory
         return $instance;
     }
 
-    protected function mapFieldType(string $fieldType)
+    protected function mapFieldType(string $fieldType, TypeManager $typeManager)
     {
+        $graphQLType = null;
+
         switch ($fieldType) {
             case 'tinyint':
             case 'smallint':
@@ -105,23 +106,15 @@ abstract class AbstractAbstractFactory
             case 'text':
                 $graphQLType = Type::string();
                 break;
-            case 'datetime':
-                $graphQLType = Type::string();
-                break;
             case 'array':
                 $graphQLType = Type::listOf(Type::string());
                 break;
             default:
-                $graphQLType = null;
-
-                $ormType = ORMType::getType($fieldType);
-                if ($ormType instanceof CustomTypeInterface) {
-                    $graphQLType = $ormType->mapGraphQLFieldType();
+                if ($typeManager->has($fieldType)) {
+                    $graphQLType = $typeManager->get($fieldType);
                 }
-                // @codeCoverageIgnoreStart
                 break;
         }
-                // @codeCoverageIgnoreEnd
 
         return $graphQLType;
     }

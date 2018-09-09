@@ -2,10 +2,8 @@ Custom Mapping Types
 ====================
 
 Doctrine allows `Custom Mapping Types <https://www.doctrine-project.org/projects/doctrine-orm/en/2.6/cookbook/custom-mapping-types.html>`_
-To support Custom Mapping Types you must implement ''ZF\Doctrine\GraphQL\Type\CustomTypeInterface''
-on your Custom Doctrine Mapping Type field.  This must return a scalar GraphQL type for the custom type.
 
-Additionally you must create a custom GraphQL type for the field for handling serialization, etc.
+You must create a custom GraphQL type for the field for handling serialization, etc.
 See ''ZF\Doctrine\GraphQL\Type\DateTimeType'' for an example of a custom GraphQL type.
 
 Add the new custom GraphQL type to your configuration::

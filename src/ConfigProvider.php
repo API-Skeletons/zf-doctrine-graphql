@@ -2,7 +2,6 @@
 
 namespace ZF\Doctrine\GraphQL;
 
-use DateTime;
 use Zend\ServiceManager\Factory\InvokableFactory;
 
 class ConfigProvider
@@ -75,7 +74,7 @@ class ConfigProvider
     {
         return [
             'invokables' => [
-                DateTime::class => Type\DateTimeType::class,
+                'datetime' => Type\DateTimeType::class,
             ],
             'abstract_factories' => [
                 Type\EntityTypeAbstractFactory::class,

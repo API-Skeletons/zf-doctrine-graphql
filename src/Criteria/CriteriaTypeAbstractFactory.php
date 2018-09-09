@@ -82,7 +82,7 @@ final class CriteriaTypeAbstractFactory extends AbstractAbstractFactory implemen
                 continue;
             }
 
-            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
+            $graphQLType = $this->mapFieldType($fieldMetadata['type'], $typeManager);
             if ($fieldMetadata['type'] == 'array') {
                 $graphQLType = Type::string();
             }

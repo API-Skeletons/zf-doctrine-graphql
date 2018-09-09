@@ -300,13 +300,9 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                 // @codeCoverageIgnoreEnd
             }
 
-            $graphQLType = $this->mapFieldType($fieldMetadata['type']);
-
-            // Override for custom fields
+            // Find GraphQL field type
             $typeManager = $container->get(TypeManager::class);
-            if ($typeManager->has($fieldMetadata['type'])) {
-                $graphQLType = $typeManager->get($fieldMetadata['type']);
-            }
+            $graphQLType = $this->mapFieldType($fieldMetadata['type'], $typeManager);
 
             if ($graphQLType && $classMetadata->isIdentifier($fieldMetadata['fieldName'])) {
                 $graphQLType = Type::id();

@@ -17,6 +17,7 @@ apply your security.  The queryBuilder already has the entityClassName assigned 
 
 .. code-block:: php
 
+    use Zend\EventManager\Event as ZendEvent;
     use ZF\Doctrine\GraphQL\Event;
 
     $events = $container->get('SharedEventManager');
@@ -24,7 +25,7 @@ apply your security.  The queryBuilder already has the entityClassName assigned 
     $events->attach(
         Event::class,
         Event::FILTER_QUERY_BUILDER,
-        function(Event $event)
+        function(ZendEvent $event)
         {
             switch ($event->getParam('entityClassName')) {
                 case 'Db\Entity\Performance':
@@ -67,6 +68,7 @@ A good solution is to turn the value into JSON in a hydrator strategy and overri
 
 .. code-block:: php
 
+    use Zend\EventManager\Event as ZendEvent;
     use GraphQL\Type\Definition\Type;
     use ZF\Doctrine\GraphQL\Event;
 
@@ -75,7 +77,7 @@ A good solution is to turn the value into JSON in a hydrator strategy and overri
     $events->attach(
         Event::class,
         Event::MAP_FIELD_TYPE,
-        function(Event $event)
+        function(ZendEvent $event)
         {
             $hydratorAlias = $event->getParam('hydratorAlias');
             $fieldName = $event->getParam('fieldName');
@@ -97,7 +99,7 @@ A good solution is to turn the value into JSON in a hydrator strategy and overri
    :format: html
 
 .. note::
-  Authored by **API Skeletons <https://apiskeletons.com>**_.  All rights reserved.
+  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
 
 
 :raw-html:`<script async src="https://www.googletagmanager.com/gtag/js?id=UA-64198835-4"></script><script>window.dataLayer = window.dataLayer || [];function gtag(){dataLayer.push(arguments);}gtag('js', new Date());gtag('config', 'UA-64198835-4');</script>`

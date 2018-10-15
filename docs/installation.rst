@@ -16,6 +16,13 @@ If you use `zf-component-installer <https://github.com/zendframework/zf-componen
 that plugin will install zf-doctrine-graphql as a module for you.
 
 
+zf-doctrine-criteria configuration
+----------------------------------
+
+You must copy the config for zf-doctrine-criteria to your autoload directory::
+
+    $ cp vendor/api-skeletons/zf-doctrine-criteria/config/zf-doctrine-criteria.global.php.dist config/autoload/zf-doctrine-criteria.global.php
+
 .. role:: raw-html(raw)
    :format: html
 

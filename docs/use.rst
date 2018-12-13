@@ -4,6 +4,7 @@ Use
 This example merges work from a factory into the example.  Moving the `$container` calls to a factory
 and injecting them into an RPC object will yield a working example.
 
+.. highlight:: php
     use Exception;
     use GraphQL\GraphQL;
     use GraphQL\Type\Schema;

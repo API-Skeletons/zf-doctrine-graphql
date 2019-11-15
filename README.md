@@ -21,16 +21,16 @@ are provided to filter collections at any location in the query.
 
 Doctrine provides easy taversal of your database.  Consider the following imaginary query:
 ```php
-$entity[where id = 5]->
-  getRelation()
+$entity[where id = 5]
+  ->getRelation()
     ->getField1()
     ->getField2()
     ->getManyToOne([where name like '%dev%'])
       ->getName()
       ->getField3()
-    ->getOtherRelation()
-      ->getField4()
-      ->getField5()
+  ->getOtherRelation()
+    ->getField4()
+    ->getField5()
 ```
 
 And see it realized in GraphQL with fine grained control over each field via hydrators:

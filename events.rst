@@ -103,5 +103,4 @@ value into JSON in a hydrator strategy and override the type to a String.
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

@@ -31,5 +31,4 @@ Resolver is an option.  To register a custom field resolver use
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

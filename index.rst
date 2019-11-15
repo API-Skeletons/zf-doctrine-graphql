@@ -27,5 +27,4 @@ deep GraphQL queries on your data with a single entry point.
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

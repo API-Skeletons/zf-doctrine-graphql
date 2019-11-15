@@ -27,5 +27,4 @@ You must copy the config for zf-doctrine-criteria to your autoload directory::
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

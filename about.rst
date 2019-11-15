@@ -41,5 +41,4 @@ schema navigation to provide GraphQL queries as complex as your data.
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

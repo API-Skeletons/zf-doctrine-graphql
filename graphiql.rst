@@ -13,5 +13,4 @@ an issue on github.  The more included providers the merrier.
 .. role:: raw-html(raw)
    :format: html
 
-.. note::
-  Authored by `API Skeletons <https://apiskeletons.com>`_.  All rights reserved.
+.. include:: footer.rst

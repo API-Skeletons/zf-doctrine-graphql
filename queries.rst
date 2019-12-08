@@ -38,7 +38,7 @@ filter the name using
     filter: { name: "Grateful Dead" }
 
 You may only use each field's filter once per filter().  Should a child record
-have the same name as a parent it will share the filter names but fitlers are
+have the same name as a parent it will share the filter names but filters are
 specific to the entity they filter upon.
 
 Provided Filters::

@@ -296,21 +296,6 @@ class QueryBuilderFiltersTest extends AbstractTest
     /**
      * @dataProvider schemaDataProvider
      */
-    public function testMemberOf($schemaName, $context)
-    {
-        $schema = $this->getSchema($schemaName);
-
-        $query = "{ artist ( filter: { alias_memberof:\"b2\" } ) { id alias } }";
-
-        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
-        $output = $result->toArray();
-
-        $this->assertEquals(['b1', 'b2', 'b3'], $output['data']['artist'][0]['alias']);
-    }
-
-    /**
-     * @dataProvider schemaDataProvider
-     */
     public function testDistinct($schemaName, $context)
     {
         $schema = $this->getSchema($schemaName);

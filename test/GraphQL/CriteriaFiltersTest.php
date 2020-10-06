@@ -125,7 +125,7 @@ class CriteriaFiltersTest extends AbstractTest
         $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
         $output = $result->toArray();
 
-        $this->assertEquals(3, sizeof($output['data']['artist'][0]['performance']));
+        $this->assertEquals(2, sizeof($output['data']['artist'][0]['performance']));
     }
 
     /**
@@ -292,21 +292,6 @@ class CriteriaFiltersTest extends AbstractTest
         $output = $result->toArray();
 
         $this->assertEquals(5, sizeof($output['data']['artist'][0]['performance']));
-    }
-
-    /**
-     * @dataProvider schemaDataProvider
-     */
-    public function testMemberOf($schemaName, $context)
-    {
-        $schema = $this->getSchema($schemaName);
-
-        $query = "{ user ( filter: { id:1 } )  { name artist ( filter: { alias_memberof:\"b2\" } ) { id alias } } }";
-
-        $result = GraphQL::executeQuery($schema, $query, $rootValue = null, $context, $variableValues = null);
-        $output = $result->toArray();
-
-        $this->assertEquals(['b1', 'b2', 'b3'], $output['data']['user'][0]['artist'][0]['alias']);
     }
 
     /**

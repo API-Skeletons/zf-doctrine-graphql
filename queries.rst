@@ -56,7 +56,6 @@ Provided Filters::
     fieldName_contains   -  Strings only. Similar to a Like query as `like '%value%'`
     fieldName_startswith -  Strings only. A like query from the beginning of the value `like 'value%'`
     fieldName_endswith   -  Strings only. A like query from the end of the value `like '%value'`
-    fieldName_memberof  -   Matches a value in an array field.
     fieldName_isnull     -  Takes a boolean.  If TRUE return results where the field is null.
                               If FALSE returns results where the field is not null.
                               NOTE: acts as "isEmpty" for collection filters.  A value of false will

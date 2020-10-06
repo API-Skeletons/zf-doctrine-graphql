@@ -15,6 +15,7 @@
         "zendframework/zend-hydrator": "^2.4",
         "zendframework/zend-modulemanager": "^2.8",
         "doctrine/common": "^2.8",
+        "doctrine/doctrine-orm-module": "^1.1.8",
         "zendframework/zend-mvc-console": "^1.2",
         "zendframework/zend-config": "^3.2",
         "api-skeletons/zf-doctrine-criteria": "^1.0",

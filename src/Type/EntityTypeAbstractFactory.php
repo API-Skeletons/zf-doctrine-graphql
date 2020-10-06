@@ -141,10 +141,10 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                     ) {
                                         $collection = $fieldResolver($source, $args, $context, $resolveInfo);
 
-                                        // Do not process empty collections
-                                        if (! sizeof($collection)) {
-                                            return [];
-                                        }
+                                        // It is better to process empty collections than extract an entire collection
+                                        // just to get its count.  Lazy loading will fetch a whole collection to get
+                                        // a count but extra lazy will not.
+                                        // There was a check here for collection size; now removed.
 
                                         $filter = $args['filter'] ?? [];
                                         $filterArray = [];
@@ -232,7 +232,6 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                                             $distinctField = $field;
                                                         }
                                                         break;
-                                                    case 'memberof':
                                                     default:
                                                         $filterArray[] = [
                                                             'type' => $filter,
@@ -244,7 +243,7 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                             }
                                         }
 
-                                        $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
+                                        $entityClassName = $collection->getTypeClass()->name;
                                         $metadata = $objectManager->getClassMetadata($entityClassName);
 
                                         foreach ($filterArray as $key => $filter) {
@@ -265,14 +264,14 @@ final class EntityTypeAbstractFactory extends AbstractAbstractFactory implements
                                         }
 
                                         //Rebuild collection using hydrators
-                                        $entityClassName = ClassUtils::getRealClass(get_class($collection->first()));
                                         $hydratorAlias = 'ZF\\Doctrine\\GraphQL\\Hydrator\\'
                                             . str_replace('\\', '_', $entityClassName);
-
-                                        $data = $hydratorExtractTool
-                                            ->extractToCollection($collection, $hydratorAlias, $options);
-
-                                        $matching = $data->matching($criteria);
+                                        $matching = $hydratorExtractTool
+                                            ->extractToCollection(
+                                                $collection->matching($criteria),
+                                                $hydratorAlias,
+                                                $options
+                                            );
 
                                         if ($distinctField) {
                                             $distinctValueArray = [];
